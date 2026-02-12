@@ -7,11 +7,9 @@ import (
 	"errors"
 	"syscall"
 	"unsafe"
-)
 
-import (
-	"github.com/tailscale/walk"
 	"github.com/tailscale/win"
+	"github.com/wuc656/walk"
 )
 
 type LogView struct {

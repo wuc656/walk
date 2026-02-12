@@ -899,7 +899,7 @@ func generateUICode(buf *bytes.Buffer, ui *UI) error {
 		package main
 		
 		import (
-			"github.com/tailscale/walk"
+			"github.com/wuc656/walk"
 		)
 		
 		`)
@@ -1071,7 +1071,7 @@ func generateLogicCode(buf *bytes.Buffer, ui *UI) error {
 		`package main
 		
 		import (
-			"github.com/tailscale/walk"
+			"github.com/wuc656/walk"
 		)
 		
 		`)

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -9,9 +10,9 @@ package walk
 import (
 	"log"
 	"reflect"
-)
 
-import _ "gopkg.in/Knetic/govaluate.v3"
+	_ "github.com/casbin/govaluate"
+)
 
 type Expression interface {
 	Value() interface{}

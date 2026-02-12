@@ -7,7 +7,7 @@
 
 package declarative
 
-import "github.com/tailscale/walk"
+import "github.com/wuc656/walk"
 
 type MainWindow struct {
 	// Window

@@ -15,8 +15,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tailscale/walk/dpicache"
 	"github.com/tailscale/win"
+	"github.com/wuc656/walk/dpicache"
 )
 
 var (

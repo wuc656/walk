@@ -10,7 +10,7 @@ package declarative
 import (
 	"fmt"
 
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 )
 
 type Shortcut struct {

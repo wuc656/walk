@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 )
 
 func main() {

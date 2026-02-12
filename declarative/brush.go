@@ -10,7 +10,7 @@ package declarative
 import (
 	"strconv"
 
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 )
 
 type BlackBrush struct {

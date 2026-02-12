@@ -7,7 +7,7 @@
 package declarative
 
 import (
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 )
 
 type DialogEx struct {

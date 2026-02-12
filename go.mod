@@ -1,11 +1,11 @@
-module github.com/tailscale/walk
+module github.com/wuc656/walk
 
-go 1.21
+go 1.25.0
 
 require (
-	github.com/dblohm7/wingoes v0.0.0-20231019175336-f6e33aa7cc34
-	github.com/tailscale/win v0.0.0-20250213223159-5992cb43ca35
-	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
-	golang.org/x/sys v0.8.0
-	gopkg.in/Knetic/govaluate.v3 v3.0.0
+	github.com/casbin/govaluate v1.10.0
+	github.com/dblohm7/wingoes v0.0.0-20250822163801-6d8e6105c62d
+	github.com/tailscale/win v0.0.0-20250627215312-f4da2b8ee071
+	golang.org/x/exp v0.0.0-20260211191109-2735e65f0518
+	golang.org/x/sys v0.41.0
 )

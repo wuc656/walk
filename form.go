@@ -13,8 +13,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tailscale/walk/idalloc"
 	"github.com/tailscale/win"
+	"github.com/wuc656/walk/idalloc"
 )
 
 type CloseReason byte

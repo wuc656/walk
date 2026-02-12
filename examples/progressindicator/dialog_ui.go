@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 )
 
 type myDialogUI struct {

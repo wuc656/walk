@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package declarative
@@ -13,8 +14,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/tailscale/walk"
-	"gopkg.in/Knetic/govaluate.v3"
+	"github.com/wuc656/walk"
+	"github.com/casbin/govaluate"
 )
 
 var (

@@ -20,7 +20,7 @@ See [Getting Started](http://golang.org/doc/install.html)
 Walk currently requires Go 1.21 or later.
 
 ##### To Install
-Now run `go get github.com/tailscale/walk`
+Now run `go get github.com/wuc656/walk`
 
 Using Walk
 ==========
@@ -39,8 +39,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/tailscale/walk"
-	. "github.com/tailscale/walk/declarative"
+	"github.com/wuc656/walk"
+	. "github.com/wuc656/walk/declarative"
 )
 
 func main() {

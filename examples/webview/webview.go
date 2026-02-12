@@ -8,8 +8,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/tailscale/walk"
-	. "github.com/tailscale/walk/declarative"
+	"github.com/wuc656/walk"
+	. "github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -39,7 +39,7 @@ func main() {
 			WebView{
 				AssignTo: &wv,
 				Name:     "wv",
-				URL:      "https://github.com/tailscale/walk",
+				URL:      "https://github.com/wuc656/walk",
 			},
 		},
 		Functions: map[string]func(args ...interface{}) (interface{}, error){

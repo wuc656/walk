@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package declarative
 
 import (
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 )
 
 type HSeparator struct {
@@ -69,7 +70,7 @@ func (s HSeparator) Create(builder *Builder) error {
 type VSeparator struct {
 	// Window
 
-	Accessibility      Accessibility
+	Accessibility    Accessibility
 	ContextMenuItems []MenuItem
 	Enabled          Property
 	Font             Font

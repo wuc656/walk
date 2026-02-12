@@ -9,9 +9,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/tailscale/walk"
+	"github.com/wuc656/walk"
 
-	. "github.com/tailscale/walk/declarative"
+	. "github.com/wuc656/walk/declarative"
 )
 
 func main() {
