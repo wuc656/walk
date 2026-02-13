@@ -2,10 +2,10 @@ github.com/casbin/govaluate v1.10.0 h1:ffGw51/hYH3w3rZcxO/KcaUIDOLP84w7nsidMVgaD
 github.com/casbin/govaluate v1.10.0/go.mod h1:G/UnbIjZk/0uMNaLwZZmFQrR72tYRZWQkO70si/iR7A=
 github.com/wuc656/resize v0.0.1 h1:rBy+/iyDVEo7/sTx24TWw9QXug+9tNdErxLtAnEk+4Q=
 github.com/wuc656/resize v0.0.1/go.mod h1:fbyehsaQ+aTa8c21UmF3RwgYJWBjD0Cnkz+Q1APsnGk=
-github.com/wuc656/win v0.0.3 h1:y3sqpih8DRQWlZBRLA2HUb5brbD7NhXnrqH8oAG/KxA=
-github.com/wuc656/win v0.0.3/go.mod h1:IyEUifLXVDYSw2jYdNq1V5ZzKqWWFF+F1aSJ5W/spM0=
-github.com/wuc656/wingoes v0.0.1 h1:MEDxlo0+BaTCjuBiaLZVGRFi/z/+jXX5PQP467177FU=
-github.com/wuc656/wingoes v0.0.1/go.mod h1:yuUmToqHMNHFd/u3M1vYjmMw/Sz4W2VCvn0xgh6s0qs=
+github.com/wuc656/win v0.0.4 h1:aqySnDBiiPPTgWA7nvCYkVMyInb79yaUQR7QQL4ay20=
+github.com/wuc656/win v0.0.4/go.mod h1:MtsVpLvxgj20AHojdbAjaXU0EPo6VUD/IEU4iGFJ2Iw=
+github.com/wuc656/wingoes v0.0.4 h1:ts0EX86E2+s6GvcLFSUYDDVphgkHKDIaNirCvFhSZPo=
+github.com/wuc656/wingoes v0.0.4/go.mod h1:dLOkHjsoIohiLEBdY1oZoeoDNN9SCB/vR5nNMo99KQk=
 github.com/wuc656/winres v0.3.2 h1:DzmFj1dWFIO5kXFU8EaFXAKUVGnYRYXE0cD+Q8cKcGU=
 github.com/wuc656/winres v0.3.2/go.mod h1:RhySeYE3XF73GGFBjzLwDtEt2TGhzEHDV83L1JOln6M=
 golang.org/x/exp v0.0.0-20260212183809-81e46e3db34a h1:ovFr6Z0MNmU7nH8VaX5xqw+05ST2uO1exVfZPVqRC5o=
