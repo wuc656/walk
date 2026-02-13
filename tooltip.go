@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -10,7 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // https://msdn.microsoft.com/en-us/library/windows/desktop/bb760416(v=vs.85).aspx says 80,

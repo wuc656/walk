@@ -11,7 +11,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 func createLayoutItemForWidget(widget Widget) LayoutItem {

@@ -10,7 +10,7 @@ package walk
 import (
 	"fmt"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 type PushButton struct {

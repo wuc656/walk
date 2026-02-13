@@ -10,7 +10,7 @@ package walk
 import (
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 const mainWindowWindowClass = `\o/ Walk_MainWindow_Class \o/`

@@ -14,8 +14,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/dblohm7/wingoes/com"
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
+	"github.com/wuc656/wingoes/com"
 	"golang.org/x/sys/windows"
 )
 

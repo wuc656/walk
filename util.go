@@ -17,7 +17,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 	"golang.org/x/exp/constraints"
 )
 

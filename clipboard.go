@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 const clipboardWindowClass = `\o/ Walk_Clipboard_Class \o/`

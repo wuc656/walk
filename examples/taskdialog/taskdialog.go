@@ -8,8 +8,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/tailscale/win"
 	"github.com/wuc656/walk"
+	"github.com/wuc656/win"
 )
 
 var (

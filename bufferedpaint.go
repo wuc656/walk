@@ -10,7 +10,7 @@ package walk
 import (
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 func init() {
@@ -30,7 +30,7 @@ type BufferedPaint struct {
 // maps it to canvas using bounds. The buffer will be initially erased.
 func BeginBufferedPaint(canvas *Canvas, bounds Rectangle, format win.BP_BUFFERFORMAT) (*BufferedPaint, error) {
 	params := win.BP_PAINTPARAMS{
-		Size: uint32(unsafe.Sizeof(win.BP_PAINTPARAMS{})),
+		Size:  uint32(unsafe.Sizeof(win.BP_PAINTPARAMS{})),
 		Flags: win.BPPF_ERASE,
 	}
 

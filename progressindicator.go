@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
 
 import (
-	"unsafe"
-)
-
-import (
-	"github.com/tailscale/win"
 	"syscall"
+	"unsafe"
+
+	"github.com/wuc656/win"
 )
 
 type ProgressIndicator struct {
@@ -35,7 +34,7 @@ const (
 	PIPaused        PIState = win.TBPF_PAUSED
 )
 
-//newTaskbarList3 precondition: Windows version is at least 6.1 (yes, Win 7 is version 6.1).
+// newTaskbarList3 precondition: Windows version is at least 6.1 (yes, Win 7 is version 6.1).
 func newTaskbarList3(hwnd win.HWND) (*ProgressIndicator, error) {
 	var classFactoryPtr unsafe.Pointer
 	if hr := win.CoGetClassObject(&win.CLSID_TaskbarList, win.CLSCTX_ALL, nil, &win.IID_IClassFactory, &classFactoryPtr); win.FAILED(hr) {

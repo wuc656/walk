@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tailscale/win"
 	"github.com/wuc656/walk"
+	"github.com/wuc656/win"
 )
 
 type LogView struct {

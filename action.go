@@ -10,8 +10,8 @@ package walk
 import (
 	"runtime"
 
-	"github.com/tailscale/win"
 	"github.com/wuc656/walk/idalloc"
+	"github.com/wuc656/win"
 )
 
 type actionChangedHandler interface {

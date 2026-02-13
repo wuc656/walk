@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -9,7 +10,7 @@ package walk
 import (
 	"syscall"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // BindingValueProvider is the interface that a model must implement to support

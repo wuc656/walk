@@ -10,7 +10,7 @@ package walk
 import (
 	"syscall"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // FontMemResource represents a font resource loaded into memory from

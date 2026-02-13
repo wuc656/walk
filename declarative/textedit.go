@@ -8,8 +8,8 @@
 package declarative
 
 import (
-	"github.com/tailscale/win"
 	"github.com/wuc656/walk"
+	"github.com/wuc656/win"
 )
 
 type TextEdit struct {

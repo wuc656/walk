@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
 
-import "github.com/tailscale/win"
+import "github.com/wuc656/win"
 
 // Size defines width and height in 1/96" units or native pixels, or dialog base units.
 //

@@ -14,8 +14,8 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/dblohm7/wingoes/com"
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
+	"github.com/wuc656/wingoes/com"
 )
 
 const inchesPerMeter float64 = 39.37007874
@@ -338,7 +338,7 @@ func (bmp *Bitmap) postProcess() error {
 			}
 		}
 
-		if 0 == win.SetDIBits(hdc, bmp.hBmp, 0, uint32(bi.BmiHeader.BiHeight), &pixels[0].B, bi, win.DIB_RGB_COLORS) {
+		if win.SetDIBits(hdc, bmp.hBmp, 0, uint32(bi.BmiHeader.BiHeight), &pixels[0].B, bi, win.DIB_RGB_COLORS) == 0 {
 			return newError("SetDIBits")
 		}
 

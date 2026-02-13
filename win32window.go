@@ -10,8 +10,8 @@ import (
 	"errors"
 	"unsafe"
 
-	"github.com/dblohm7/wingoes"
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
+	"github.com/wuc656/wingoes"
 )
 
 // ErrUnsupportedOnThisWindowsVersion indicates that an API call is not supported

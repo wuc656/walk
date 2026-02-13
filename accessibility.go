@@ -10,7 +10,7 @@ package walk
 import (
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // AccState enum defines the state of the window/control

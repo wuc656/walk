@@ -9,8 +9,8 @@ import (
 
 	"github.com/wuc656/walk"
 
-	"github.com/tailscale/win"
 	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/win"
 )
 
 const myWidgetWindowClass = "MyWidget Class"

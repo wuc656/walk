@@ -9,7 +9,7 @@ package walk
 import (
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // Monitor is a reference to an individual monitor attached to the current machine.

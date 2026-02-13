@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 	"golang.org/x/sys/windows"
 )
 
@@ -232,7 +232,7 @@ func newNotificationIconWindow() (*notifyIconWindow, error) {
 		ClassName: notifyIconWindowClass,
 		// Creating the window with WS_DISABLED in an effort to dissuade screen
 		// readers from treating the hidden window as focusable content.
-		Style:     win.WS_OVERLAPPEDWINDOW | win.WS_DISABLED,
+		Style: win.WS_OVERLAPPEDWINDOW | win.WS_DISABLED,
 		// Always create the window at the origin, thus ensuring that the window
 		// resides on the desktop's primary monitor, which is the same monitor where
 		// the taskbar notification area resides. This ensures that the window's

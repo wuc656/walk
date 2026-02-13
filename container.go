@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 type Container interface {

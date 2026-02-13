@@ -8,7 +8,7 @@
 package walk
 
 import (
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // Rectangle defines upper left corner with width and height region in 1/96" units, or native

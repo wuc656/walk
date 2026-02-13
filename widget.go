@@ -8,7 +8,7 @@
 package walk
 
 import (
-	"github.com/tailscale/win"
+	"github.com/wuc656/win"
 )
 
 // LayoutFlags specify how a Widget wants to be treated when used with a Layout.
