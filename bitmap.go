@@ -429,7 +429,7 @@ func (bmp *Bitmap) alphaBlendPart(hdc win.HDC, dst, src Rectangle, opacity byte)
 			}
 
 			if !transparent {
-				if 0 == win.SetStretchBltMode(hdc, win.HALFTONE) {
+				if win.SetStretchBltMode(hdc, win.HALFTONE) == 0 {
 					return newError("SetStretchBltMode")
 				}
 

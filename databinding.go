@@ -420,10 +420,10 @@ func (db *DataBinder) fieldBoundToProperty(v reflect.Value, prop Property) DataF
 	return f
 }
 
-func validateBindingMemberSyntax(member string) error {
+/* func validateBindingMemberSyntax(member string) error {
 	// FIXME
 	return nil
-}
+} */
 
 type DataField interface {
 	CanSet() bool
