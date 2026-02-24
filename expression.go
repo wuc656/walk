@@ -11,7 +11,7 @@ import (
 	"log"
 	"reflect"
 
-	_ "github.com/casbin/govaluate"
+	_ "github.com/wuc656/govaluate"
 )
 
 type Expression interface {

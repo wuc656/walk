@@ -14,7 +14,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/casbin/govaluate"
+	"github.com/wuc656/govaluate"
 	"github.com/wuc656/walk"
 )
 
