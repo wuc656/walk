@@ -59,7 +59,7 @@ type Composite struct {
 	AssignTo    **walk.Composite
 	Border      bool
 	Expressions func() map[string]walk.Expression
-	Functions   map[string]func(args ...interface{}) (interface{}, error)
+	Functions   map[string]func(args ...any) (any, error)
 }
 
 func (c Composite) Create(builder *Builder) error {

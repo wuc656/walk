@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -14,7 +15,7 @@ import (
 )
 
 type Validator interface {
-	Validate(v interface{}) error
+	Validate(v any) error
 }
 
 type ValidationError struct {
@@ -69,7 +70,7 @@ func (rv *RangeValidator) Reset(min, max float64) error {
 	return nil
 }
 
-func (rv *RangeValidator) Validate(v interface{}) error {
+func (rv *RangeValidator) Validate(v any) error {
 	f64 := v.(float64)
 
 	if f64 < rv.min || f64 > rv.max {
@@ -107,7 +108,7 @@ func (rv *RegexpValidator) Pattern() string {
 	return rv.re.String()
 }
 
-func (rv *RegexpValidator) Validate(v interface{}) error {
+func (rv *RegexpValidator) Validate(v any) error {
 	var matched bool
 
 	switch val := v.(type) {
@@ -140,7 +141,7 @@ func SelectionRequiredValidator() Validator {
 	return selectionRequiredValidatorSingleton
 }
 
-func (selectionRequiredValidator) Validate(v interface{}) error {
+func (selectionRequiredValidator) Validate(v any) error {
 	if v == nil {
 		// For Widgets like ComboBox nil is passed to indicate "no selection".
 		return NewValidationError(

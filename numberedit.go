@@ -75,55 +75,55 @@ func NewNumberEdit(parent Container) (*NumberEdit, error) {
 	ne.GraphicsEffects().Add(FocusEffect)
 
 	ne.MustRegisterProperty("MaxValue", NewProperty(
-		func() interface{} {
+		func() any {
 			return ne.MaxValue()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ne.SetRange(ne.MinValue(), assertFloat64Or(v, 0.0))
 		},
 		ne.minValueChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("MinValue", NewProperty(
-		func() interface{} {
+		func() any {
 			return ne.MinValue()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ne.SetRange(assertFloat64Or(v, 0.0), ne.MaxValue())
 		},
 		ne.maxValueChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("Prefix", NewProperty(
-		func() interface{} {
+		func() any {
 			return ne.Prefix()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ne.SetPrefix(assertStringOr(v, ""))
 		},
 		ne.prefixChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("ReadOnly", NewProperty(
-		func() interface{} {
+		func() any {
 			return ne.ReadOnly()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ne.SetReadOnly(v.(bool))
 		},
 		ne.edit.readOnlyChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("Suffix", NewProperty(
-		func() interface{} {
+		func() any {
 			return ne.Suffix()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ne.SetSuffix(assertStringOr(v, ""))
 		},
 		ne.suffixChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("Value", NewProperty(
-		func() interface{} {
+		func() any {
 			return ne.Value()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ne.SetValue(assertFloat64Or(v, 0.0))
 		},
 		ne.edit.valueChangedPublisher.Event()))

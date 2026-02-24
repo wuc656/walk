@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -20,7 +21,7 @@ func NewMutableCondition() *MutableCondition {
 	return new(MutableCondition)
 }
 
-func (mc *MutableCondition) Value() interface{} {
+func (mc *MutableCondition) Value() any {
 	return mc.satisfied
 }
 
@@ -53,7 +54,7 @@ func NewDelegateCondition(satisfied func() bool, changed *Event) *DelegateCondit
 	return &DelegateCondition{satisfied, changed}
 }
 
-func (dc *DelegateCondition) Value() interface{} {
+func (dc *DelegateCondition) Value() any {
 	return dc.satisfied()
 }
 
@@ -114,7 +115,7 @@ func NewAllCondition(items ...Condition) Condition {
 	return ac
 }
 
-func (ac *allCondition) Value() interface{} {
+func (ac *allCondition) Value() any {
 	return ac.Satisfied()
 }
 
@@ -134,7 +135,7 @@ func NewAnyCondition(items ...Condition) Condition {
 	return ac
 }
 
-func (ac *anyCondition) Value() interface{} {
+func (ac *anyCondition) Value() any {
 	return ac.Satisfied()
 }
 
@@ -150,7 +151,7 @@ func NewNegatedCondition(other Condition) Condition {
 	return &negatedCondition{other}
 }
 
-func (nc *negatedCondition) Value() interface{} {
+func (nc *negatedCondition) Value() any {
 	return nc.Satisfied()
 }
 

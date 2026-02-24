@@ -99,16 +99,16 @@ type DurationField struct {
 	p *time.Duration
 }
 
-func (*DurationField) CanSet() bool       { return true }
-func (f *DurationField) Get() interface{} { return f.p.String() }
-func (f *DurationField) Set(v interface{}) error {
+func (*DurationField) CanSet() bool { return true }
+func (f *DurationField) Get() any   { return f.p.String() }
+func (f *DurationField) Set(v any) error {
 	x, err := time.ParseDuration(v.(string))
 	if err == nil {
 		*f.p = x
 	}
 	return err
 }
-func (f *DurationField) Zero() interface{} { return "" }
+func (f *DurationField) Zero() any { return "" }
 
 type Sex byte
 

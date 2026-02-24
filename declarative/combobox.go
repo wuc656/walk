@@ -58,7 +58,7 @@ type ComboBox struct {
 	Editable              bool
 	Format                string
 	MaxLength             int
-	Model                 interface{}
+	Model                 any
 	OnCurrentIndexChanged walk.EventHandler
 	OnEditingFinished     walk.EventHandler
 	OnTextChanged         walk.EventHandler

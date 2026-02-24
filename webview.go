@@ -173,30 +173,30 @@ func NewWebView(parent Container) (*WebView, error) {
 	wv.onResize()
 
 	wv.MustRegisterProperty("URL", NewProperty(
-		func() interface{} {
+		func() any {
 			url, _ := wv.URL()
 			return url
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return wv.SetURL(assertStringOr(v, ""))
 		},
 		wv.urlChangedPublisher.Event()))
 
 	wv.MustRegisterProperty("ShortcutsEnabled", NewProperty(
-		func() interface{} {
+		func() any {
 			return wv.ShortcutsEnabled()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			wv.SetShortcutsEnabled(v.(bool))
 			return nil
 		},
 		wv.shortcutsEnabledChangedPublisher.Event()))
 
 	wv.MustRegisterProperty("NativeContextMenuEnabled", NewProperty(
-		func() interface{} {
+		func() any {
 			return wv.NativeContextMenuEnabled()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			wv.SetNativeContextMenuEnabled(v.(bool))
 			return nil
 		},

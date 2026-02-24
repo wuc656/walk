@@ -44,10 +44,10 @@ func (b *Button) init() {
 		b.CheckedChanged()))
 
 	b.MustRegisterProperty("Image", NewProperty(
-		func() interface{} {
+		func() any {
 			return b.Image()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			img, err := ImageFrom(v)
 			if err != nil {
 				return err
@@ -60,10 +60,10 @@ func (b *Button) init() {
 		b.imageChangedPublisher.Event()))
 
 	b.MustRegisterProperty("Text", NewProperty(
-		func() interface{} {
+		func() any {
 			return b.Text()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return b.SetText(assertStringOr(v, ""))
 		},
 		b.textChangedPublisher.Event()))

@@ -63,10 +63,10 @@ func NewSliderWithCfg(parent Container, cfg *SliderCfg) (*Slider, error) {
 	sl.GraphicsEffects().Add(FocusEffect)
 
 	sl.MustRegisterProperty("Value", NewProperty(
-		func() interface{} {
+		func() any {
 			return sl.Value()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			sl.SetValue(assertIntOr(v, 0))
 			return nil
 		},

@@ -52,7 +52,7 @@ type MainWindow struct {
 	AssignTo          **walk.MainWindow
 	Bounds            Rectangle
 	Expressions       func() map[string]walk.Expression
-	Functions         map[string]func(args ...interface{}) (interface{}, error)
+	Functions         map[string]func(args ...any) (any, error)
 	MenuItems         []MenuItem
 	OnDropFiles       walk.DropFilesEventHandler
 	StatusBarItems    []StatusBarItem

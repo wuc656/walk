@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -13,7 +14,7 @@ import (
 )
 
 type reflectModel interface {
-	Items() interface{}
+	Items() any
 }
 
 type bindingAndDisplayMemberSetter interface {
@@ -25,12 +26,12 @@ type reflectListModel struct {
 	ListModelBase
 	bindingMember string
 	displayMember string
-	dataSource    interface{}
-	items         interface{}
+	dataSource    any
+	items         any
 	value         reflect.Value
 }
 
-func newReflectListModel(dataSource interface{}) (ListModel, error) {
+func newReflectListModel(dataSource any) (ListModel, error) {
 	items, err := itemsFromReflectModelDataSource(dataSource, "ReflectListModel")
 	if err != nil {
 		return nil, err
@@ -43,7 +44,7 @@ func newReflectListModel(dataSource interface{}) (ListModel, error) {
 	}
 
 	if rlm, ok := dataSource.(ReflectListModel); ok {
-		rlm.setValueFunc(func(index int) interface{} {
+		rlm.setValueFunc(func(index int) any {
 			return m.Value(index)
 		})
 
@@ -88,11 +89,11 @@ func (m *reflectListModel) ItemCount() int {
 	return m.value.Len()
 }
 
-func (m *reflectListModel) BindingValue(index int) interface{} {
+func (m *reflectListModel) BindingValue(index int) any {
 	return valueFromSlice(m.dataSource, m.value, m.bindingMember, index)
 }
 
-func (m *reflectListModel) Value(index int) interface{} {
+func (m *reflectListModel) Value(index int) any {
 	return valueFromSlice(m.dataSource, m.value, m.displayMember, index)
 }
 
@@ -109,12 +110,12 @@ type reflectTableModel struct {
 	sorterBase  *SorterBase
 	lessFuncs   []func(i, j int) bool
 	dataMembers []string
-	dataSource  interface{}
-	items       interface{}
+	dataSource  any
+	items       any
 	value       reflect.Value
 }
 
-func newReflectTableModel(dataSource interface{}) (TableModel, error) {
+func newReflectTableModel(dataSource any) (TableModel, error) {
 	items, err := itemsFromReflectModelDataSource(dataSource, "ReflectTableModel")
 	if err != nil {
 		return nil, err
@@ -127,7 +128,7 @@ func newReflectTableModel(dataSource interface{}) (TableModel, error) {
 	}
 
 	if rtm, ok := dataSource.(ReflectTableModel); ok {
-		rtm.setValueFunc(func(row, col int) interface{} {
+		rtm.setValueFunc(func(row, col int) any {
 			return m.Value(row, col)
 		})
 
@@ -205,7 +206,7 @@ func (m *reflectTableModel) RowCount() int {
 	return m.value.Len()
 }
 
-func (m *reflectTableModel) Value(row, col int) interface{} {
+func (m *reflectTableModel) Value(row, col int) any {
 	return valueFromSlice(m.dataSource, m.value, m.dataMembers[col], row)
 }
 
@@ -330,7 +331,7 @@ type imageReflectTableModel struct {
 	*reflectTableModel
 }
 
-func (m *imageReflectTableModel) Image(index int) interface{} {
+func (m *imageReflectTableModel) Image(index int) any {
 	if m.value.Index(index).IsNil() {
 		return nil
 	}
@@ -354,7 +355,7 @@ func (m *sortedImageReflectTableModel) Sort(col int, order SortOrder) error {
 	return m.reflectTableModel.sort(col, order)
 }
 
-func (m *sortedImageReflectTableModel) Image(index int) interface{} {
+func (m *sortedImageReflectTableModel) Image(index int) any {
 	if m.value.Index(index).IsNil() {
 		return nil
 	}
@@ -362,8 +363,8 @@ func (m *sortedImageReflectTableModel) Image(index int) interface{} {
 	return m.dataSource.(ImageProvider).Image(index)
 }
 
-func itemsFromReflectModelDataSource(dataSource interface{}, requiredInterfaceName string) (interface{}, error) {
-	var items interface{}
+func itemsFromReflectModelDataSource(dataSource any, requiredInterfaceName string) (any, error) {
+	var items any
 	if rm, ok := dataSource.(reflectModel); ok {
 		items = rm.Items()
 	} else {
@@ -388,7 +389,7 @@ func itemsFromReflectModelDataSource(dataSource interface{}, requiredInterfaceNa
 	return nil, newError(fmt.Sprintf("dataSource must be a slice of struct or interface or pointer to struct or must implement %s.", requiredInterfaceName))
 }
 
-func valueFromSlice(dataSource interface{}, itemsValue reflect.Value, member string, index int) interface{} {
+func valueFromSlice(dataSource any, itemsValue reflect.Value, member string, index int) any {
 	if member == "" {
 		if strs, ok := dataSource.([]string); ok {
 			return strs[index]

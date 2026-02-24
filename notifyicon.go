@@ -404,7 +404,7 @@ func (i *shellNotificationIcon) newCmd(op uint32) *niCmd {
 	return &cmd
 }
 
-func (cmd *niCmd) setBalloonInfo(title, info string, icon interface{}) error {
+func (cmd *niCmd) setBalloonInfo(title, info string, icon any) error {
 	if err := copyStringToSlice(cmd.nid.SzInfoTitle[:], title); err != nil {
 		return err
 	}

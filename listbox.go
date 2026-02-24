@@ -22,7 +22,7 @@ type ListBox struct {
 	WidgetBase
 	bindingValueProvider            BindingValueProvider
 	model                           ListModel
-	providedModel                   interface{}
+	providedModel                   any
 	styler                          ListItemStyler
 	style                           ListItemStyle
 	bindingMember                   string
@@ -30,7 +30,7 @@ type ListBox struct {
 	format                          string
 	precision                       int
 	prevCurIndex                    int
-	currentValue                    interface{}
+	currentValue                    any
 	itemsResetHandlerHandle         int
 	itemChangedHandlerHandle        int
 	itemsInsertedHandlerHandle      int
@@ -83,16 +83,16 @@ func NewListBoxWithStyle(parent Container, style uint32) (*ListBox, error) {
 	lb.GraphicsEffects().Add(FocusEffect)
 
 	lb.MustRegisterProperty("CurrentIndex", NewProperty(
-		func() interface{} {
+		func() any {
 			return lb.CurrentIndex()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return lb.SetCurrentIndex(assertIntOr(v, -1))
 		},
 		lb.CurrentIndexChanged()))
 
 	lb.MustRegisterProperty("CurrentItem", NewReadOnlyProperty(
-		func() interface{} {
+		func() any {
 			if i := lb.CurrentIndex(); i > -1 {
 				if rm, ok := lb.providedModel.(reflectModel); ok {
 					return reflect.ValueOf(rm.Items()).Index(i).Interface()
@@ -110,7 +110,7 @@ func NewListBoxWithStyle(parent Container, style uint32) (*ListBox, error) {
 		lb.CurrentIndexChanged()))
 
 	lb.MustRegisterProperty("Value", NewProperty(
-		func() interface{} {
+		func() any {
 			index := lb.CurrentIndex()
 
 			if lb.bindingValueProvider == nil || index == -1 {
@@ -119,7 +119,7 @@ func NewListBoxWithStyle(parent Container, style uint32) (*ListBox, error) {
 
 			return lb.bindingValueProvider.BindingValue(index)
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			if lb.bindingValueProvider == nil {
 				if lb.model == nil {
 					return nil
@@ -373,7 +373,7 @@ func (lb *ListBox) detachModel() {
 }
 
 // Model returns the model of the ListBox.
-func (lb *ListBox) Model() interface{} {
+func (lb *ListBox) Model() any {
 	return lb.providedModel
 }
 
@@ -381,7 +381,7 @@ func (lb *ListBox) Model() interface{} {
 //
 // It is required that mdl either implements walk.ListModel or
 // walk.ReflectListModel or be a slice of pointers to struct or a []string.
-func (lb *ListBox) SetModel(mdl interface{}) error {
+func (lb *ListBox) SetModel(mdl any) error {
 	model, ok := mdl.(ListModel)
 	if !ok && mdl != nil {
 		var err error

@@ -21,7 +21,7 @@ func tr(source string, context ...string) string {
 	return source
 }
 
-type Property interface{}
+type Property any
 
 type bindData struct {
 	expression string

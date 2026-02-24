@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -19,25 +20,25 @@ var (
 type Property interface {
 	Expression
 	ReadOnly() bool
-	Get() interface{}
-	Set(value interface{}) error
-	Source() interface{}
-	SetSource(source interface{}) error
+	Get() any
+	Set(value any) error
+	Source() any
+	SetSource(source any) error
 	Validatable() bool
 	Validator() Validator
 	SetValidator(validator Validator) error
 }
 
 type property struct {
-	get                 func() interface{}
-	set                 func(v interface{}) error
+	get                 func() any
+	set                 func(v any) error
 	changed             *Event
-	source              interface{}
+	source              any
 	sourceChangedHandle int
 	validator           Validator
 }
 
-func NewProperty(get func() interface{}, set func(v interface{}) error, changed *Event) Property {
+func NewProperty(get func() any, set func(v any) error, changed *Event) Property {
 	return &property{get: get, set: set, changed: changed}
 }
 
@@ -45,15 +46,15 @@ func (p *property) ReadOnly() bool {
 	return p.set == nil
 }
 
-func (p *property) Value() interface{} {
+func (p *property) Value() any {
 	return p.get()
 }
 
-func (p *property) Get() interface{} {
+func (p *property) Get() any {
 	return p.get()
 }
 
-func (p *property) Set(value interface{}) error {
+func (p *property) Set(value any) error {
 	if p.ReadOnly() {
 		return ErrPropertyReadOnly
 	}
@@ -69,11 +70,11 @@ func (p *property) Changed() *Event {
 	return p.changed
 }
 
-func (p *property) Source() interface{} {
+func (p *property) Source() any {
 	return p.source
 }
 
-func (p *property) SetSource(source interface{}) error {
+func (p *property) SetSource(source any) error {
 	if p.ReadOnly() {
 		return ErrPropertyReadOnly
 	}
@@ -136,11 +137,11 @@ func (p *property) SetValidator(validator Validator) error {
 }
 
 type readOnlyProperty struct {
-	get     func() interface{}
+	get     func() any
 	changed *Event
 }
 
-func NewReadOnlyProperty(get func() interface{}, changed *Event) Property {
+func NewReadOnlyProperty(get func() any, changed *Event) Property {
 	return &readOnlyProperty{get: get, changed: changed}
 }
 
@@ -148,15 +149,15 @@ func (*readOnlyProperty) ReadOnly() bool {
 	return true
 }
 
-func (rop *readOnlyProperty) Value() interface{} {
+func (rop *readOnlyProperty) Value() any {
 	return rop.get()
 }
 
-func (rop *readOnlyProperty) Get() interface{} {
+func (rop *readOnlyProperty) Get() any {
 	return rop.get()
 }
 
-func (*readOnlyProperty) Set(value interface{}) error {
+func (*readOnlyProperty) Set(value any) error {
 	return ErrPropertyReadOnly
 }
 
@@ -164,11 +165,11 @@ func (rop *readOnlyProperty) Changed() *Event {
 	return rop.changed
 }
 
-func (*readOnlyProperty) Source() interface{} {
+func (*readOnlyProperty) Source() any {
 	return nil
 }
 
-func (*readOnlyProperty) SetSource(source interface{}) error {
+func (*readOnlyProperty) SetSource(source any) error {
 	return ErrPropertyReadOnly
 }
 
@@ -188,7 +189,7 @@ type boolProperty struct {
 	get                 func() bool
 	set                 func(v bool) error
 	changed             *Event
-	source              interface{}
+	source              any
 	sourceChangedHandle int
 }
 
@@ -200,15 +201,15 @@ func (bp *boolProperty) ReadOnly() bool {
 	return bp.set == nil
 }
 
-func (bp *boolProperty) Value() interface{} {
+func (bp *boolProperty) Value() any {
 	return bp.get()
 }
 
-func (bp *boolProperty) Get() interface{} {
+func (bp *boolProperty) Get() any {
 	return bp.get()
 }
 
-func (bp *boolProperty) Set(value interface{}) error {
+func (bp *boolProperty) Set(value any) error {
 	if bp.ReadOnly() {
 		return ErrPropertyReadOnly
 	}
@@ -225,11 +226,11 @@ func (bp *boolProperty) Changed() *Event {
 	return bp.changed
 }
 
-func (bp *boolProperty) Source() interface{} {
+func (bp *boolProperty) Source() any {
 	return bp.source
 }
 
-func (bp *boolProperty) SetSource(source interface{}) error {
+func (bp *boolProperty) SetSource(source any) error {
 	if bp.ReadOnly() {
 		return ErrPropertyReadOnly
 	}
@@ -312,15 +313,15 @@ func (*readOnlyBoolProperty) ReadOnly() bool {
 	return true
 }
 
-func (robp *readOnlyBoolProperty) Value() interface{} {
+func (robp *readOnlyBoolProperty) Value() any {
 	return robp.get()
 }
 
-func (robp *readOnlyBoolProperty) Get() interface{} {
+func (robp *readOnlyBoolProperty) Get() any {
 	return robp.get()
 }
 
-func (*readOnlyBoolProperty) Set(value interface{}) error {
+func (*readOnlyBoolProperty) Set(value any) error {
 	return ErrPropertyReadOnly
 }
 
@@ -328,11 +329,11 @@ func (robp *readOnlyBoolProperty) Changed() *Event {
 	return robp.changed
 }
 
-func (*readOnlyBoolProperty) Source() interface{} {
+func (*readOnlyBoolProperty) Source() any {
 	return nil
 }
 
-func (*readOnlyBoolProperty) SetSource(source interface{}) error {
+func (*readOnlyBoolProperty) SetSource(source any) error {
 	return ErrPropertyReadOnly
 }
 
@@ -352,7 +353,7 @@ func (robp *readOnlyBoolProperty) Satisfied() bool {
 	return robp.get()
 }
 
-func checkPropertySource(prop Property, source interface{}) error {
+func checkPropertySource(prop Property, source any) error {
 	switch source := source.(type) {
 	case Property:
 		for cur := source; cur != nil; cur, _ = cur.Source().(Property) {

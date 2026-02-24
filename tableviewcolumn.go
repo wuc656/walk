@@ -26,7 +26,7 @@ type TableViewColumn struct {
 	titleOverride string
 	width         int
 	lessFunc      func(i, j int) bool
-	formatFunc    func(value interface{}) string
+	formatFunc    func(value any) string
 	visible       bool
 	frozen        bool
 }
@@ -345,12 +345,12 @@ func (tvc *TableViewColumn) SetLessFunc(lessFunc func(i, j int) bool) {
 }
 
 // FormatFunc returns the custom format func of this TableViewColumn.
-func (tvc *TableViewColumn) FormatFunc() func(value interface{}) string {
+func (tvc *TableViewColumn) FormatFunc() func(value any) string {
 	return tvc.formatFunc
 }
 
 // FormatFunc sets the custom format func of this TableViewColumn.
-func (tvc *TableViewColumn) SetFormatFunc(formatFunc func(value interface{}) string) {
+func (tvc *TableViewColumn) SetFormatFunc(formatFunc func(value any) string) {
 	tvc.formatFunc = formatFunc
 }
 

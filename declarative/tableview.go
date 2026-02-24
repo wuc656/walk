@@ -62,7 +62,7 @@ type TableView struct {
 	ItemStateChangedEventDelay  int
 	HeaderHidden                bool
 	LastColumnStretched         bool
-	Model                       interface{}
+	Model                       any
 	MultiSelection              bool
 	NotSortableByHeaderClick    bool
 	OnCurrentIndexChanged       walk.EventHandler

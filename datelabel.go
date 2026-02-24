@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -31,19 +32,19 @@ func NewDateLabel(parent Container) (*DateLabel, error) {
 	}
 
 	dl.MustRegisterProperty("Date", NewProperty(
-		func() interface{} {
+		func() any {
 			return dl.Date()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return dl.SetDate(assertTimeOr(v, time.Time{}))
 		},
 		dl.dateChangedPublisher.Event()))
 
 	dl.MustRegisterProperty("Format", NewProperty(
-		func() interface{} {
+		func() any {
 			return dl.Format()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return dl.SetFormat(assertStringOr(v, ""))
 		},
 		dl.formatChangedPublisher.Event()))

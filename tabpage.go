@@ -47,19 +47,19 @@ func NewTabPage() (*TabPage, error) {
 	tp.children = newWidgetList(tp)
 
 	tp.MustRegisterProperty("Title", NewProperty(
-		func() interface{} {
+		func() any {
 			return tp.Title()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return tp.SetTitle(assertStringOr(v, ""))
 		},
 		tp.titleChangedPublisher.Event()))
 
 	tp.MustRegisterProperty("Image", NewProperty(
-		func() interface{} {
+		func() any {
 			return tp.Image()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			img, err := ImageFrom(v)
 			if err != nil {
 				return err

@@ -15,7 +15,7 @@ import (
 )
 
 type Expression interface {
-	Value() interface{}
+	Value() any
 	Changed() *Event
 }
 
@@ -28,7 +28,7 @@ func NewReflectExpression(root Expression, path string) Expression {
 	return &reflectExpression{root: root, path: path}
 }
 
-func (re *reflectExpression) Value() interface{} {
+func (re *reflectExpression) Value() any {
 	rootVal := re.root.Value()
 	if rootVal == nil {
 		return nil

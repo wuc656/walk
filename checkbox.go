@@ -48,10 +48,10 @@ func NewCheckBox(parent Container) (*CheckBox, error) {
 	cb.GraphicsEffects().Add(FocusEffect)
 
 	cb.MustRegisterProperty("CheckState", NewProperty(
-		func() interface{} {
+		func() any {
 			return cb.CheckState()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			cb.SetCheckState(CheckState(assertIntOr(v, 0)))
 
 			return nil

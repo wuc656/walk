@@ -35,10 +35,10 @@ func NewLinkLabel(parent Container) (*LinkLabel, error) {
 	ll.SetBackground(nullBrushSingleton)
 
 	ll.MustRegisterProperty("Text", NewProperty(
-		func() interface{} {
+		func() any {
 			return ll.Text()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return ll.SetText(assertStringOr(v, ""))
 		},
 		ll.textChangedPublisher.Event()))

@@ -14,8 +14,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/wuc656/walk"
 	"github.com/casbin/govaluate"
+	"github.com/wuc656/walk"
 )
 
 var (
@@ -674,7 +674,7 @@ func (b *Builder) initProperties() error {
 	return nil
 }
 
-func (b *Builder) conditionOrProperty(data Property) interface{} {
+func (b *Builder) conditionOrProperty(data Property) any {
 	switch val := data.(type) {
 	case bindData:
 		if val.expression == "" {
@@ -764,12 +764,12 @@ type expression struct {
 	subExprsByPath         subExpressions
 	subExprsChangedHandles []int
 	changedPublisher       walk.EventPublisher
-	lastReportedValue      interface{}
+	lastReportedValue      any
 }
 
 type subExpressions map[string]walk.Expression
 
-func (se subExpressions) Get(name string) (interface{}, error) {
+func (se subExpressions) Get(name string) (any, error) {
 	if sub, ok := se[name]; ok {
 		return sub.Value(), nil
 	}
@@ -781,7 +781,7 @@ func (e *expression) String() string {
 	return e.text
 }
 
-func (e *expression) Value() interface{} {
+func (e *expression) Value() any {
 	val, err := e.expr.Eval(e.subExprsByPath)
 	if err != nil {
 		log.Printf(`walk - failed to evaluate expression "%s": %s`, e.text, err.Error())

@@ -17,7 +17,7 @@ type DataBinder struct {
 	AssignTo            **walk.DataBinder
 	AutoSubmit          bool
 	AutoSubmitDelay     time.Duration
-	DataSource          interface{}
+	DataSource          any
 	ErrorPresenter      ErrorPresenter
 	Name                string
 	OnCanSubmitChanged  walk.EventHandler

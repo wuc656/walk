@@ -46,7 +46,7 @@ type Dialog struct {
 	// Form
 
 	Expressions func() map[string]walk.Expression
-	Functions   map[string]func(args ...interface{}) (interface{}, error)
+	Functions   map[string]func(args ...any) (any, error)
 	Icon        Property
 	Title       Property
 	Size        Size

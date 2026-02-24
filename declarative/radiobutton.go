@@ -56,7 +56,7 @@ type RadioButton struct {
 
 	AssignTo       **walk.RadioButton
 	TextOnLeftSide bool
-	Value          interface{}
+	Value          any
 }
 
 func (rb RadioButton) Create(builder *Builder) error {

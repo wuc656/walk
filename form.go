@@ -164,10 +164,10 @@ func (fb *FormBase) init(form Form) error {
 	fb.clientComposite.children.observer = form.AsFormBase()
 
 	fb.MustRegisterProperty("Icon", NewProperty(
-		func() interface{} {
+		func() any {
 			return fb.Icon()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			icon, err := IconFrom(v, fb.DPI())
 			if err != nil {
 				return err
@@ -185,10 +185,10 @@ func (fb *FormBase) init(form Form) error {
 		fb.iconChangedPublisher.Event()))
 
 	fb.MustRegisterProperty("Title", NewProperty(
-		func() interface{} {
+		func() any {
 			return fb.Title()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return fb.SetTitle(assertStringOr(v, ""))
 		},
 		fb.titleChangedPublisher.Event()))

@@ -77,7 +77,7 @@ func TestIDAllocator(t *testing.T) {
 		t.Errorf("Unexpected value for err, got %v, want %v", err, ErrIDsExhausted)
 	}
 
-	p := func() (result interface{}) {
+	p := func() (result any) {
 		defer func() {
 			result = recover()
 		}()
@@ -90,7 +90,7 @@ func TestIDAllocator(t *testing.T) {
 }
 
 func TestBadMaxValue(t *testing.T) {
-	p := func() (result interface{}) {
+	p := func() (result any) {
 		defer func() {
 			result = recover()
 		}()
@@ -101,7 +101,7 @@ func TestBadMaxValue(t *testing.T) {
 		t.Errorf("Expected panic but did not")
 	}
 
-	p = func() (result interface{}) {
+	p = func() (result any) {
 		defer func() {
 			result = recover()
 		}()

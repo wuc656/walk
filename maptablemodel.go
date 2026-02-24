@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -14,12 +15,12 @@ type mapTableModel struct {
 	TableModelBase
 	SorterBase
 	dataMembers []string
-	dataSource  interface{}
-	items       []map[string]interface{}
+	dataSource  any
+	items       []map[string]any
 }
 
-func newMapTableModel(dataSource interface{}) (TableModel, error) {
-	items, ok := dataSource.([]map[string]interface{})
+func newMapTableModel(dataSource any) (TableModel, error) {
+	items, ok := dataSource.([]map[string]any)
 	if !ok {
 		return nil, newError("dataSource must be assignable to []map[string]interface{}")
 	}
@@ -35,7 +36,7 @@ func (m *mapTableModel) RowCount() int {
 	return len(m.items)
 }
 
-func (m *mapTableModel) Value(row, col int) interface{} {
+func (m *mapTableModel) Value(row, col int) any {
 	if m.items[row] == nil {
 		if populator, ok := m.dataSource.(Populator); ok {
 			if err := populator.Populate(row); err != nil {

@@ -147,10 +147,10 @@ func (wb *WidgetBase) init(widget Widget) error {
 	}
 
 	wb.toolTipTextProperty = NewProperty(
-		func() interface{} {
+		func() any {
 			return wb.window.(Widget).ToolTipText()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			wb.window.(Widget).SetToolTipText(assertStringOr(v, ""))
 			return nil
 		},

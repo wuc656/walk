@@ -36,10 +36,10 @@ func NewLabelWithStyle(parent Container, style uint32) (*Label, error) {
 	l.SetTextAlignment(AlignNear)
 
 	l.MustRegisterProperty("Text", NewProperty(
-		func() interface{} {
+		func() any {
 			return l.Text()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return l.SetText(assertStringOr(v, ""))
 		},
 		l.textChangedPublisher.Event()))

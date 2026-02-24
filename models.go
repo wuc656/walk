@@ -16,7 +16,7 @@ import (
 // BindingValueProvider is the interface that a model must implement to support
 // data binding with widgets like ComboBox.
 type BindingValueProvider interface {
-	BindingValue(index int) interface{}
+	BindingValue(index int) any
 }
 
 // ListModel is the interface that a model must implement to support widgets
@@ -26,7 +26,7 @@ type ListModel interface {
 	ItemCount() int
 
 	// Value returns the value that should be displayed for the given index.
-	Value(index int) interface{}
+	Value(index int) any
 
 	// ItemsReset returns the event that the model should publish when the
 	// number of its items changes.
@@ -90,7 +90,7 @@ func (lmb *ListModelBase) PublishItemsRemoved(from, to int) {
 // uses reflection to obtain data.
 type ReflectListModel interface {
 	// Items returns the model data, which must be a slice of pointer to struct.
-	Items() interface{}
+	Items() any
 
 	// ItemsReset returns the event that the model should publish when the
 	// number of its items changes.
@@ -108,21 +108,21 @@ type ReflectListModel interface {
 	// contiguous range of items was removed.
 	ItemsRemoved() *IntRangeEvent
 
-	setValueFunc(value func(index int) interface{})
+	setValueFunc(value func(index int) any)
 }
 
 // ReflectListModelBase implements the ItemsReset and ItemChanged methods of
 // the ReflectListModel interface.
 type ReflectListModelBase struct {
 	ListModelBase
-	value func(index int) interface{}
+	value func(index int) any
 }
 
-func (rlmb *ReflectListModelBase) setValueFunc(value func(index int) interface{}) {
+func (rlmb *ReflectListModelBase) setValueFunc(value func(index int) any) {
 	rlmb.value = value
 }
 
-func (rlmb *ReflectListModelBase) Value(index int) interface{} {
+func (rlmb *ReflectListModelBase) Value(index int) any {
 	return rlmb.value(index)
 }
 
@@ -133,7 +133,7 @@ type TableModel interface {
 	RowCount() int
 
 	// Value returns the value that should be displayed for the given cell.
-	Value(row, col int) interface{}
+	Value(row, col int) any
 
 	// RowsReset returns the event that the model should publish when the number
 	// of its rows changes.
@@ -211,7 +211,7 @@ func (tmb *TableModelBase) PublishRowsRemoved(from, to int) {
 // uses reflection to obtain data.
 type ReflectTableModel interface {
 	// Items returns the model data, which must be a slice of pointer to struct.
-	Items() interface{}
+	Items() any
 
 	// RowsReset returns the event that the model should publish when the
 	// number of its items changes.
@@ -234,21 +234,21 @@ type ReflectTableModel interface {
 	// contiguous range of items was removed.
 	RowsRemoved() *IntRangeEvent
 
-	setValueFunc(value func(row, col int) interface{})
+	setValueFunc(value func(row, col int) any)
 }
 
 // ReflectTableModelBase implements the ItemsReset and ItemChanged methods of
 // the ReflectTableModel interface.
 type ReflectTableModelBase struct {
 	TableModelBase
-	value func(row, col int) interface{}
+	value func(row, col int) any
 }
 
-func (rtmb *ReflectTableModelBase) setValueFunc(value func(row, col int) interface{}) {
+func (rtmb *ReflectTableModelBase) setValueFunc(value func(row, col int) any) {
 	rtmb.value = value
 }
 
-func (rtmb *ReflectTableModelBase) Value(row, col int) interface{} {
+func (rtmb *ReflectTableModelBase) Value(row, col int) any {
 	return rtmb.value(row, col)
 }
 
@@ -304,7 +304,7 @@ type ImageProvider interface {
 	// interpreted as a file path and the icon associated with the file will be
 	// used. It is not supported to use strings together with the other options
 	// in the same model instance.
-	Image(index int) interface{}
+	Image(index int) any
 }
 
 // CellStyler is the interface that must be implemented to provide a tabular
@@ -333,7 +333,7 @@ type CellStyle struct {
 	// interpreted as a file path and the icon associated with the file will be
 	// used. It is not supported to use strings together with the other options
 	// in the same model instance.
-	Image interface{}
+	Image any
 }
 
 func (cs *CellStyle) Row() int {
@@ -370,7 +370,7 @@ func (cs *CellStyle) Canvas() *Canvas {
 // widgets like TableView to attempt keeping the current item when the model
 // publishes a reset event.
 type IDProvider interface {
-	ID(index int) interface{}
+	ID(index int) any
 }
 
 // ListItemStyler is the interface that must be implemented to provide a list
@@ -605,7 +605,7 @@ type Imager interface {
 	// interpreted as a file path and the icon associated with the file will be
 	// used. It is not supported to use strings together with the other options
 	// in the same model instance.
-	Image() interface{}
+	Image() any
 }
 
 // TreeItem represents an item in a TreeView widget.

@@ -61,7 +61,7 @@ type GradientComposite struct {
 	Color1      Property
 	Color2      Property
 	Expressions func() map[string]walk.Expression
-	Functions   map[string]func(args ...interface{}) (interface{}, error)
+	Functions   map[string]func(args ...any) (any, error)
 	Vertical    Property
 }
 

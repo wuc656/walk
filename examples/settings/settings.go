@@ -100,7 +100,7 @@ type FooModel struct {
 	items []*Foo
 }
 
-func (m *FooModel) Items() interface{} {
+func (m *FooModel) Items() any {
 	return m.items
 }
 

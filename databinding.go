@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -23,7 +24,7 @@ type ErrorPresenter interface {
 }
 
 type DataBinder struct {
-	dataSource                 interface{}
+	dataSource                 any
 	boundWidgets               []Widget
 	properties                 []Property
 	property2Widget            map[Property]Widget
@@ -95,11 +96,11 @@ func (db *DataBinder) Submitted() *Event {
 	return db.submittedPublisher.Event()
 }
 
-func (db *DataBinder) DataSource() interface{} {
+func (db *DataBinder) DataSource() any {
 	return db.dataSource
 }
 
-func (db *DataBinder) SetDataSource(dataSource interface{}) error {
+func (db *DataBinder) SetDataSource(dataSource any) error {
 	if kind := reflect.ValueOf(dataSource).Kind(); kind != reflect.Func && kind != reflect.Map && kind != reflect.Slice &&
 		kind == reflect.ValueOf(db.dataSource).Kind() && dataSource == db.dataSource {
 		return nil
@@ -122,7 +123,7 @@ type dataBinderRootExpression struct {
 	db *DataBinder
 }
 
-func (dbre *dataBinderRootExpression) Value() interface{} {
+func (dbre *dataBinderRootExpression) Value() any {
 	return dbre.db.dataSource
 }
 
@@ -427,9 +428,9 @@ func (db *DataBinder) fieldBoundToProperty(v reflect.Value, prop Property) DataF
 
 type DataField interface {
 	CanSet() bool
-	Get() interface{}
-	Set(interface{}) error
-	Zero() interface{}
+	Get() any
+	Set(any) error
+	Zero() any
 }
 
 func dataFieldFromPath(root reflect.Value, path string) (DataField, error) {
@@ -547,15 +548,15 @@ func (nilField) CanSet() bool {
 	return false
 }
 
-func (f nilField) Get() interface{} {
+func (f nilField) Get() any {
 	return f.Zero()
 }
 
-func (nilField) Set(interface{}) error {
+func (nilField) Set(any) error {
 	return nil
 }
 
-func (f nilField) Zero() interface{} {
+func (f nilField) Zero() any {
 	return reflect.Zero(reflect.TypeOf(f.prop.Get())).Interface()
 }
 
@@ -573,11 +574,11 @@ func (f *reflectField) CanSet() bool {
 	return f.value.CanSet()
 }
 
-func (f *reflectField) Get() interface{} {
+func (f *reflectField) Get() any {
 	return f.value.Interface()
 }
 
-func (f *reflectField) Set(value interface{}) error {
+func (f *reflectField) Set(value any) error {
 	if f.parent.IsValid() && f.parent.Kind() == reflect.Map {
 		f.parent.SetMapIndex(reflect.ValueOf(f.key), reflect.ValueOf(value))
 		return nil
@@ -606,6 +607,6 @@ func (f *reflectField) Set(value interface{}) error {
 	return nil
 }
 
-func (f *reflectField) Zero() interface{} {
+func (f *reflectField) Zero() any {
 	return reflect.Zero(f.value.Type()).Interface()
 }

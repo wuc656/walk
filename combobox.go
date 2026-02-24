@@ -23,7 +23,7 @@ type ComboBox struct {
 	WidgetBase
 	bindingValueProvider         BindingValueProvider
 	model                        ListModel
-	providedModel                interface{}
+	providedModel                any
 	bindingMember                string
 	displayMember                string
 	format                       string
@@ -33,7 +33,7 @@ type ComboBox struct {
 	itemsInsertedHandlerHandle   int
 	itemsRemovedHandlerHandle    int
 	maxItemTextWidth             int // in native pixels
-	currentValue                 interface{}
+	currentValue                 any
 	prevCurIndex                 int
 	selChangeIndex               int
 	maxLength                    int
@@ -149,25 +149,25 @@ func newComboBoxWithStyle(parent Container, style uint32) (*ComboBox, error) {
 	cb.GraphicsEffects().Add(FocusEffect)
 
 	cb.MustRegisterProperty("CurrentIndex", NewProperty(
-		func() interface{} {
+		func() any {
 			return cb.CurrentIndex()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return cb.SetCurrentIndex(assertIntOr(v, -1))
 		},
 		cb.CurrentIndexChanged()))
 
 	cb.MustRegisterProperty("Text", NewProperty(
-		func() interface{} {
+		func() any {
 			return cb.Text()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return cb.SetText(assertStringOr(v, ""))
 		},
 		event))
 
 	cb.MustRegisterProperty("CurrentItem", NewReadOnlyProperty(
-		func() interface{} {
+		func() any {
 			if rlm, ok := cb.providedModel.(ReflectListModel); ok {
 				if i := cb.CurrentIndex(); i > -1 {
 					return reflect.ValueOf(rlm.Items()).Index(i).Interface()
@@ -191,7 +191,7 @@ func newComboBoxWithStyle(parent Container, style uint32) (*ComboBox, error) {
 		cb.CurrentIndexChanged()))
 
 	cb.MustRegisterProperty("Value", NewProperty(
-		func() interface{} {
+		func() any {
 			if cb.Editable() {
 				return cb.Text()
 			}
@@ -204,7 +204,7 @@ func newComboBoxWithStyle(parent Container, style uint32) (*ComboBox, error) {
 
 			return cb.bindingValueProvider.BindingValue(index)
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			if cb.Editable() {
 				return cb.SetText(assertStringOr(v, ""))
 			}
@@ -362,7 +362,7 @@ func (cb *ComboBox) detachModel() {
 }
 
 // Model returns the model of the ComboBox.
-func (cb *ComboBox) Model() interface{} {
+func (cb *ComboBox) Model() any {
 	return cb.providedModel
 }
 
@@ -370,7 +370,7 @@ func (cb *ComboBox) Model() interface{} {
 //
 // It is required that mdl either implements walk.ListModel or
 // walk.ReflectListModel or be a slice of pointers to struct or a []string.
-func (cb *ComboBox) SetModel(mdl interface{}) error {
+func (cb *ComboBox) SetModel(mdl any) error {
 	model, ok := mdl.(ListModel)
 	if !ok && mdl != nil {
 		var err error

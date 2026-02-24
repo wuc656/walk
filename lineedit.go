@@ -53,19 +53,19 @@ func newLineEdit(parent Window) (*LineEdit, error) {
 	le.GraphicsEffects().Add(FocusEffect)
 
 	le.MustRegisterProperty("ReadOnly", NewProperty(
-		func() interface{} {
+		func() any {
 			return le.ReadOnly()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return le.SetReadOnly(v.(bool))
 		},
 		le.readOnlyChangedPublisher.Event()))
 
 	le.MustRegisterProperty("Text", NewProperty(
-		func() interface{} {
+		func() any {
 			return le.Text()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return le.SetText(assertStringOr(v, ""))
 		},
 		le.textChangedPublisher.Event()))

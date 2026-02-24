@@ -109,6 +109,6 @@ func (m *EnvModel) ItemCount() int {
 	return len(m.items)
 }
 
-func (m *EnvModel) Value(index int) interface{} {
+func (m *EnvModel) Value(index int) any {
 	return m.items[index].name
 }

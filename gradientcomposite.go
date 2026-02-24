@@ -58,10 +58,10 @@ func NewGradientCompositeWithStyle(parent Container, style uint32) (*GradientCom
 		gc.verticalChangedPublisher.Event()))
 
 	gc.MustRegisterProperty("Color1", NewProperty(
-		func() interface{} {
+		func() any {
 			return float64(uint32(gc.Color1()))
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			var c Color
 
 			switch v := v.(type) {
@@ -83,10 +83,10 @@ func NewGradientCompositeWithStyle(parent Container, style uint32) (*GradientCom
 		gc.color1ChangedPublisher.Event()))
 
 	gc.MustRegisterProperty("Color2", NewProperty(
-		func() interface{} {
+		func() any {
 			return float64(uint32(gc.Color2()))
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			var c Color
 
 			switch v := v.(type) {

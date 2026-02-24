@@ -99,7 +99,7 @@ type logModel struct {
 	items []logEntry
 }
 
-func (m *logModel) Items() interface{} {
+func (m *logModel) Items() any {
 	return m.items
 }
 

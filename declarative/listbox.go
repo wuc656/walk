@@ -58,7 +58,7 @@ type ListBox struct {
 	DisplayMember            string
 	Format                   string
 	ItemStyler               walk.ListItemStyler
-	Model                    interface{}
+	Model                    any
 	MultiSelection           bool
 	OnCurrentIndexChanged    walk.EventHandler
 	OnItemActivated          walk.EventHandler

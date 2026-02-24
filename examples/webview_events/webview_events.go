@@ -79,8 +79,8 @@ func NewMainWin() (*MainWin, error) {
 				OnDocumentTitleChanged:    mainWin.webView_OnDocumentTitleChanged,
 			},
 		},
-		Functions: map[string]func(args ...interface{}) (interface{}, error){
-			"icon": func(args ...interface{}) (interface{}, error) {
+		Functions: map[string]func(args ...any) (any, error){
+			"icon": func(args ...any) (any, error) {
 				if strings.HasPrefix(args[0].(string), "https") {
 					return "check", nil
 				}

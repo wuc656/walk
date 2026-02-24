@@ -94,7 +94,7 @@ func newRadioButtonGroupValidator(group *walk.RadioButtonGroup, parent walk.Cont
 	return &radioButtonGroupValidator{group: group, err: errors.New(b.String())}
 }
 
-func (rbgv *radioButtonGroupValidator) Validate(v interface{}) error {
+func (rbgv *radioButtonGroupValidator) Validate(v any) error {
 	if rbgv.group.CheckedButton() == nil {
 		return rbgv.err
 	}

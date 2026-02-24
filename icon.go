@@ -36,7 +36,7 @@ type ExtractableIcon interface {
 	Size_() int
 }
 
-func IconFrom(src interface{}, dpi int) (*Icon, error) {
+func IconFrom(src any, dpi int) (*Icon, error) {
 	if src == nil {
 		return nil, nil
 	}

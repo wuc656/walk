@@ -65,7 +65,7 @@ type wMultiValidator struct {
 	validators []walk.Validator
 }
 
-func (av *wMultiValidator) Validate(v interface{}) error {
+func (av *wMultiValidator) Validate(v any) error {
 	for _, validator := range av.validators {
 		if err := validator.Validate(v); err != nil {
 			return err

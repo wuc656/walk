@@ -132,7 +132,7 @@ func (il *ImageList) AddIcon(icon *Icon) (int32, error) {
 	return index, nil
 }
 
-func (il *ImageList) AddImage(image interface{}) (int32, error) {
+func (il *ImageList) AddImage(image any) (int32, error) {
 	switch image.(type) {
 	case ExtractableIcon, *Icon:
 		icon, err := IconFrom(image, il.dpi)
@@ -171,7 +171,7 @@ func (il *ImageList) MaskColor() Color {
 	return il.maskColor
 }
 
-func imageListForImage(image interface{}, dpi int) (hIml win.HIMAGELIST, isSysIml bool, err error) {
+func imageListForImage(image any, dpi int) (hIml win.HIMAGELIST, isSysIml bool, err error) {
 	if name, ok := image.(string); ok {
 		if img, err := Resources.Image(name); err == nil {
 			image = img
@@ -210,7 +210,7 @@ func iconIndexAndHImlForFilePath(filePath string) (int32, win.HIMAGELIST) {
 	return -1, 0
 }
 
-func imageIndexMaybeAdd(image interface{}, hIml win.HIMAGELIST, isSysIml bool, imageUintptr2Index map[uintptr]int32, filePath2IconIndex map[string]int32, dpi int) int32 {
+func imageIndexMaybeAdd(image any, hIml win.HIMAGELIST, isSysIml bool, imageUintptr2Index map[uintptr]int32, filePath2IconIndex map[string]int32, dpi int) int32 {
 	if !isSysIml {
 		return imageIndexAddIfNotExists(image, hIml, imageUintptr2Index, dpi)
 	} else if filePath, ok := image.(string); ok {
@@ -227,7 +227,7 @@ func imageIndexMaybeAdd(image interface{}, hIml win.HIMAGELIST, isSysIml bool, i
 	return -1
 }
 
-func imageIndexAddIfNotExists(image interface{}, hIml win.HIMAGELIST, imageUintptr2Index map[uintptr]int32, dpi int) int32 {
+func imageIndexAddIfNotExists(image any, hIml win.HIMAGELIST, imageUintptr2Index map[uintptr]int32, dpi int) int32 {
 	imageIndex := int32(-1)
 
 	if image != nil {

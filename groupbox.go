@@ -88,10 +88,10 @@ func NewGroupBox(parent Container) (*GroupBox, error) {
 	gb.SetBackground(NullBrush())
 
 	gb.MustRegisterProperty("Title", NewProperty(
-		func() interface{} {
+		func() any {
 			return gb.Title()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return gb.SetTitle(assertStringOr(v, ""))
 		},
 		gb.titleChangedPublisher.Event()))

@@ -78,8 +78,8 @@ func main() {
 				},
 			},
 		},
-		Functions: map[string]func(args ...interface{}) (interface{}, error){
-			"rgb": func(args ...interface{}) (interface{}, error) {
+		Functions: map[string]func(args ...any) (any, error){
+			"rgb": func(args ...any) (any, error) {
 				return walk.RGB(byte(args[0].(float64)), byte(args[1].(float64)), byte(args[2].(float64))), nil
 			},
 		},

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -29,10 +30,10 @@ func NewTextLabelWithStyle(parent Container, style uint32) (*TextLabel, error) {
 	tl.textAlignment = AlignHNearVNear
 
 	tl.MustRegisterProperty("Text", NewProperty(
-		func() interface{} {
+		func() any {
 			return tl.Text()
 		},
-		func(v interface{}) error {
+		func(v any) error {
 			return tl.SetText(assertStringOr(v, ""))
 		},
 		tl.textChangedPublisher.Event()))

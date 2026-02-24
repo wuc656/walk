@@ -36,7 +36,7 @@ const (
 	transparencyTransparent
 )
 
-func BitmapFrom(src interface{}, dpi int) (*Bitmap, error) {
+func BitmapFrom(src any, dpi int) (*Bitmap, error) {
 	if src == nil {
 		return nil, nil
 	}

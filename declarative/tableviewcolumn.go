@@ -32,7 +32,7 @@ type TableViewColumn struct {
 	Frozen     bool
 	StyleCell  func(style *walk.CellStyle)
 	LessFunc   func(i, j int) bool
-	FormatFunc func(value interface{}) string
+	FormatFunc func(value any) string
 }
 
 func (tvc TableViewColumn) Create(tv *walk.TableView) error {

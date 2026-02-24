@@ -70,13 +70,13 @@ func NewTreeView(parent Container) (*TreeView, error) {
 	tv.GraphicsEffects().Add(FocusEffect)
 
 	tv.MustRegisterProperty("CurrentItem", NewReadOnlyProperty(
-		func() interface{} {
+		func() any {
 			return tv.CurrentItem()
 		},
 		tv.CurrentItemChanged()))
 
 	tv.MustRegisterProperty("CurrentItemLevel", NewReadOnlyProperty(
-		func() interface{} {
+		func() any {
 			level := -1
 			item := tv.CurrentItem()
 
@@ -322,7 +322,7 @@ func (tv *TreeView) ApplyDPI(dpi int) {
 	tv.disposeImageListAndCaches()
 }
 
-func (tv *TreeView) applyImageListForImage(image interface{}) {
+func (tv *TreeView) applyImageListForImage(image any) {
 	tv.hIml, tv.usingSysIml, _ = imageListForImage(image, tv.DPI())
 
 	tv.SendMessage(win.TVM_SETIMAGELIST, 0, uintptr(tv.hIml))
