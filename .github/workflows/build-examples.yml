@@ -5,6 +5,9 @@ on:
   pull_request:
     # all PRs on all branches
 
+permissions:
+  contents: read
+
 concurrency:
   # For PRs, later CI runs preempt previous ones. e.g. a force push on a PR
   # cancels running CI jobs and starts all new ones.
