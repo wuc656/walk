@@ -1732,9 +1732,9 @@ func calculateTextSize(text string, font *Font, dpi int, width int, hwnd win.HWN
 		hFontOld := win.SelectObject(hdc, win.HGDIOBJ(font.handleForDPI(dpi)))
 		defer win.SelectObject(hdc, hFontOld)
 
-		lines := strings.Split(text, "\n")
+		lines := strings.SplitSeq(text, "\n")
 
-		for _, line := range lines {
+		for line := range lines {
 			var s win.SIZE
 			str := syscall.StringToUTF16(strings.TrimRight(line, "\r "))
 

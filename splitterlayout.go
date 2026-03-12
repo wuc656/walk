@@ -8,6 +8,7 @@
 package walk
 
 import (
+	"maps"
 	"sort"
 
 	"github.com/wuc656/win"
@@ -172,9 +173,7 @@ func (l *splitterLayout) CreateLayoutItem(ctx *LayoutContext) ContainerLayoutIte
 	splitter := l.container.(*Splitter)
 
 	hwnd2Item := make(map[win.HWND]*splitterLayoutItem, len(l.hwnd2Item))
-	for hwnd, sli := range l.hwnd2Item {
-		hwnd2Item[hwnd] = sli
-	}
+	maps.Copy(hwnd2Item, l.hwnd2Item)
 
 	li := &splitterContainerLayoutItem{
 		orientation:                    l.orientation,

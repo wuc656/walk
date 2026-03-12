@@ -83,10 +83,7 @@ func (tb ToolBar) Create(builder *Builder) error {
 		}
 		w.SetImageList(imageList)
 
-		mtr := tb.MaxTextRows
-		if mtr < 1 {
-			mtr = 1
-		}
+		mtr := max(tb.MaxTextRows, 1)
 		if err := w.SetMaxTextRows(mtr); err != nil {
 			return err
 		}

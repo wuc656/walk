@@ -69,7 +69,7 @@ func RunMyDialog(owner walk.Form) error {
 		go func() {
 			dlg.ProgressIndicator().SetTotal(100)
 			var i uint32
-			for i = 0; i < 100; i++ {
+			for i = range 100 {
 				fmt.Println("SetProgress", i)
 				time.Sleep(100 * time.Millisecond)
 				if err := dlg.ProgressIndicator().SetCompleted(i); err != nil {

@@ -380,7 +380,7 @@ func itemsFromReflectModelDataSource(dataSource any, requiredInterfaceName strin
 	if t := reflect.TypeOf(items); t != nil &&
 		t.Kind() == reflect.Slice &&
 		(t.Elem().Kind() == reflect.Struct ||
-			(t.Elem().Kind() == reflect.Interface || t.Elem().Kind() == reflect.Ptr) &&
+			(t.Elem().Kind() == reflect.Interface || t.Elem().Kind() == reflect.Pointer) &&
 				t.Elem().Elem().Kind() == reflect.Struct) {
 
 		return items, nil
@@ -400,7 +400,7 @@ func valueFromSlice(dataSource any, itemsValue reflect.Value, member string, ind
 
 	v := itemsValue.Index(index)
 
-	if v.Kind() == reflect.Ptr && v.IsNil() {
+	if v.Kind() == reflect.Pointer && v.IsNil() {
 		if populator, ok := dataSource.(Populator); ok {
 			if err := populator.Populate(index); err != nil {
 				return err

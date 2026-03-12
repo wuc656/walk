@@ -131,7 +131,7 @@ func NewListBoxWithStyle(parent Container, style uint32) (*ListBox, error) {
 			index := -1
 
 			count := lb.model.ItemCount()
-			for i := 0; i < count; i++ {
+			for i := range count {
 				if lb.bindingValueProvider.BindingValue(i) == v {
 					index = i
 					break
@@ -240,7 +240,7 @@ func (lb *ListBox) resetItems() error {
 
 	lb.lastWidthsMeasuredFor = make([]int, count)
 
-	for i := 0; i < count; i++ {
+	for i := range count {
 		if err := lb.insertItemAt(i); err != nil {
 			return err
 		}
@@ -532,7 +532,7 @@ func (lb *ListBox) calculateMaxItemTextWidth() int {
 		return -1
 	}
 	count := lb.model.ItemCount()
-	for i := 0; i < count; i++ {
+	for i := range count {
 		item := lb.itemString(i)
 		var s win.SIZE
 		str := syscall.StringToUTF16(item)
@@ -608,7 +608,7 @@ func (lb *ListBox) SelectedIndexes() []int {
 		return nil
 	} else {
 		indexes := make([]int, n)
-		for i := 0; i < n; i++ {
+		for i := range n {
 			indexes[i] = int(index32[i])
 		}
 		return indexes

@@ -107,7 +107,7 @@ func (db *DataBinder) SetDataSource(dataSource any) error {
 	}
 
 	if dataSource != nil {
-		if t := reflect.TypeOf(dataSource); t.Kind() != reflect.Map && (t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Struct) {
+		if t := reflect.TypeOf(dataSource); t.Kind() != reflect.Map && (t.Kind() != reflect.Pointer || t.Elem().Kind() != reflect.Struct) {
 			return newError("dataSource must be pointer to struct or map[string]interface{}")
 		}
 	}
@@ -150,10 +150,8 @@ func (db *DataBinder) SetBoundWidgets(boundWidgets []Widget) {
 	db.property2ChangedHandle = make(map[Property]int)
 
 	for _, widget := range boundWidgets {
-		widget := widget
 
 		for _, prop := range widget.AsWindowBase().name2Property {
-			prop := prop
 			if _, ok := prop.Source().(string); !ok {
 				continue
 			}
@@ -381,7 +379,7 @@ func (db *DataBinder) submitProperty(prop Property, field DataField) error {
 
 func (db *DataBinder) forEach(f func(prop Property, field DataField) error) error {
 	dsv := reflect.ValueOf(db.dataSource)
-	if dsv.Kind() == reflect.Ptr && dsv.IsNil() {
+	if dsv.Kind() == reflect.Pointer && dsv.IsNil() {
 		return nil
 	}
 
@@ -456,7 +454,7 @@ func reflectValueFromPath(root reflect.Value, path string) (parent, value reflec
 		name, path = nextPathPart(path)
 
 		var p reflect.Value
-		for value.Kind() == reflect.Interface || value.Kind() == reflect.Ptr {
+		for value.Kind() == reflect.Interface || value.Kind() == reflect.Pointer {
 			p = value
 			value = value.Elem()
 		}

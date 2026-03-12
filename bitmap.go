@@ -286,8 +286,8 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	n := 0
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
+	for y := range height {
+		for x := range width {
 			a := buf[n+3]
 			r := buf[n+2]
 			g := buf[n+1]
@@ -303,7 +303,7 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 func (bmp *Bitmap) hasTransparency() (bool, error) {
 	if bmp.transparencyStatus == transparencyUnknown {
 		if err := bmp.withPixels(func(bi *win.BITMAPINFO, hdc win.HDC, pixels *[maxPixels]bgraPixel, pixelsLen int) error {
-			for i := 0; i < pixelsLen; i++ {
+			for i := range pixelsLen {
 				if pixels[i].A == 0x00 {
 					bmp.transparencyStatus = transparencyTransparent
 					break
@@ -325,7 +325,7 @@ func (bmp *Bitmap) hasTransparency() (bool, error) {
 
 func (bmp *Bitmap) postProcess() error {
 	return bmp.withPixels(func(bi *win.BITMAPINFO, hdc win.HDC, pixels *[maxPixels]bgraPixel, pixelsLen int) error {
-		for i := 0; i < pixelsLen; i++ {
+		for i := range pixelsLen {
 			switch pixels[i].A {
 			case 0x00:
 				// The pixel has been drawn to by GDI, so we make it fully opaque.

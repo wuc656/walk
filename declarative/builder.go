@@ -258,11 +258,7 @@ func (b *Builder) InitWidget(d Widget, w walk.Window, customInit func() error) e
 				SetStretchFactor(widget walk.Widget, factor int) error
 			}
 
-			stretchFactor := b.int("StretchFactor")
-
-			if stretchFactor < 1 {
-				stretchFactor = 1
-			}
+			stretchFactor := max(b.int("StretchFactor"), 1)
 
 			switch l := p.Layout().(type) {
 			case SetStretchFactorer:
@@ -271,16 +267,10 @@ func (b *Builder) InitWidget(d Widget, w walk.Window, customInit func() error) e
 				}
 
 			case *walk.GridLayout:
-				csf := l.ColumnStretchFactor(column)
-				if csf < stretchFactor {
-					csf = stretchFactor
-				}
+				csf := max(l.ColumnStretchFactor(column), stretchFactor)
 				l.SetColumnStretchFactor(column, csf)
 
-				rsf := l.RowStretchFactor(row)
-				if rsf < stretchFactor {
-					rsf = stretchFactor
-				}
+				rsf := max(l.RowStretchFactor(row), stretchFactor)
 				l.SetRowStretchFactor(row, rsf)
 
 				if rowSpan < 1 {
@@ -614,7 +604,7 @@ func (b *Builder) initProperties() error {
 		wb := w.AsWindowBase()
 
 		fieldCount := st.NumField()
-		for i := 0; i < fieldCount; i++ {
+		for i := range fieldCount {
 			sf := st.Field(i)
 
 			prop := wb.Property(sf.Name)

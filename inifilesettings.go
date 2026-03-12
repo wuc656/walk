@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -163,12 +164,12 @@ func (ifs *IniFileSettings) Load() error {
 		for scanner.Scan() {
 			line := scanner.Text()
 
-			assignIndex := strings.Index(line, "=")
-			if assignIndex == -1 {
+			before, after, ok := strings.Cut(line, "=")
+			if !ok {
 				return newError("bad line format: missing '='")
 			}
 
-			key := strings.TrimSpace(line[:assignIndex])
+			key := strings.TrimSpace(before)
 
 			var ts time.Time
 			if parts := strings.Split(key, "|"); len(parts) > 1 {
@@ -178,7 +179,7 @@ func (ifs *IniFileSettings) Load() error {
 				}
 			}
 
-			value := strings.TrimSpace(line[assignIndex+1:])
+			value := strings.TrimSpace(after)
 
 			ifs.key2Record[key] = iniFileRecord{value, ts}
 		}

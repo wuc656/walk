@@ -402,7 +402,7 @@ func tabWidgetTabWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uint
 
 			adjustment := SizeFrom96DPI(Size{1, 1}, dpi).toSIZE()
 			count := tw.pages.Len()
-			for i := 0; i < count; i++ {
+			for i := range count {
 				if 0 == win.SendMessage(hwnd, win.TCM_GETITEMRECT, uintptr(i), uintptr(unsafe.Pointer(&rc))) {
 					break
 				}

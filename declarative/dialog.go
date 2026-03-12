@@ -8,6 +8,8 @@
 package declarative
 
 import (
+	"maps"
+
 	"github.com/wuc656/walk"
 )
 
@@ -155,9 +157,7 @@ func (d Dialog) Create(owner walk.Form) error {
 		}
 
 		if d.Expressions != nil {
-			for name, expr := range d.Expressions() {
-				builder.expressions[name] = expr
-			}
+			maps.Copy(builder.expressions, d.Expressions())
 		}
 		if d.Functions != nil {
 			for name, fn := range d.Functions {

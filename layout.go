@@ -9,6 +9,7 @@ package walk
 
 import (
 	"context"
+	"slices"
 	"sync"
 
 	"github.com/wuc656/win"
@@ -86,7 +87,7 @@ func CreateLayoutItemsForContainerWithContext(container Container, ctx *LayoutCo
 		children := container.Children()
 		count := children.Len()
 
-		for i := 0; i < count; i++ {
+		for i := range count {
 			item := createLayoutItemForWidgetWithContext(children.At(i), ctx)
 			if item != nil {
 				lib := item.AsLayoutItemBase()
@@ -236,13 +237,11 @@ func layoutTree(startInfo layoutStartInfo, size Size, cancel chan struct{}, done
 		// in its implementation.
 		var layoutSubtree func(container ContainerLayoutItem, size Size)
 		layoutSubtree = func(container ContainerLayoutItem, size Size) {
-			wg.Add(1)
 
 			// We don't use App().Go() here because it's already in a WaitGroup
 			// and it already selects on cancel which indirectly is already dependent
 			// on App().Context().
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 
 				clib := container.AsContainerLayoutItemBase()
 
@@ -271,7 +270,7 @@ func layoutTree(startInfo layoutStartInfo, size Size, cancel chan struct{}, done
 						layoutSubtree(childContainer, item.Bounds.Size())
 					}
 				}
-			}()
+			})
 		}
 
 		layoutSubtree(root, size)
@@ -831,10 +830,8 @@ func anyVisibleItemInHierarchy(item LayoutItem) bool {
 	}
 
 	if cli, ok := item.(ContainerLayoutItem); ok {
-		for _, child := range cli.AsContainerLayoutItemBase().children {
-			if anyVisibleItemInHierarchy(child) {
-				return true
-			}
+		if slices.ContainsFunc(cli.AsContainerLayoutItemBase().children, anyVisibleItemInHierarchy) {
+			return true
 		}
 	} else if _, ok := item.(*spacerLayoutItem); !ok {
 		return true

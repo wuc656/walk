@@ -405,7 +405,7 @@ func (li *gridLayoutItem) MinSizeForSize(size Size) Size {
 	ws := make([]int, len(li.cells[0]))
 
 	for row := 0; row < len(li.cells); row++ {
-		for col := 0; col < len(ws); col++ {
+		for col := range ws {
 			item := li.cells[row][col].item
 			if item == nil {
 				continue
@@ -444,18 +444,16 @@ func (li *gridLayoutItem) MinSizeForSize(size Size) Size {
 
 			if info := li.item2Info[item]; info.spanVert == 1 {
 				if hfw, ok := item.(HeightForWidther); ok && hfw.HasHeightForWidth() {
-					wg.Add(1)
 
 					// Already in a WaitGroup, so not using App().Go() here.
-					go func() {
+					wg.Go(func() {
 						height := hfw.HeightForWidth(li.spannedWidth(info, widths))
 
 						mutex.Lock()
 						maxHeight = maxi(maxHeight, height)
 						mutex.Unlock()
 
-						wg.Done()
-					}()
+					})
 				} else {
 					height := li.MinSizeEffectiveForChild(item).Height
 
@@ -814,7 +812,7 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 	offsets := [3]int{0, sectionCountWithGreedyNonSpacer, sectionCountWithGreedyNonSpacer + sectionCountWithGreedySpacer}
 	counts := [3]int{sectionCountWithGreedyNonSpacer, sectionCountWithGreedySpacer, len(stretchFactors) - sectionCountWithGreedyNonSpacer - sectionCountWithGreedySpacer}
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		stretchFactorsRemaining := stretchFactorsTotal[i]
 
 		for j := 0; j < counts[i]; j++ {

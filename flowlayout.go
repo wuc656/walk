@@ -8,6 +8,8 @@
 package walk
 
 import (
+	"maps"
+
 	"github.com/wuc656/win"
 )
 
@@ -66,9 +68,7 @@ func (l *FlowLayout) CreateLayoutItem(ctx *LayoutContext) ContainerLayoutItem {
 		hwnd2StretchFactor: make(map[win.HWND]int),
 	}
 
-	for hwnd, sf := range l.hwnd2StretchFactor {
-		li.hwnd2StretchFactor[hwnd] = sf
-	}
+	maps.Copy(li.hwnd2StretchFactor, l.hwnd2StretchFactor)
 
 	return li
 }

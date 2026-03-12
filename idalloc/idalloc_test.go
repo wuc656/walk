@@ -13,7 +13,7 @@ func TestIDAllocator(t *testing.T) {
 	set := map[uint32]struct{}{}
 
 	alloc := New(192)
-	for i := 0; i < 64; i++ {
+	for range 64 {
 		bit, err := alloc.Allocate()
 		if err != nil {
 			t.Errorf("Allocate error: got %v, want nil", err)
@@ -52,7 +52,7 @@ func TestIDAllocator(t *testing.T) {
 	}
 
 	left := alloc.maxBlocks*bits.UintSize - (bit + 1)
-	for i := uint32(0); i < left; i++ {
+	for range left {
 		bit, err := alloc.Allocate()
 		if err != nil {
 			t.Errorf("Allocate error: got %v, want nil", err)

@@ -8,6 +8,7 @@
 package walk
 
 import (
+	"maps"
 	"math"
 	"sort"
 	"sync"
@@ -110,9 +111,7 @@ func (l *BoxLayout) CreateLayoutItem(ctx *LayoutContext) ContainerLayoutItem {
 		hwnd2StretchFactor: make(map[win.HWND]int),
 	}
 
-	for hwnd, sf := range l.hwnd2StretchFactor {
-		li.hwnd2StretchFactor[hwnd] = sf
-	}
+	maps.Copy(li.hwnd2StretchFactor, l.hwnd2StretchFactor)
 
 	return li
 }
@@ -246,7 +245,7 @@ func boxLayoutFlags(orientation Orientation, children []LayoutItem) LayoutFlags 
 	}
 
 	var flags LayoutFlags
-	for i := 0; i < len(children); i++ {
+	for i := range children {
 		item := children[i]
 
 		if _, ok := item.(*splitterHandleLayoutItem); ok || !shouldLayoutItem(item) {
@@ -407,7 +406,7 @@ func boxLayoutItems(container ContainerLayoutItem, items []LayoutItem, orientati
 	offsets := [3]int{0, greedyNonSpacerCount, greedyNonSpacerCount + greedySpacerCount}
 	counts := [3]int{greedyNonSpacerCount, greedySpacerCount, len(items) - greedyNonSpacerCount - greedySpacerCount}
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		stretchFactorsRemaining := stretchFactorsTotal[i]
 
 		for j := 0; j < counts[i]; j++ {

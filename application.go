@@ -872,13 +872,11 @@ func (app *Application) Go(f func(context.Context)) {
 		return
 	}
 
-	app.waitGroup.Add(1)
-	go func() {
-		defer app.waitGroup.Done()
+	app.waitGroup.Go(func() {
 		if app.ctx.Err() != nil {
 			return
 		}
 
 		f(app.ctx)
-	}()
+	})
 }
