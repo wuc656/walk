@@ -15,31 +15,24 @@ import (
 // to avoid repeated allocations for frequently used strings.
 // This is useful for static strings like window class names and property names.
 type StringToUTF16Cache struct {
-	mu    sync.RWMutex
-	cache map[string]*uint16
+	cache sync.Map
 }
 
-var defaultCache = &StringToUTF16Cache{
-	cache: make(map[string]*uint16),
-}
+var defaultCache = &StringToUTF16Cache{}
 
 // Get returns a cached UTF16Ptr for the given string.
 // The result is valid for the lifetime of the program.
 // Ideal for static strings like class names, window themes, etc.
 func (c *StringToUTF16Cache) Get(s string) *uint16 {
-	c.mu.RLock()
-	if ptr, exists := c.cache[s]; exists {
-		c.mu.RUnlock()
-		return ptr
+	if ptr, exists := c.cache.Load(s); exists {
+		return ptr.(*uint16)
 	}
-	c.mu.RUnlock()
 
-	// String not in cache, create it
 	ptr, _ := syscall.UTF16PtrFromString(s)
 
-	c.mu.Lock()
-	c.cache[s] = ptr
-	c.mu.Unlock()
+	if cachedPtr, loaded := c.cache.LoadOrStore(s, ptr); loaded {
+		return cachedPtr.(*uint16)
+	}
 
 	return ptr
 }
