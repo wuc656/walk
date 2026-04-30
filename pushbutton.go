@@ -50,7 +50,7 @@ func NewPushButtonWithOptions(parent Container, opts PushButtonOptions) (*PushBu
 		pb,
 		parent,
 		"BUTTON",
-		win.WS_TABSTOP|win.WS_VISIBLE,
+		win.WS_TABSTOP|win.WS_VISIBLE|win.BS_MULTILINE,
 		0); err != nil {
 		return nil, err
 	}
