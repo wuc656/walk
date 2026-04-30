@@ -495,7 +495,7 @@ func init() {
 	AppendToWalkInit(func() {
 		forEachDescendantCallbackPtr = syscall.NewCallback(forEachDescendant)
 		forEachDescendantRawCallbackPtr = syscall.NewCallback(forEachDescendantRaw)
-		dialogBaseUnitsUTF16StringPtr = syscall.StringToUTF16Ptr("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+		dialogBaseUnitsUTF16StringPtr = CachedStringToUTF16Ptr("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 	})
 }
 

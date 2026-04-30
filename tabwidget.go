@@ -59,7 +59,7 @@ func NewTabWidget(parent Container) (*TabWidget, error) {
 	tw.SetPersistent(true)
 
 	tw.hWndTab = win.CreateWindowEx(
-		0, syscall.StringToUTF16Ptr("SysTabControl32"), nil,
+		0, CachedStringToUTF16Ptr("SysTabControl32"), nil,
 		win.WS_CHILD|win.WS_CLIPSIBLINGS|win.WS_TABSTOP|win.WS_VISIBLE,
 		0, 0, 0, 0, tw.hWnd, 0, 0, nil)
 	if tw.hWndTab == 0 {
@@ -481,7 +481,7 @@ func tabWidgetTabWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uint
 				title := syscall.StringToUTF16(page.title)
 
 				if themed {
-					hTheme := win.OpenThemeData(hwnd, syscall.StringToUTF16Ptr("tab"))
+					hTheme := win.OpenThemeData(hwnd, CachedStringToUTF16Ptr("tab"))
 					defer win.CloseThemeData(hTheme)
 
 					options := win.DTTOPTS{DwFlags: win.DTT_GLOWSIZE, IGlowSize: int32(IntFrom96DPI(3, dpi))}

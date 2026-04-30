@@ -181,7 +181,7 @@ func NewTableViewWithCfg(parent Container, cfg *TableViewCfg) (*TableView, error
 
 	if tv.hwndFrozenLV = win.CreateWindowEx(
 		0,
-		syscall.StringToUTF16Ptr("SysListView32"),
+		CachedStringToUTF16Ptr("SysListView32"),
 		nil,
 		win.WS_CHILD|win.WS_CLIPSIBLINGS|win.WS_TABSTOP|win.WS_VISIBLE|win.LVS_OWNERDATA|win.LVS_REPORT|cfg.Style|rowHeightStyle,
 		win.CW_USEDEFAULT,
@@ -209,7 +209,7 @@ func NewTableViewWithCfg(parent Container, cfg *TableViewCfg) (*TableView, error
 
 	if tv.hwndNormalLV = win.CreateWindowEx(
 		0,
-		syscall.StringToUTF16Ptr("SysListView32"),
+		CachedStringToUTF16Ptr("SysListView32"),
 		nil,
 		win.WS_CHILD|win.WS_CLIPSIBLINGS|win.WS_TABSTOP|win.WS_VISIBLE|win.LVS_OWNERDATA|win.LVS_REPORT|cfg.Style|rowHeightStyle,
 		win.CW_USEDEFAULT,
@@ -242,10 +242,10 @@ func NewTableViewWithCfg(parent Container, cfg *TableViewCfg) (*TableView, error
 	win.SendMessage(tv.hwndFrozenLV, win.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, exStyle)
 	win.SendMessage(tv.hwndNormalLV, win.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, exStyle)
 
-	if hr := win.SetWindowTheme(tv.hwndFrozenLV, syscall.StringToUTF16Ptr("Explorer"), nil); win.FAILED(hr) {
+	if hr := win.SetWindowTheme(tv.hwndFrozenLV, CachedStringToUTF16Ptr("Explorer"), nil); win.FAILED(hr) {
 		return nil, errorFromHRESULT("SetWindowTheme", hr)
 	}
-	if hr := win.SetWindowTheme(tv.hwndNormalLV, syscall.StringToUTF16Ptr("Explorer"), nil); win.FAILED(hr) {
+	if hr := win.SetWindowTheme(tv.hwndNormalLV, CachedStringToUTF16Ptr("Explorer"), nil); win.FAILED(hr) {
 		return nil, errorFromHRESULT("SetWindowTheme", hr)
 	}
 
@@ -443,7 +443,7 @@ func (tv *TableView) ApplySysColors() {
 		}
 	}
 
-	if hThemeListView := win.OpenThemeData(tv.hwndNormalLV, syscall.StringToUTF16Ptr("Listview")); hThemeListView != 0 {
+	if hThemeListView := win.OpenThemeData(tv.hwndNormalLV, CachedStringToUTF16Ptr("Listview")); hThemeListView != 0 {
 		defer win.CloseThemeData(hThemeListView)
 
 		getThemeColor(hThemeListView, win.LVP_LISTITEM, []item{
@@ -460,7 +460,7 @@ func (tv *TableView) ApplySysColors() {
 		tv.themeSelectedNotFocusedBGColor = Color(win.GetSysColor(win.COLOR_BTNFACE))
 	}
 
-	if hThemeButton := win.OpenThemeData(tv.hwndNormalLV, syscall.StringToUTF16Ptr("BUTTON")); hThemeButton != 0 {
+	if hThemeButton := win.OpenThemeData(tv.hwndNormalLV, CachedStringToUTF16Ptr("BUTTON")); hThemeButton != 0 {
 		defer win.CloseThemeData(hThemeButton)
 
 		getThemeColor(hThemeButton, win.BP_PUSHBUTTON, []item{

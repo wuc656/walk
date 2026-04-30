@@ -50,7 +50,7 @@ var gM *uint16
 
 func init() {
 	AppendToWalkInit(func() {
-		gM = syscall.StringToUTF16Ptr("gM")
+		gM = CachedStringToUTF16Ptr("gM")
 	})
 }
 

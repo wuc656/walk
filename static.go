@@ -45,7 +45,7 @@ func (s *static) init(widget Widget, parent Container, style uint32) error {
 
 	if s.hwndStatic = win.CreateWindowEx(
 		0,
-		syscall.StringToUTF16Ptr("static"),
+		CachedStringToUTF16Ptr("static"),
 		nil,
 		win.WS_CHILD|win.WS_CLIPSIBLINGS|win.WS_VISIBLE|win.SS_LEFT|win.SS_NOTIFY|(style&^win.WS_BORDER),
 		win.CW_USEDEFAULT,

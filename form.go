@@ -10,7 +10,6 @@ package walk
 import (
 	"fmt"
 	"math"
-	"syscall"
 	"unsafe"
 
 	"github.com/wuc656/walk/idalloc"
@@ -32,7 +31,7 @@ var (
 
 func init() {
 	AppendToWalkInit(func() {
-		taskbarButtonCreatedMsgId = win.RegisterWindowMessage(syscall.StringToUTF16Ptr("TaskbarButtonCreated"))
+		taskbarButtonCreatedMsgId = win.RegisterWindowMessage(CachedStringToUTF16Ptr("TaskbarButtonCreated"))
 	})
 }
 

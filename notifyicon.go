@@ -31,7 +31,7 @@ func init() {
 	AppendToWalkInit(func() {
 		MustRegisterWindowClass(notifyIconWindowClass)
 		notifyIconMessageID = mustAllocWindowClassMessage(notifyIconWindowClass)
-		taskbarCreatedMsgId = win.RegisterWindowMessage(syscall.StringToUTF16Ptr("TaskbarCreated"))
+		taskbarCreatedMsgId = win.RegisterWindowMessage(CachedStringToUTF16Ptr("TaskbarCreated"))
 	})
 }
 

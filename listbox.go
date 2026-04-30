@@ -671,7 +671,7 @@ func (lb *ListBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) ui
 
 		var hTheme win.HTHEME
 		if !lb.style.highContrastActive {
-			if hTheme = win.OpenThemeData(lb.hWnd, syscall.StringToUTF16Ptr("Listview")); hTheme != 0 {
+			if hTheme = win.OpenThemeData(lb.hWnd, CachedStringToUTF16Ptr("Listview")); hTheme != 0 {
 				defer win.CloseThemeData(hTheme)
 			}
 		}

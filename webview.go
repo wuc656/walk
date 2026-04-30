@@ -9,7 +9,6 @@ package walk
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
 
 	"github.com/wuc656/win"
@@ -137,7 +136,7 @@ func NewWebView(parent Container) (*WebView, error) {
 		return nil, errorFromHRESULT("IOleObject.SetClientSite", hr)
 	}
 
-	if hr := browserObject.SetHostNames(syscall.StringToUTF16Ptr("Walk.WebView"), nil); win.FAILED(hr) {
+	if hr := browserObject.SetHostNames(CachedStringToUTF16Ptr("Walk.WebView"), nil); win.FAILED(hr) {
 		return nil, errorFromHRESULT("IOleObject.SetHostNames", hr)
 	}
 

@@ -368,7 +368,7 @@ func (ne *NumberEdit) SetSpinButtonsVisible(visible bool) error {
 	if visible {
 		ne.hWndUpDown = win.CreateWindowEx(
 			0,
-			syscall.StringToUTF16Ptr("msctls_updown32"),
+			CachedStringToUTF16Ptr("msctls_updown32"),
 			nil,
 			win.WS_CHILD|win.WS_VISIBLE|win.UDS_ALIGNRIGHT|win.UDS_ARROWKEYS|win.UDS_HOTTRACK,
 			0,
