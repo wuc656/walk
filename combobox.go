@@ -536,11 +536,12 @@ func (cb *ComboBox) calculateMaxItemTextWidth() int {
 	defer win.SelectObject(hdc, hFontOld)
 
 	var maxWidth int
+	var str []uint16
 
 	count := cb.model.ItemCount()
 	for i := range count {
 		var s win.SIZE
-		str := syscall.StringToUTF16(cb.itemString(i))
+		str = appendStringToUTF16(str, cb.itemString(i))
 
 		if !win.GetTextExtentPoint32(hdc, &str[0], int32(len(str)-1), &s) {
 			newError("GetTextExtentPoint32 failed")

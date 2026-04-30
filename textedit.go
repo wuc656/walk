@@ -325,15 +325,20 @@ func (te *TextEdit) CreateLayoutItem(ctx *LayoutContext) LayoutItem {
 		te.updateMargins()
 	}
 
-	return &textEditLayoutItem{
-		width2Height:            make(map[int]int),
+	li := &textEditLayoutItem{
 		compactHeight:           te.compactHeight,
 		margins:                 te.margins,
-		text:                    te.Text(),
 		font:                    te.Font(),
 		minWidth:                te.calculateTextSizeImpl("W").Width,
 		nonCompactHeightMinSize: te.dialogBaseUnitsToPixels(Size{20, 12}),
 	}
+
+	if te.compactHeight {
+		li.width2Height = make(map[int]int)
+		li.text = te.Text()
+	}
+
+	return li
 }
 
 type textEditLayoutItem struct {

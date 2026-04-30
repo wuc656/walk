@@ -9,6 +9,7 @@ package walk
 import (
 	"sync"
 	"syscall"
+	"unicode/utf16"
 )
 
 // StringToUTF16Cache provides a cached version of StringToUTF16Ptr
@@ -48,4 +49,17 @@ func (c *StringToUTF16Cache) Get(s string) *uint16 {
 //	winapi.SetWindowTheme(hwnd, CachedStringToUTF16Ptr("Explorer"), nil)
 func CachedStringToUTF16Ptr(s string) *uint16 {
 	return defaultCache.Get(s)
+}
+
+func appendStringToUTF16(dst []uint16, s string) []uint16 {
+	dst = dst[:0]
+	for _, r := range s {
+		if r < 0x10000 {
+			dst = append(dst, uint16(r))
+			continue
+		}
+		r1, r2 := utf16.EncodeRune(r)
+		dst = append(dst, uint16(r1), uint16(r2))
+	}
+	return append(dst, 0)
 }
