@@ -248,8 +248,8 @@ func (tw *TabWidget) pageBounds() Rectangle {
 	}
 
 	p := win.POINT{
-		r.Left,
-		r.Top,
+		X: r.Left,
+		Y: r.Top,
 	}
 	if !win.ScreenToClient(tw.hWnd, &p) {
 		newError("ScreenToClient failed")
@@ -257,10 +257,10 @@ func (tw *TabWidget) pageBounds() Rectangle {
 	}
 
 	r = win.RECT{
-		p.X,
-		p.Y,
-		r.Right - r.Left + p.X,
-		r.Bottom - r.Top + p.Y,
+		Left: p.X,
+		Top: p.Y,
+		Right: r.Right - r.Left + p.X,
+		Bottom: r.Bottom - r.Top + p.Y,
 	}
 	win.SendMessage(tw.hWndTab, win.TCM_ADJUSTRECT, 0, uintptr(unsafe.Pointer(&r)))
 

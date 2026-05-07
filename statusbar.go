@@ -92,10 +92,11 @@ func (sb *StatusBar) updateParts() error {
 		rightEdges[0] = -1
 	}
 
-	if 0 == sb.SendMessage(
+	if sb.SendMessage(
 		win.SB_SETPARTS,
 		uintptr(len(items)),
-		uintptr(unsafe.Pointer(rep))) {
+		uintptr(unsafe.Pointer(rep))) ==
+		0 {
 
 		return newError("SB_SETPARTS")
 	}

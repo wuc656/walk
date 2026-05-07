@@ -71,7 +71,7 @@ func (sw *stopwatch) Stop(subject string) time.Duration {
 		return 0
 	}
 
-	duration := time.Now().Sub(item.startedTime)
+	duration := time.Since(item.startedTime)
 
 	item.count++
 	if duration < item.min || item.min == 0 {

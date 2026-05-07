@@ -38,7 +38,7 @@ type PushButtonOptions struct {
 // using options.
 func NewPushButtonWithOptions(parent Container, opts PushButtonOptions) (*PushButton, error) {
 	if opts.PredefinedID > maxPredefinedCtrlID {
-		return nil, fmt.Errorf("Requested ID must be <= IDCONTINUE")
+		return nil, fmt.Errorf("requested ID must be <= IDCONTINUE")
 	}
 
 	pb := &PushButton{

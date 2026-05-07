@@ -7,7 +7,7 @@
             "ST1020": false,
             "ST1021": false,
             "U1000": false,
-            "unsafeptr": false
+            "unsafeptr": false //暫時關閉
         },
         "staticcheck": true
     }
