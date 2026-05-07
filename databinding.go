@@ -514,13 +514,13 @@ func reflectValueFromPath(root reflect.Value, path string) (parent, value reflec
 					if err, ok := rv2.(error); ok {
 						return parent, value, err
 					} else if rv2 != nil {
-						return parent, value, fmt.Errorf("Second method return value must implement error.")
+						return parent, value, fmt.Errorf("second method return value must implement error")
 					}
 
 					value = rvs[0]
 
 				default:
-					return parent, value, fmt.Errorf("Method must return a value plus optionally an error: %s", name)
+					return parent, value, fmt.Errorf("method must return a value plus optionally an error: %s", name)
 				}
 			}
 		}

@@ -59,10 +59,10 @@ func (ifs *IniFileSettings) put(key, value string, expiring bool) error {
 	if key == "" {
 		return newError("key must not be empty")
 	}
-	if strings.IndexAny(key, "|=\r\n") > -1 {
+	if strings.ContainsAny(key, "|=\r\n") {
 		return newError("key contains at least one of the invalid characters '|=\\r\\n'")
 	}
-	if strings.IndexAny(value, "\r\n") > -1 {
+	if strings.ContainsAny(value, "\r\n") {
 		return newError("value contains at least one of the invalid characters '\\r\\n'")
 	}
 
