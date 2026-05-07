@@ -6,7 +6,8 @@
             "ST1003": false,
             "ST1020": false,
             "ST1021": false,
-            "U1000": false
+            "U1000": false,
+            "unsafeptr": false
         },
         "staticcheck": true
     }
