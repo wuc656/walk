@@ -152,7 +152,7 @@ func (ww *Win32WindowImpl) ClearFrameInset() error {
 }
 
 func (ww *Win32WindowImpl) SetSolidSurface() error {
-	return ww.SetFrameInset(win.MARGINS{-1, -1, -1, -1})
+	return ww.SetFrameInset(win.MARGINS{LeftWidth: -1, RightWidth: -1, TopHeight: -1, BottomHeight: -1})
 }
 
 func (ww *Win32WindowImpl) SetFrameInset(inset win.MARGINS) error {

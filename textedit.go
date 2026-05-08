@@ -251,7 +251,7 @@ func (te *TextEdit) ReadOnly() bool {
 }
 
 func (te *TextEdit) SetReadOnly(readOnly bool) error {
-	if 0 == te.SendMessage(win.EM_SETREADONLY, uintptr(win.BoolToBOOL(readOnly)), 0) {
+	if te.SendMessage(win.EM_SETREADONLY, uintptr(win.BoolToBOOL(readOnly)), 0) == 0 {
 		return newError("SendMessage(EM_SETREADONLY)")
 	}
 
@@ -282,7 +282,7 @@ func (te *TextEdit) ContextMenuLocation() Point {
 		idx = (start + end) / 2
 	}
 	res := uint32(te.SendMessage(win.EM_POSFROMCHAR, uintptr(idx), 0))
-	pt := win.POINT{int32(win.LOWORD(res)), int32(win.HIWORD(res))}
+	pt := win.POINT{X: int32(win.LOWORD(res)), Y: int32(win.HIWORD(res))}
 	windowTrimToClientBounds(te.hWnd, &pt)
 	return pointPixelsFromPOINT(pt)
 }

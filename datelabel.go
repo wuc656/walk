@@ -73,7 +73,7 @@ func (dl *DateLabel) Date() time.Time {
 }
 
 func (dl *DateLabel) SetDate(date time.Time) error {
-	if date == dl.date {
+	if date.Equal(dl.date) {
 		return nil
 	}
 
