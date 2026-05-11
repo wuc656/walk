@@ -228,10 +228,18 @@ func (gb *GroupBox) SetTitle(title string) error {
 			return err
 		}
 
-		return gb.checkBox.SetText(title)
+		err := gb.checkBox.SetText(title)
+		if err == nil {
+			gb.titleChangedPublisher.Publish()
+		}
+		return err
 	}
 
-	return setWindowText(gb.hWndGroupBox, title)
+	err := setWindowText(gb.hWndGroupBox, title)
+	if err == nil {
+		gb.titleChangedPublisher.Publish()
+	}
+	return err
 }
 
 func (gb *GroupBox) Checkable() bool {
@@ -323,10 +331,7 @@ func (gb *GroupBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 		case win.WM_NOTIFY:
 			gb.composite.WndProc(hwnd, msg, wParam, lParam)
 
-		case win.WM_SETTEXT:
-			// TODO(aaron): this never would have worked properly because this is
-			// the handler for the widget itself, NOT hWndGroupBox!
-			gb.titleChangedPublisher.Publish()
+
 
 		case win.WM_PAINT:
 			win.UpdateWindow(gb.hWndGroupBox)

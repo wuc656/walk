@@ -137,7 +137,7 @@ func (te *TextEdit) TextLength() int {
 }
 
 func (te *TextEdit) SetText(text string) (err error) {
-	if text == te.Text() {
+	if text == te.text() {
 		return nil
 	}
 
