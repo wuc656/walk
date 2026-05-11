@@ -6,6 +6,6 @@ require (
 	github.com/wuc656/govaluate v1.10.4
 	github.com/wuc656/win v0.0.9
 	github.com/wuc656/wingoes v0.0.10
-	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f
-	golang.org/x/sys v0.43.0
+	golang.org/x/exp v0.0.0-20260508232706-74f9aab9d74a
+	golang.org/x/sys v0.44.0
 )
