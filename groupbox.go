@@ -331,8 +331,6 @@ func (gb *GroupBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 		case win.WM_NOTIFY:
 			gb.composite.WndProc(hwnd, msg, wParam, lParam)
 
-
-
 		case win.WM_PAINT:
 			win.UpdateWindow(gb.hWndGroupBox)
 			if gb.Checkable() {
