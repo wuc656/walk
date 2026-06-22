@@ -42,7 +42,7 @@ func main() {
 	go func() {
 		for range 10000 {
 			time.Sleep(100 * time.Millisecond)
-			log.Println("Text" + "\r\n")
+			log.Println("Text")
 		}
 	}()
 
