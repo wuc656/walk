@@ -3,9 +3,10 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package walk
+
+import "sync"
 
 type Condition interface {
 	Expression
@@ -13,6 +14,7 @@ type Condition interface {
 }
 
 type MutableCondition struct {
+	mu               sync.RWMutex
 	satisfied        bool
 	changedPublisher EventPublisher
 }
@@ -22,14 +24,20 @@ func NewMutableCondition() *MutableCondition {
 }
 
 func (mc *MutableCondition) Value() any {
+	mc.mu.RLock()
+	defer mc.mu.RUnlock()
 	return mc.satisfied
 }
 
 func (mc *MutableCondition) Satisfied() bool {
+	mc.mu.RLock()
+	defer mc.mu.RUnlock()
 	return mc.satisfied
 }
 
 func (mc *MutableCondition) SetSatisfied(satisfied bool) error {
+	mc.mu.Lock()
+	defer mc.mu.Unlock()
 	if satisfied == mc.satisfied {
 		return nil
 	}
@@ -51,6 +59,9 @@ type DelegateCondition struct {
 }
 
 func NewDelegateCondition(satisfied func() bool, changed *Event) *DelegateCondition {
+	if changed == nil {
+		panic("DelegateCondition: changed event cannot be nil")
+	}
 	return &DelegateCondition{satisfied, changed}
 }
 
@@ -70,6 +81,7 @@ type compositeCondition struct {
 	items               []Condition
 	itemsChangedHandles []int
 	changedPublisher    EventPublisher
+	disposed            bool
 }
 
 func (cc *compositeCondition) init(items []Condition) {
@@ -98,9 +110,15 @@ func (cc *compositeCondition) Changed() *Event {
 }
 
 func (cc *compositeCondition) Dispose() {
+	if cc.disposed {
+		return
+	}
+	cc.disposed = true
 	for i, item := range cc.items {
 		item.Changed().Detach(cc.itemsChangedHandles[i])
 	}
+	cc.items = nil
+	cc.itemsChangedHandles = nil
 }
 
 type allCondition struct {
