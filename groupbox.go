@@ -118,6 +118,10 @@ func (gb *GroupBox) AsContainerBase() *ContainerBase {
 	return gb.composite.AsContainerBase()
 }
 
+func (gb *GroupBox) DelegateContainer() Container {
+	return gb.composite
+}
+
 func (gb *GroupBox) ClientBoundsPixels() Rectangle {
 	cb := windowClientBounds(gb.hWndGroupBox)
 

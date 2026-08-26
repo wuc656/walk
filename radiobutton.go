@@ -76,9 +76,6 @@ func NewRadioButton(parent Container) (*RadioButton, error) {
 		},
 		func(v any) error {
 			checked := v == rb.value
-			if checked {
-				rb.group.checkedButton = rb
-			}
 			rb.SetChecked(checked)
 
 			return nil
@@ -112,6 +109,21 @@ func (rb *RadioButton) Value() any {
 
 func (rb *RadioButton) SetValue(value any) {
 	rb.value = value
+}
+
+func (rb *RadioButton) SetChecked(checked bool) {
+	if checked {
+		previous := rb.group.checkedButton
+		rb.group.checkedButton = rb
+
+		if previous != nil && previous != rb {
+			previous.setChecked(false)
+		}
+	} else if rb.group.checkedButton == rb {
+		rb.group.checkedButton = nil
+	}
+
+	rb.Button.SetChecked(checked)
 }
 
 func (rb *RadioButton) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
