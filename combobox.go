@@ -669,7 +669,10 @@ func (cb *ComboBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 
 		case win.CBN_SELCHANGE:
 			cb.selChangeIndex = selIndex
-			cb.currentIndexChangedPublisher.Publish()
+			if selIndex != cb.prevCurIndex {
+				cb.prevCurIndex = selIndex
+				cb.currentIndexChangedPublisher.Publish()
+			}
 
 		case win.CBN_SELENDCANCEL:
 			if cb.selChangeIndex != -1 {
@@ -688,8 +691,10 @@ func (cb *ComboBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 				} else {
 					cb.currentValue = valueProp.Get()
 				}
-				cb.currentIndexChangedPublisher.Publish()
-				cb.prevCurIndex = selIndex
+				if selIndex != cb.prevCurIndex {
+					cb.prevCurIndex = selIndex
+					cb.currentIndexChangedPublisher.Publish()
+				}
 				return 0
 			}
 
