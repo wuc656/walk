@@ -42,8 +42,10 @@ func main() {
 	log.SetOutput(lv)
 
 	go func() {
+		ticker := time.NewTicker(100 * time.Millisecond)
+		defer ticker.Stop()
 		for range 10000 {
-			time.Sleep(100 * time.Millisecond)
+			<-ticker.C
 			log.Println("Text")
 		}
 	}()
