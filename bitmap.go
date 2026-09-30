@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package walk
 
@@ -388,7 +387,6 @@ func (bmp *Bitmap) Dispose() {
 	if bmp.hBmp != 0 {
 		win.DeleteObject(win.HGDIOBJ(bmp.hBmp))
 
-		win.GlobalUnlock(bmp.hPackedDIB)
 		win.GlobalFree(bmp.hPackedDIB)
 
 		bmp.hPackedDIB = 0

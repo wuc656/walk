@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package walk
 
@@ -338,6 +337,10 @@ func (tv *TableView) asTableView() *TableView {
 // Dispose releases the operating system resources, associated with the
 // *TableView.
 func (tv *TableView) Dispose() {
+	if tv.model != nil {
+		tv.detachModel()
+	}
+
 	tv.columns.unsetColumnsTV()
 
 	tv.disposeImageListAndCaches()
@@ -803,6 +806,7 @@ func (tv *TableView) attachModel() {
 func (tv *TableView) detachModel() {
 	tv.model.RowsReset().Detach(tv.rowsResetHandlerHandle)
 	tv.model.RowChanged().Detach(tv.rowChangedHandlerHandle)
+	tv.model.RowsChanged().Detach(tv.rowsChangedHandlerHandle)
 	tv.model.RowsInserted().Detach(tv.rowsInsertedHandlerHandle)
 	tv.model.RowsRemoved().Detach(tv.rowsRemovedHandlerHandle)
 	if sorter, ok := tv.model.(Sorter); ok {

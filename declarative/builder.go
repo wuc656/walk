@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package declarative
 
@@ -13,12 +12,14 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/wuc656/govaluate"
 	"github.com/wuc656/walk"
 )
 
 var (
+	conditionsMutex  sync.RWMutex
 	conditionsByName = make(map[string]walk.Condition)
 	propertyRE       *regexp.Regexp
 )
@@ -36,11 +37,22 @@ func MustRegisterCondition(name string, condition walk.Condition) {
 	if condition == nil {
 		panic("condition == nil")
 	}
+
+	conditionsMutex.Lock()
+	defer conditionsMutex.Unlock()
+
 	if _, ok := conditionsByName[name]; ok {
 		panic("name already registered")
 	}
 
 	conditionsByName[name] = condition
+}
+
+func conditionByName(name string) (walk.Condition, bool) {
+	conditionsMutex.RLock()
+	defer conditionsMutex.RUnlock()
+	c, ok := conditionsByName[name]
+	return c, ok
 }
 
 type declWidget struct {
@@ -140,6 +152,9 @@ func (b *Builder) InitWidget(d Widget, w walk.Window, customInit func() error) e
 	defer func() {
 		if !succeeded {
 			w.Dispose()
+			if len(b.declWidgets) > 0 && b.declWidgets[len(b.declWidgets)-1].w == w {
+				b.declWidgets = b.declWidgets[:len(b.declWidgets)-1]
+			}
 		}
 	}()
 
@@ -719,7 +734,7 @@ func (b *Builder) conditionOrProperty(data Property) any {
 		for _, token := range expr.Tokens() {
 			if token.Kind == govaluate.VARIABLE {
 				name := token.Value.(string)
-				if c, ok := conditionsByName[name]; ok {
+				if c, ok := conditionByName(name); ok {
 					e.addSubExpression(name, c)
 				}
 				if x, ok := b.expressions[name]; ok {

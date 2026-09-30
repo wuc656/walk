@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package walk
 
@@ -101,9 +100,16 @@ func NewTreeView(parent Container) (*TreeView, error) {
 }
 
 func (tv *TreeView) Dispose() {
-	tv.WidgetBase.Dispose()
+	if tv.model != nil {
+		tv.model.ItemsReset().Detach(tv.itemsResetEventHandlerHandle)
+		tv.model.ItemChanged().Detach(tv.itemChangedEventHandlerHandle)
+		tv.model.ItemInserted().Detach(tv.itemInsertedEventHandlerHandle)
+		tv.model.ItemRemoved().Detach(tv.itemRemovedEventHandlerHandle)
+	}
 
 	tv.disposeImageListAndCaches()
+
+	tv.WidgetBase.Dispose()
 }
 
 func (tv *TreeView) SetBackground(bg Brush) {
@@ -514,6 +520,7 @@ func (tv *TreeView) Expanded(item TreeItem) bool {
 
 	if tv.SendMessage(win.TVM_GETITEM, 0, uintptr(unsafe.Pointer(tvi))) == 0 {
 		newError("SendMessage(TVM_GETITEM) failed")
+		return false
 	}
 
 	return tvi.State&win.TVIS_EXPANDED != 0

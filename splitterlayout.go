@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package walk
 
@@ -399,9 +398,10 @@ func (li *splitterContainerLayoutItem) PerformLayout() []LayoutResultItem {
 			})
 
 			var wi *WidgetItem
-			for _, wItem := range wis {
+			for i := range wis {
+				wItem := &wis[i]
 				if !wItem.item.keepSize && (diff < 0 && wItem.item.size > wItem.min || diff > 0 && (wItem.item.size < wItem.max || wItem.max == 0)) {
-					wi = &wItem
+					wi = wItem
 					break
 				}
 			}

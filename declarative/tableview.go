@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package declarative
 
@@ -82,7 +81,7 @@ func (tvs *tvStyler) StyleCell(style *walk.CellStyle) {
 		tvs.dflt.StyleCell(style)
 	}
 
-	if col := style.Col(); col >= 0 {
+	if col := style.Col(); col >= 0 && col < len(tvs.colStyleCellFuncs) {
 		if styleCell := tvs.colStyleCellFuncs[col]; styleCell != nil {
 			styleCell(style)
 		}

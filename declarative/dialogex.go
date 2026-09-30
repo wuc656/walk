@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 //go:build windows
-// +build windows
 
 package declarative
 

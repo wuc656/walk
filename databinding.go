@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package walk
 
@@ -378,6 +377,9 @@ func (db *DataBinder) submitProperty(prop Property, field DataField) error {
 }
 
 func (db *DataBinder) forEach(f func(prop Property, field DataField) error) error {
+	if db.dataSource == nil {
+		return nil
+	}
 	dsv := reflect.ValueOf(db.dataSource)
 	if dsv.Kind() == reflect.Pointer && dsv.IsNil() {
 		return nil

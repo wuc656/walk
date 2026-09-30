@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build windows
-// +build windows
 
 package declarative
 
@@ -140,13 +139,18 @@ func (d Dialog) Create(owner walk.Form) error {
 				return err
 			}
 
-			if db := *d.DataBinder.AssignTo; db != nil {
+			if d.DataBinder.AssignTo != nil && *d.DataBinder.AssignTo != nil {
+				db := *d.DataBinder.AssignTo
 				if db.DataSource() != nil {
-					(*d.DefaultButton).SetEnabled(db.CanSubmit())
+					if *d.DefaultButton != nil {
+						(*d.DefaultButton).SetEnabled(db.CanSubmit())
+					}
 				}
 
 				db.CanSubmitChanged().Attach(func() {
-					(*d.DefaultButton).SetEnabled(db.CanSubmit())
+					if *d.DefaultButton != nil {
+						(*d.DefaultButton).SetEnabled(db.CanSubmit())
+					}
 				})
 			}
 		}
