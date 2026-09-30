@@ -917,7 +917,7 @@ func generateUICode(buf *bytes.Buffer, ui *UI) error {
 		embeddedType = "Composite"
 
 	default:
-		return fmt.Errorf("Top level '%s' currently not supported.", ui.Widget.Class)
+		return fmt.Errorf("top level '%s' currently not supported", ui.Widget.Class)
 	}
 
 	genTypeBaseName := strings.ToLower(ui.Class[:1]) + ui.Class[1:]
@@ -1089,7 +1089,7 @@ func generateLogicCode(buf *bytes.Buffer, ui *UI) error {
 		embeddedType = "Composite"
 
 	default:
-		return fmt.Errorf("Top level '%s' currently not supported.", ui.Widget.Class)
+		return fmt.Errorf("top level '%s' currently not supported", ui.Widget.Class)
 	}
 
 	buf.WriteString("type ")
