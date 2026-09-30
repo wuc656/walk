@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"math/bits"
 	"runtime"
+	"strings"
 	"time"
 	"unsafe"
 
@@ -455,11 +456,19 @@ func (td *taskDialog) Show(opts TaskDialogOpts) (result TaskDialogResult, err er
 	}
 
 	customButtons := make([]win.TASKDIALOG_BUTTON_UNPACKED, 0, len(opts.CustomButtons))
+	var sb strings.Builder
 	for i, btn := range opts.CustomButtons {
-		text := btn.MainText
+		var text string
 		// Notes are only usable when command links are enabled.
 		if opts.CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
-			text += "\n" + btn.Note
+			sb.Reset()
+			sb.Grow(len(btn.MainText) + 1 + len(btn.Note))
+			sb.WriteString(btn.MainText)
+			sb.WriteByte('\n')
+			sb.WriteString(btn.Note)
+			text = sb.String()
+		} else {
+			text = btn.MainText
 		}
 
 		text16, err := windows.UTF16PtrFromString(text)
