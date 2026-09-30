@@ -98,8 +98,7 @@ func (l *GridLayout) ensureSufficientSize(rows, columns int) {
 
 func (l *GridLayout) RowStretchFactor(row int) int {
 	if row < 0 {
-		// FIXME: Should we rather return an error?
-		return -1
+		panic("row must be >= 0")
 	}
 
 	if row >= len(l.rowStretchFactors) {
@@ -134,8 +133,7 @@ func (l *GridLayout) SetRowStretchFactor(row, factor int) error {
 
 func (l *GridLayout) ColumnStretchFactor(column int) int {
 	if column < 0 {
-		// FIXME: Should we rather return an error?
-		return -1
+		panic("column must be >= 0")
 	}
 
 	if column >= len(l.columnStretchFactors) {
