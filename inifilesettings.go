@@ -123,8 +123,10 @@ func (ifs *IniFileSettings) fileExists() (bool, error) {
 	filePath := ifs.FilePath()
 
 	if _, err := os.Stat(filePath); err != nil {
-		// FIXME: Not necessarily a file does not exist error.
-		return false, nil
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
 	}
 
 	return true, nil
