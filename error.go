@@ -87,10 +87,6 @@ func newError(message string) error {
 	return processError(newErr(message))
 }
 
-func newErrorNoPanic(message string) error {
-	return processErrorNoPanic(newErr(message))
-}
-
 func lastError(win32FuncName string) error {
 	if errno := win.GetLastError(); errno != win.ERROR_SUCCESS {
 		return newError(fmt.Sprintf("%s: Error %d", win32FuncName, errno))
@@ -109,10 +105,6 @@ func wrapErr(err error) error {
 	}
 
 	return &Error{inner: err, stack: debug.Stack()}
-}
-
-func wrapErrorNoPanic(err error) error {
-	return processErrorNoPanic(wrapErr(err))
 }
 
 func wrapError(err error) error {
