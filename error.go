@@ -118,28 +118,3 @@ func wrapErrorNoPanic(err error) error {
 func wrapError(err error) error {
 	return processError(wrapErr(err))
 }
-
-func toErrorNoPanic(x any) error {
-	switch x := x.(type) {
-	case *Error:
-		return x
-
-	case error:
-		return wrapErrorNoPanic(x)
-
-	case string:
-		return newErrorNoPanic(x)
-	}
-
-	return newErrorNoPanic(fmt.Sprintf("Error: %v", x))
-}
-
-func toError(x any) error {
-	err := toErrorNoPanic(x)
-
-	if panicOnError {
-		panic(err)
-	}
-
-	return err
-}

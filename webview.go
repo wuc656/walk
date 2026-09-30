@@ -470,23 +470,6 @@ func (wv *WebView) inPlaceActiveObjectTranslateAccelerator(msg *win.MSG) win.HRE
 	return ret
 }
 
-func (wv *WebView) inPlaceActiveObjectSetFocus() win.HRESULT {
-	var ret win.HRESULT
-	ret = win.S_FALSE
-	wv.withInPlaceActiveObject(func(activeObject *win.IOleInPlaceActiveObject) error {
-		var hWndActive win.HWND
-		hr := activeObject.GetWindow(&hWndActive)
-		if hr != win.S_OK {
-			return nil
-		}
-		win.SetFocus(hWndActive)
-		ret = win.S_OK
-
-		return nil
-	})
-	return ret
-}
-
 func (wv *WebView) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 	switch msg {
 	case win.WM_WINDOWPOSCHANGED:

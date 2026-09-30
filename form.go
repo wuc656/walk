@@ -720,12 +720,6 @@ func (fb *FormBase) ProgressIndicator() *ProgressIndicator {
 	return fb.progressIndicator
 }
 
-func (fb *FormBase) setStopwatch(sw *stopwatch) {
-	fb.stopwatch = sw
-
-	fb.updateStopwatch <- sw
-}
-
 func (fb *FormBase) startLayout(completionFuncs []func()) bool {
 	if fb.performLayout == nil || fb.inSizingLoop && !fb.startingLayoutViaSizingLoop {
 		return false

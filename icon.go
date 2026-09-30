@@ -319,13 +319,13 @@ func (i *Icon) handleForDPIWithError(dpi int) (win.HICON, error) {
 			return 0, newError("SHDefExtractIcon")
 		}
 	} else {
-		hr := win.HICON(win.LoadIconWithScaleDown(
+		hr := win.LoadIconWithScaleDown(
 			hInst,
 			name,
 			int32(size.Width),
 			int32(size.Height),
-			&hIcon))
-		if hr < 0 || hIcon == 0 {
+			&hIcon)
+		if win.FAILED(hr) || hIcon == 0 {
 			return 0, lastError("LoadIconWithScaleDown")
 		}
 	}

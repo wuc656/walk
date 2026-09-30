@@ -165,7 +165,7 @@ type boxLayoutItem struct {
 }
 
 func (li *boxLayoutItem) LayoutFlags() LayoutFlags {
-	return boxLayoutFlags(li.orientation, li.children)
+	return boxLayoutFlags(li.children)
 }
 
 func (li *boxLayoutItem) IdealSize() Size {
@@ -238,7 +238,7 @@ func (li *boxLayoutItem) PerformLayout() []LayoutResultItem {
 	return boxLayoutItems(li, itemsToLayout(li.children), li.orientation, li.alignment, cb, li.margins96dpi, li.spacing96dpi, li.hwnd2StretchFactor)
 }
 
-func boxLayoutFlags(orientation Orientation, children []LayoutItem) LayoutFlags {
+func boxLayoutFlags(children []LayoutItem) LayoutFlags {
 	if len(children) == 0 {
 		return ShrinkableHorz | ShrinkableVert | GrowableHorz | GrowableVert
 	}

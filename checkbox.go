@@ -20,8 +20,6 @@ const (
 	CheckIndeterminate CheckState = win.BST_INDETERMINATE
 )
 
-var checkBoxCheckSize Size // in native pixels
-
 type CheckBox struct {
 	Button
 	checkStateChangedPublisher EventPublisher

@@ -26,16 +26,6 @@ func (s Size) toSIZE() win.SIZE {
 	}
 }
 
-func minSize(a, b Size) Size {
-	var s Size
-
-	s.Width = min(a.Width, b.Width)
-
-	s.Height = min(a.Height, b.Height)
-
-	return s
-}
-
 func maxSize(a, b Size) Size {
 	var s Size
 

@@ -80,7 +80,7 @@ func (pb *PushButton) SetImageAboveText(value bool) error {
 	return pb.SetImage(pb.image)
 }
 
-func (pb *PushButton) isDefault() bool {
+func (pb *PushButton) IsDefault() bool {
 	return pb.hasStyleBits(win.BS_DEFPUSHBUTTON)
 }
 

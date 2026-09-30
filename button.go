@@ -13,10 +13,6 @@ import (
 	"github.com/wuc656/win"
 )
 
-type clickable interface {
-	raiseClicked()
-}
-
 type setCheckeder interface {
 	setChecked(checked bool)
 }

@@ -95,7 +95,7 @@ func (iv *ImageView) SetMode(mode ImageViewMode) {
 	iv.RequestLayout()
 }
 
-func (iv *ImageView) applyDPI(dpi int) {
+func (iv *ImageView) ApplyDPI(dpi int) {
 	iv.CustomWidget.ApplyDPI(dpi)
 
 	iv.Invalidate()

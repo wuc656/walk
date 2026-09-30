@@ -832,10 +832,6 @@ func (wb *WindowBase) setAndClearStyleBits(set, clear uint32) error {
 	return setAndClearWindowLongBits(wb.hWnd, win.GWL_STYLE, set, clear)
 }
 
-func (wb *WindowBase) setAndClearExtendedStyleBits(set, clear uint32) error {
-	return setAndClearWindowLongBits(wb.hWnd, win.GWL_EXSTYLE, set, clear)
-}
-
 func setAndClearWindowLongBits(hwnd win.HWND, index int32, set, clear uint32) error {
 	value := uint32(win.GetWindowLong(hwnd, index))
 	if value == 0 {
@@ -1452,7 +1448,7 @@ func (wb *WindowBase) SetVisible(visible bool) {
 	}
 }
 
-func (wb *WindowBase) updateVisibility(visible bool) {
+func (wb *WindowBase) updateVisibility() {
 	walkDescendants(wb.window, func(w Window) bool {
 		w.AsWindowBase().visibleChangedPublisher.Publish()
 
@@ -2353,7 +2349,7 @@ func (wb *WindowBase) handleKeyDown(wParam, lParam uintptr) {
 	}
 }
 
-func (wb *WindowBase) handleKeyUp(wParam, lParam uintptr) {
+func (wb *WindowBase) handleKeyUp(wParam, _ uintptr) {
 	wb.keyUpPublisher.Publish(Key(wParam))
 }
 
@@ -2637,9 +2633,9 @@ func (wb *WindowBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr)
 		// Ensure that we're in sync with system state re: visibility
 		// and that VisibleChanged events are fired.
 		if wp.Flags&win.SWP_SHOWWINDOW != 0 {
-			wb.updateVisibility(true)
+			wb.updateVisibility()
 		} else if wp.Flags&win.SWP_HIDEWINDOW != 0 {
-			wb.updateVisibility(false)
+			wb.updateVisibility()
 		}
 
 		if wp.Flags&win.SWP_NOMOVE != 0 && wp.Flags&win.SWP_NOSIZE != 0 {

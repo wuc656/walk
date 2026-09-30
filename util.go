@@ -61,14 +61,6 @@ func mini(a, b int) int {
 	return b
 }
 
-func boolToInt(value bool) int {
-	if value {
-		return 1
-	}
-
-	return 0
-}
-
 func uint16IndexUint16(s []uint16, v uint16) int {
 	for i, u := range s {
 		if u == v {
@@ -175,10 +167,6 @@ func FormatFloat(f float64, prec int) string {
 
 func FormatFloatGrouped(f float64, prec int) string {
 	return formatFloatString(strconv.FormatFloat(f, 'f', maxi(1, prec), 64), prec, true)
-}
-
-func formatBigRat(r *big.Rat, prec int) string {
-	return formatFloatString(r.FloatString(prec), prec, false)
 }
 
 func formatBigRatGrouped(r *big.Rat, prec int) string {
@@ -629,11 +617,6 @@ func scaleSIZE(value win.SIZE, scale float64) win.SIZE {
 		CX: scaleInt(value.CX, scale),
 		CY: scaleInt(value.CY, scale),
 	}
-}
-
-func ptInRect(pt win.POINT, rect win.RECT) bool {
-	// win.RECT Left and Top are inclusive, Right and Bottom are exclusive
-	return pt.X >= rect.Left && pt.X < rect.Right && pt.Y >= rect.Top && pt.Y < rect.Bottom
 }
 
 // addMargins accumulates the total width and height of m into sz.

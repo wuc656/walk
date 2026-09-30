@@ -41,12 +41,6 @@ type stopwatch struct {
 	subject2item map[string]*stopwatchItem
 }
 
-func newStopwatch() *stopwatch {
-	return &stopwatch{
-		subject2item: make(map[string]*stopwatchItem),
-	}
-}
-
 func (sw *stopwatch) Start(subject string) time.Time {
 	sw.mutex.Lock()
 	defer sw.mutex.Unlock()

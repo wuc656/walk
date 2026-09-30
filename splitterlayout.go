@@ -208,7 +208,7 @@ func (li *splitterContainerLayoutItem) StretchFactor(item LayoutItem) int {
 }
 
 func (li *splitterContainerLayoutItem) LayoutFlags() LayoutFlags {
-	return boxLayoutFlags(li.orientation, li.children)
+	return boxLayoutFlags(li.children)
 }
 
 func (li *splitterContainerLayoutItem) MinSize() Size {
@@ -398,10 +398,9 @@ func (li *splitterContainerLayoutItem) PerformLayout() []LayoutResultItem {
 			})
 
 			var wi *WidgetItem
-			for i := range wis {
-				wItem := &wis[i]
+			for _, wItem := range wis {
 				if !wItem.item.keepSize && (diff < 0 && wItem.item.size > wItem.min || diff > 0 && (wItem.item.size < wItem.max || wItem.max == 0)) {
-					wi = wItem
+					wi = &wItem
 					break
 				}
 			}

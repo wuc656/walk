@@ -804,8 +804,8 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 			return 0
 
 		case KeyEnd:
-			start, end := nle.TextSelection()
-			end = len(nle.textUTF16()) - len(nle.suffix)
+			start, _ := nle.TextSelection()
+			end := len(nle.textUTF16()) - len(nle.suffix)
 			if !ShiftDown() {
 				start = end
 			}
@@ -813,8 +813,8 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 			return 0
 
 		case KeyHome:
-			start, end := nle.TextSelection()
-			start = len(nle.prefix)
+			_, end := nle.TextSelection()
+			start := len(nle.prefix)
 			if !ShiftDown() {
 				end = start
 			}

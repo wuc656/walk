@@ -22,7 +22,6 @@ import (
 const tableViewWindowClass = `\o/ Walk_TableView_Class \o/`
 
 var (
-	white                       = win.COLORREF(RGB(255, 255, 255))
 	checkmark                   = string([]byte{0xE2, 0x9C, 0x94})
 	tableViewFrozenLVWndProcPtr uintptr
 	tableViewNormalLVWndProcPtr uintptr
@@ -328,10 +327,6 @@ func NewTableViewWithCfg(parent Container, cfg *TableViewCfg) (*TableView, error
 	succeeded = true
 
 	return tv, nil
-}
-
-func (tv *TableView) asTableView() *TableView {
-	return tv
 }
 
 // Dispose releases the operating system resources, associated with the
@@ -1885,7 +1880,7 @@ func (tv *TableView) Focused() bool {
 	return focused == tv.hwndFrozenLV || focused == tv.hwndNormalLV
 }
 
-func (tv *TableView) maybePublishFocusChanged(hwnd win.HWND, msg uint32, wp uintptr) {
+func (tv *TableView) maybePublishFocusChanged(msg uint32, wp uintptr) {
 	focused := msg == win.WM_SETFOCUS
 
 	if focused != tv.focused && wp != uintptr(tv.hwndFrozenLV) && wp != uintptr(tv.hwndNormalLV) {
@@ -1903,10 +1898,10 @@ func tableViewFrozenLVWndProc(hwnd win.HWND, msg uint32, wp, lp uintptr) uintptr
 
 	case win.WM_SETFOCUS:
 		win.SetFocus(tv.hwndNormalLV)
-		tv.maybePublishFocusChanged(hwnd, msg, wp)
+		tv.maybePublishFocusChanged(msg, wp)
 
 	case win.WM_KILLFOCUS:
-		tv.maybePublishFocusChanged(hwnd, msg, wp)
+		tv.maybePublishFocusChanged(msg, wp)
 
 	case win.WM_MOUSEWHEEL:
 		tableViewNormalLVWndProc(tv.hwndNormalLV, msg, wp, lp)
@@ -1924,12 +1919,12 @@ func tableViewNormalLVWndProc(hwnd win.HWND, msg uint32, wp, lp uintptr) uintptr
 
 	case win.WM_SETFOCUS:
 		tv.invalidateBorderInParent()
-		tv.maybePublishFocusChanged(hwnd, msg, wp)
+		tv.maybePublishFocusChanged(msg, wp)
 
 	case win.WM_KILLFOCUS:
 		win.SendMessage(tv.hwndFrozenLV, msg, wp, lp)
 		tv.WndProc(tv.hWnd, msg, wp, lp)
-		tv.maybePublishFocusChanged(hwnd, msg, wp)
+		tv.maybePublishFocusChanged(msg, wp)
 	}
 
 	result := tv.lvWndProc(tv.normalLVOrigWndProcPtr, hwnd, msg, wp, lp)
@@ -2128,7 +2123,7 @@ func (tv *TableView) lvWndProc(origWndProcPtr uintptr, hwnd win.HWND, msg uint32
 			if (tv.imageProvider != nil || tv.styler != nil) && di.Item.Mask&win.LVIF_IMAGE > 0 {
 				var image any
 				if di.Item.ISubItem == 0 {
-					if ip := tv.imageProvider; ip != nil && image == nil {
+					if ip := tv.imageProvider; ip != nil {
 						image = ip.Image(row)
 					}
 				}

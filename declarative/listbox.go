@@ -72,7 +72,7 @@ func (lb ListBox) Create(builder *Builder) error {
 	if _, ok := lb.Model.([]string); ok &&
 		(lb.BindingMember != "" || lb.DisplayMember != "") {
 
-		return errors.New("ListBox.Create: BindingMember and DisplayMember must be empty for []string models.")
+		return errors.New("ListBox.Create: BindingMember and DisplayMember must be empty for []string models")
 	}
 
 	var style uint32

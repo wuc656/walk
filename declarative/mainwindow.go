@@ -170,7 +170,7 @@ func (mw MainWindow) Create() error {
 			}
 		}
 
-		imageList, err := walk.NewImageListForDPI(walk.SizeFrom96DPI(walk.Size{16, 16}, builder.dpi), 0, builder.dpi)
+		imageList, err := walk.NewImageListForDPI(walk.SizeFrom96DPI(walk.Size{Width: 16, Height: 16}, builder.dpi), 0, builder.dpi)
 		if err != nil {
 			return err
 		}

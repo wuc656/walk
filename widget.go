@@ -141,16 +141,16 @@ func (wb *WidgetBase) init(widget Widget) error {
 	wb.graphicsEffects = newWidgetGraphicsEffectList(wb)
 
 	tt := App().toolTip()
-	if err := tt.AddTool(wb.window.(Widget)); err != nil {
+	if err := tt.AddTool(widget); err != nil {
 		return err
 	}
 
 	wb.toolTipTextProperty = NewProperty(
 		func() any {
-			return wb.window.(Widget).ToolTipText()
+			return widget.ToolTipText()
 		},
 		func(v any) error {
-			wb.window.(Widget).SetToolTipText(assertStringOr(v, ""))
+			widget.SetToolTipText(assertStringOr(v, ""))
 			return nil
 		},
 		wb.toolTipTextChangedPublisher.Event())
