@@ -704,7 +704,7 @@ func (b *Builder) conditionOrProperty(data Property) any {
 				}
 			}
 
-			return strings.Replace(s, ".", "\\.", -1)
+			return strings.ReplaceAll(s, ".", "\\\\.")
 		})
 
 		if singleExpr != nil {
@@ -713,7 +713,7 @@ func (b *Builder) conditionOrProperty(data Property) any {
 
 		expr, err := govaluate.NewEvaluableExpressionWithFunctions(text, b.functions)
 		if err != nil {
-			panic(fmt.Errorf(`invalid expression "%s": %s`, e.text, err.Error()))
+			panic(fmt.Errorf(`invalid expression "%s": %w`, e.text, err))
 		}
 
 		for _, token := range expr.Tokens() {

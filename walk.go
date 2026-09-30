@@ -66,6 +66,7 @@ func (d *Disposables) Add(item Disposable) {
 
 func (d *Disposables) Spare() {
 	d.done = true
+	d.items = nil
 }
 
 func (d *Disposables) Treat() {
@@ -77,5 +78,6 @@ func (d *Disposables) Treat() {
 		item.Dispose()
 	}
 
+	d.items = nil
 	d.done = true
 }

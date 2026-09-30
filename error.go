@@ -46,6 +46,10 @@ func (err *Error) Message() string {
 	return ""
 }
 
+func (err *Error) Unwrap() error {
+	return err.inner
+}
+
 func (err *Error) Stack() []byte {
 	return err.stack
 }

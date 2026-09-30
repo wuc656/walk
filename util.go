@@ -160,7 +160,7 @@ func ParseFloat(s string) (float64, error) {
 			sep = string(t[i])
 		}
 		if sep != "" {
-			s = strings.Replace(s, string(sep), new, -1)
+			s = strings.ReplaceAll(s, string(sep), new)
 		}
 	}
 
@@ -214,7 +214,7 @@ func formatFloatString(s string, prec int, grouped bool) string {
 	}
 	for i := n; i < intLen; i += 3 {
 		if b.Len() > firstDigit {
-			b.WriteByte(groupSepB)
+			b.WriteString(groupSepS)
 		}
 		b.WriteString(s[i : i+3])
 	}

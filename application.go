@@ -775,6 +775,7 @@ func (app *Application) runSyncFunc() {
 	var fn func()
 	if len(app.syncFuncs) > 0 {
 		fn = app.syncFuncs[0]
+		app.syncFuncs[0] = nil
 		app.syncFuncs = app.syncFuncs[1:]
 	}
 

@@ -37,12 +37,13 @@ func (mc *MutableCondition) Satisfied() bool {
 
 func (mc *MutableCondition) SetSatisfied(satisfied bool) error {
 	mc.mu.Lock()
-	defer mc.mu.Unlock()
 	if satisfied == mc.satisfied {
+		mc.mu.Unlock()
 		return nil
 	}
 
 	mc.satisfied = satisfied
+	mc.mu.Unlock()
 
 	mc.changedPublisher.Publish()
 

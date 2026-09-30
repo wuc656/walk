@@ -527,15 +527,15 @@ func (lb *ListBox) calculateMaxItemTextWidth() int {
 	defer win.SelectObject(hdc, hFontOld)
 
 	var maxWidth int
+	var str []uint16
 
 	if lb.model == nil {
 		return -1
 	}
 	count := lb.model.ItemCount()
 	for i := range count {
-		item := lb.itemString(i)
 		var s win.SIZE
-		str := syscall.StringToUTF16(item)
+		str = appendStringToUTF16(str, lb.itemString(i))
 
 		if !win.GetTextExtentPoint32(hdc, &str[0], int32(len(str)-1), &s) {
 			newError("GetTextExtentPoint32 failed")
@@ -599,12 +599,12 @@ func (lb *ListBox) SetCurrentIndex(value int) error {
 }
 
 func (lb *ListBox) SelectedIndexes() []int {
-	count := int(int32(lb.SendMessage(win.LB_GETCOUNT, 0, 0)))
-	if count < 1 {
+	selCount := int(int32(lb.SendMessage(win.LB_GETSELCOUNT, 0, 0)))
+	if selCount < 1 {
 		return nil
 	}
-	index32 := make([]int32, count)
-	if n := int(int32(lb.SendMessage(win.LB_GETSELITEMS, uintptr(count), uintptr(unsafe.Pointer(&index32[0]))))); n == win.LB_ERR {
+	index32 := make([]int32, selCount)
+	if n := int(int32(lb.SendMessage(win.LB_GETSELITEMS, uintptr(selCount), uintptr(unsafe.Pointer(&index32[0]))))); n == win.LB_ERR {
 		return nil
 	} else {
 		indexes := make([]int, n)

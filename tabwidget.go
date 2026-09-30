@@ -608,27 +608,6 @@ func (tw *TabWidget) onRemovedPage(index int, page *TabPage) (err error) {
 	tw.onSelChange()
 
 	return
-
-	// FIXME: Either make use of this unreachable code or remove it.
-	if index == tw.currentIndex {
-		// removal of current visible tabpage...
-		tw.currentIndex = -1
-
-		// select new tabpage if any :
-		if tw.pages.Len() > 0 {
-			// are we removing the rightmost page ?
-			if index == tw.pages.Len()-1 {
-				// If so, select the page on the left
-				index -= 1
-			}
-		}
-	}
-
-	tw.SetCurrentIndex(index)
-
-	tw.Invalidate()
-
-	return
 }
 
 func (tw *TabWidget) onClearingPages(pages []*TabPage) (err error) {

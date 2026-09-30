@@ -79,6 +79,12 @@ func (p *property) SetSource(source any) error {
 		return ErrPropertyReadOnly
 	}
 
+	if oldProp, ok := p.source.(Property); ok {
+		oldProp.Changed().Detach(p.sourceChangedHandle)
+	} else if oldExpr, ok := p.source.(Expression); ok {
+		oldExpr.Changed().Detach(p.sourceChangedHandle)
+	}
+
 	if source != nil {
 		switch source := source.(type) {
 		case string:
@@ -107,10 +113,6 @@ func (p *property) SetSource(source any) error {
 		default:
 			return newError("invalid source type")
 		}
-	}
-
-	if oldProp, ok := p.source.(Property); ok {
-		oldProp.Changed().Detach(p.sourceChangedHandle)
 	}
 
 	p.source = source
@@ -235,6 +237,10 @@ func (bp *boolProperty) SetSource(source any) error {
 		return ErrPropertyReadOnly
 	}
 
+	if oldCond, ok := bp.source.(Condition); ok {
+		oldCond.Changed().Detach(bp.sourceChangedHandle)
+	}
+
 	if source != nil {
 		switch source := source.(type) {
 		case string:
@@ -273,10 +279,6 @@ func (bp *boolProperty) SetSource(source any) error {
 		default:
 			return newError(fmt.Sprintf(`invalid source: "%s" of type %T`, source, source))
 		}
-	}
-
-	if oldCond, ok := bp.source.(Condition); ok {
-		oldCond.Changed().Detach(bp.sourceChangedHandle)
 	}
 
 	bp.source = source

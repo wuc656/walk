@@ -60,6 +60,10 @@ func (l *WidgetList) Clear() error {
 		item.form = nil
 	}
 
+	for i := range oldItems {
+		oldItems[i] = nil
+	}
+
 	return nil
 }
 
@@ -157,7 +161,9 @@ func (l *WidgetList) RemoveAt(index int) error {
 		}
 	}
 
-	l.items = append(l.items[:index], l.items[index+1:]...)
+	copy(l.items[index:], l.items[index+1:])
+	l.items[len(l.items)-1] = nil
+	l.items = l.items[:len(l.items)-1]
 
 	if observer != nil {
 		if err := observer.onRemovedWidget(index, widget); err != nil {

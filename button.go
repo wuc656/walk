@@ -8,7 +8,7 @@
 package walk
 
 import (
-	"fmt"
+	"strconv"
 	"unsafe"
 
 	"github.com/wuc656/win"
@@ -174,7 +174,7 @@ func (b *Button) SetPersistent(value bool) {
 }
 
 func (b *Button) SaveState() error {
-	return b.WriteState(fmt.Sprintf("%t", b.Checked()))
+	return b.WriteState(strconv.FormatBool(b.Checked()))
 }
 
 func (b *Button) RestoreState() error {

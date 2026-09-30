@@ -234,7 +234,10 @@ func (fb *FormBase) start() {
 
 func (fb *FormBase) Dispose() {
 	if fb.hWnd != 0 && fb.quitLayoutPerformer != nil {
-		fb.quitLayoutPerformer <- struct{}{}
+		select {
+		case fb.quitLayoutPerformer <- struct{}{}:
+		default:
+		}
 	}
 
 	fb.WindowBase.Dispose()

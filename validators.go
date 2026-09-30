@@ -75,8 +75,8 @@ func (rv *RangeValidator) Validate(v any) error {
 
 	if f64 < rv.min || f64 > rv.max {
 		var msg string
-		if math.Abs(rv.min-math.Floor(rv.min)) < math.SmallestNonzeroFloat64 &&
-			math.Abs(rv.max-math.Floor(rv.max)) < math.SmallestNonzeroFloat64 {
+		if rv.min == math.Floor(rv.min) &&
+			rv.max == math.Floor(rv.max) {
 
 			msg = fmt.Sprintf(tr("Please enter a number from %.f to %.f.", "walk"),
 				rv.min, rv.max)

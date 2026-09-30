@@ -87,6 +87,22 @@ func NewRadioButton(parent Container) (*RadioButton, error) {
 	return rb, nil
 }
 
+func (rb *RadioButton) Dispose() {
+	if rb.group != nil {
+		for i, btn := range rb.group.buttons {
+			if btn == rb {
+				rb.group.buttons = append(rb.group.buttons[:i], rb.group.buttons[i+1:]...)
+				break
+			}
+		}
+		if rb.group.checkedButton == rb {
+			rb.group.checkedButton = nil
+		}
+	}
+
+	rb.Button.Dispose()
+}
+
 func (rb *RadioButton) radioButton() *RadioButton {
 	return rb
 }
