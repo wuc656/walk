@@ -134,11 +134,11 @@ func (ifs *IniFileSettings) withFile(flags int, f func(file *os.File) error) err
 	filePath := ifs.FilePath()
 
 	dirPath, _ := filepath.Split(filePath)
-	if err := os.MkdirAll(dirPath, 0644); err != nil {
+	if err := os.MkdirAll(dirPath, 0700); err != nil {
 		return wrapError(err)
 	}
 
-	file, err := os.OpenFile(filePath, flags, 0644)
+	file, err := os.OpenFile(filePath, flags, 0600)
 	if err != nil {
 		return wrapError(err)
 	}
