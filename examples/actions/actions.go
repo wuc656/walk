@@ -12,8 +12,7 @@ import (
 	"strings"
 
 	"github.com/wuc656/walk"
-
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 var viewModes [4]*walk.Action
@@ -29,7 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	MustRegisterCondition("isSpecialMode", isSpecialMode)
+	declarative.MustRegisterCondition("isSpecialMode", isSpecialMode)
 
 	mw := new(MyMainWindow)
 
@@ -37,50 +36,50 @@ func main() {
 	var recentMenu *walk.Menu
 	var toggleSpecialModePB *walk.PushButton
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw.MainWindow,
 		Title:    "Walk Actions Example",
-		MenuItems: []MenuItem{
-			Menu{
+		MenuItems: []declarative.MenuItem{
+			declarative.Menu{
 				Text: "&File",
-				Items: []MenuItem{
-					Action{
+				Items: []declarative.MenuItem{
+					declarative.Action{
 						AssignTo:    &openAction,
 						Text:        "&Open",
 						Image:       "../img/open.png",
-						Enabled:     Bind("enabledCB.Checked"),
-						Visible:     Bind("!openHiddenCB.Checked"),
-						Shortcut:    Shortcut{Modifiers: walk.ModControl, Key: walk.KeyO},
+						Enabled:     declarative.Bind("enabledCB.Checked"),
+						Visible:     declarative.Bind("!openHiddenCB.Checked"),
+						Shortcut:    declarative.Shortcut{Modifiers: walk.ModControl, Key: walk.KeyO},
 						OnTriggered: mw.openAction_Triggered,
 					},
-					Menu{
+					declarative.Menu{
 						AssignTo: &recentMenu,
 						Text:     "Recent",
 					},
-					Separator{},
-					Action{
+					declarative.Separator{},
+					declarative.Action{
 						Text:        "E&xit",
 						OnTriggered: func() { mw.Close() },
 					},
 				},
 			},
-			Menu{
+			declarative.Menu{
 				Text: "&View",
-				Items: []MenuItem{
-					Action{
+				Items: []declarative.MenuItem{
+					declarative.Action{
 						Text:    "Open / Special Enabled",
-						Checked: Bind("enabledCB.Visible"),
+						Checked: declarative.Bind("enabledCB.Visible"),
 					},
-					Action{
+					declarative.Action{
 						Text:    "Open Hidden",
-						Checked: Bind("openHiddenCB.Visible"),
+						Checked: declarative.Bind("openHiddenCB.Visible"),
 					},
 				},
 			},
-			Menu{
+			declarative.Menu{
 				Text: "&Help",
-				Items: []MenuItem{
-					Action{
+				Items: []declarative.MenuItem{
+					declarative.Action{
 						AssignTo:    &showAboutBoxAction,
 						Text:        "About",
 						OnTriggered: mw.showAboutBoxAction_Triggered,
@@ -88,42 +87,42 @@ func main() {
 				},
 			},
 		},
-		ToolBar: ToolBar{
-			ButtonStyle: ToolBarButtonImageBeforeText,
-			Items: []MenuItem{
-				ActionRef{Action: &openAction},
-				Menu{
+		ToolBar: declarative.ToolBar{
+			ButtonStyle: declarative.ToolBarButtonImageBeforeText,
+			Items: []declarative.MenuItem{
+				declarative.ActionRef{Action: &openAction},
+				declarative.Menu{
 					Text:  "New A",
 					Image: "../img/document-new.png",
-					Items: []MenuItem{
-						Action{
+					Items: []declarative.MenuItem{
+						declarative.Action{
 							Text:        "A",
 							OnTriggered: mw.newAction_Triggered,
 						},
-						Action{
+						declarative.Action{
 							Text:        "B",
 							OnTriggered: mw.newAction_Triggered,
 						},
-						Action{
+						declarative.Action{
 							Text:        "C",
 							OnTriggered: mw.newAction_Triggered,
 						},
 					},
 					OnTriggered: mw.newAction_Triggered,
 				},
-				Separator{},
-				Menu{
+				declarative.Separator{},
+				declarative.Menu{
 					Text:  "View",
 					Image: "../img/document-properties.png",
-					Items: []MenuItem{
-						Action{
+					Items: []declarative.MenuItem{
+						declarative.Action{
 							AssignTo:    &viewModes[0],
 							Text:        "X",
 							OnTriggered: mw.changeViewAction_Triggered,
 							Checkable:   true,
 							Exclusive:   true,
 						},
-						Action{
+						declarative.Action{
 							AssignTo:    &viewModes[1],
 							Text:        "(Hidden)",
 							OnTriggered: mw.changeViewAction_Triggered,
@@ -132,14 +131,14 @@ func main() {
 							Visible:     false,
 							Checked:     true,
 						},
-						Action{
+						declarative.Action{
 							AssignTo:    &viewModes[2],
 							Text:        "Y",
 							OnTriggered: mw.changeViewAction_Triggered,
 							Checkable:   true,
 							Exclusive:   true,
 						},
-						Action{
+						declarative.Action{
 							AssignTo:    &viewModes[3],
 							Text:        "Z",
 							OnTriggered: mw.changeViewAction_Triggered,
@@ -148,35 +147,35 @@ func main() {
 						},
 					},
 				},
-				Separator{},
-				Action{
+				declarative.Separator{},
+				declarative.Action{
 					Text:        "Special",
 					Image:       "../img/system-shutdown.png",
-					Enabled:     Bind("isSpecialMode && enabledCB.Checked"),
+					Enabled:     declarative.Bind("isSpecialMode && enabledCB.Checked"),
 					OnTriggered: mw.specialAction_Triggered,
 				},
 			},
 		},
-		ContextMenuItems: []MenuItem{
-			ActionRef{Action: &showAboutBoxAction},
+		ContextMenuItems: []declarative.MenuItem{
+			declarative.ActionRef{Action: &showAboutBoxAction},
 		},
-		MinSize: Size{Width: 300, Height: 200},
-		Layout:  VBox{},
-		Children: []Widget{
-			CheckBox{
+		MinSize: declarative.Size{Width: 300, Height: 200},
+		Layout:  declarative.VBox{},
+		Children: []declarative.Widget{
+			declarative.CheckBox{
 				Name:    "enabledCB",
 				Text:    "Open / Special Enabled",
 				Checked: true,
-				Accessibility: Accessibility{
+				Accessibility: declarative.Accessibility{
 					Help: "Enables Open and Special",
 				},
 			},
-			CheckBox{
+			declarative.CheckBox{
 				Name:    "openHiddenCB",
 				Text:    "Open Hidden",
 				Checked: true,
 			},
-			PushButton{
+			declarative.PushButton{
 				AssignTo: &toggleSpecialModePB,
 				Text:     "Enable Special Mode",
 				OnClicked: func() {
@@ -188,7 +187,7 @@ func main() {
 						toggleSpecialModePB.SetText("Enable Special Mode")
 					}
 				},
-				Accessibility: Accessibility{
+				Accessibility: declarative.Accessibility{
 					Help: "Toggles special mode",
 				},
 			},
