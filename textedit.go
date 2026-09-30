@@ -106,20 +106,20 @@ func drawTextCompatibleEditWordbreakProc(lpch *uint16, ichCurrent, cch, code uin
 	switch code {
 	case win.WB_LEFT:
 		for i := int(ichCurrent); i >= 0; i-- {
-			if *(*uint16)(unsafe.Pointer(uintptr(unsafe.Pointer(lpch)) + uintptr(i)*2)) == 32 {
+			if *(*uint16)(unsafe.Add(unsafe.Pointer(lpch), uintptr(i)*2)) == 32 {
 				return uintptr(i)
 			}
 		}
 
 	case win.WB_RIGHT:
 		for i := int(ichCurrent); i < int(cch); i++ {
-			if *(*uint16)(unsafe.Pointer(uintptr(unsafe.Pointer(lpch)) + uintptr(i)*2)) == 32 {
+			if *(*uint16)(unsafe.Add(unsafe.Pointer(lpch), uintptr(i)*2)) == 32 {
 				return uintptr(i)
 			}
 		}
 
 	case win.WB_ISDELIMITER:
-		if *(*uint16)(unsafe.Pointer(uintptr(unsafe.Pointer(lpch)) + ichCurrent*2)) == 32 {
+		if *(*uint16)(unsafe.Add(unsafe.Pointer(lpch), ichCurrent*2)) == 32 {
 			return 1
 		}
 	}

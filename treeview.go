@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"slices"
 	"syscall"
 	"unsafe"
 
@@ -498,8 +499,8 @@ func (tv *TreeView) ensureItemAndAncestorsInserted(item TreeItem) error {
 		}
 	}
 
-	for i := len(hierarchy) - 1; i >= 0; i-- {
-		if err := tv.insertChildren(hierarchy[i]); err != nil {
+	for _, h := range slices.Backward(hierarchy) {
+		if err := tv.insertChildren(h); err != nil {
 			return err
 		}
 	}

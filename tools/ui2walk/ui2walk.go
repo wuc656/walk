@@ -17,6 +17,7 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 )
 
@@ -1047,12 +1048,12 @@ func generateUICode(buf *bytes.Buffer, ui *UI) error {
 	}
 
 	buf.WriteString("\n// Tab order\n")
-	for i := len(ui.TabStops) - 1; i >= 0; i-- {
+	for _, v := range slices.Backward(ui.TabStops) {
 		buf.WriteString(fmt.Sprintf(`if err = w.ui.%s.BringToTop(); err != nil {
 			return err
 		}
 		`,
-			ui.TabStops[i]))
+			v))
 	}
 
 	// end func

@@ -508,7 +508,7 @@ func newBitmapFromHBITMAP(hBmp win.HBITMAP, dpi int) (bmp *Bitmap, err error) {
 
 	win.MoveMemory(dest, src, bmihSize)
 
-	dest = unsafe.Pointer(uintptr(dest) + bmihSize)
+	dest = unsafe.Add(dest, bmihSize)
 	src = dib.DsBm.BmBits
 
 	win.MoveMemory(dest, src, pixelsSize)
