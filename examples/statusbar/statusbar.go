@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
+
 // This example demonstrates the status bar, including a size gripper
 // attached to the bottom of the main window.
 // The status bar has two items, one is dynamically updated and one includes an icon.

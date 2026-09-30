@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
+
+//go:build windows
+
 package main
 
 import (
@@ -48,7 +52,7 @@ func main() {
 						Image:       "../img/open.png",
 						Enabled:     Bind("enabledCB.Checked"),
 						Visible:     Bind("!openHiddenCB.Checked"),
-						Shortcut:    Shortcut{walk.ModControl, walk.KeyO},
+						Shortcut:    Shortcut{Modifiers: walk.ModControl, Key: walk.KeyO},
 						OnTriggered: mw.openAction_Triggered,
 					},
 					Menu{
@@ -89,7 +93,7 @@ func main() {
 		ToolBar: ToolBar{
 			ButtonStyle: ToolBarButtonImageBeforeText,
 			Items: []MenuItem{
-				ActionRef{&openAction},
+				ActionRef{Action: &openAction},
 				Menu{
 					Text:  "New A",
 					Image: "../img/document-new.png",
@@ -156,9 +160,9 @@ func main() {
 			},
 		},
 		ContextMenuItems: []MenuItem{
-			ActionRef{&showAboutBoxAction},
+			ActionRef{Action: &showAboutBoxAction},
 		},
-		MinSize: Size{300, 200},
+		MinSize: Size{Width: 300, Height: 200},
 		Layout:  VBox{},
 		Children: []Widget{
 			CheckBox{
