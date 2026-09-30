@@ -4,8 +4,6 @@
 
 //go:build windows
 
-//go:build windows
-
 package main
 
 import (

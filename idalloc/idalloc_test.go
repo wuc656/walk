@@ -83,7 +83,7 @@ func TestIDAllocator(t *testing.T) {
 		}()
 		alloc.Free(512)
 		return result
-	}
+	}()
 	if p == nil {
 		t.Errorf("Expected panic but did not")
 	}

@@ -8,7 +8,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/xml"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -305,7 +304,7 @@ func writeProperty(buf *bytes.Buffer, prop *Property, qualifiedReceiver string, 
 			orientation = "walk.Vertical"
 
 		default:
-			return errors.New(fmt.Sprintf("unknown orientation: '%s'", prop.Enum))
+			return fmt.Errorf("unknown orientation: '%s'", prop.Enum)
 		}
 
 		buf.WriteString(fmt.Sprintf(
@@ -451,7 +450,7 @@ func writeLayoutInitialization(buf *bytes.Buffer, layout *Layout, parent *Widget
 		typ = "VBoxLayout"
 
 	default:
-		return errors.New(fmt.Sprintf("unsupported layout type: '%s'", layout.Class))
+		return fmt.Errorf("unsupported layout type: '%s'", layout.Class)
 	}
 
 	buf.WriteString(fmt.Sprintf("%s := walk.New%s()\n",
@@ -918,7 +917,7 @@ func generateUICode(buf *bytes.Buffer, ui *UI) error {
 		embeddedType = "Composite"
 
 	default:
-		return errors.New(fmt.Sprintf("Top level '%s' currently not supported.", ui.Widget.Class))
+		return fmt.Errorf("Top level '%s' currently not supported.", ui.Widget.Class)
 	}
 
 	genTypeBaseName := strings.ToLower(ui.Class[:1]) + ui.Class[1:]
@@ -997,15 +996,15 @@ func generateUICode(buf *bytes.Buffer, ui *UI) error {
 		ui.Widget.Name))
 
 	if embeddedType == "MainWindow" {
-		buf.WriteString(fmt.Sprintf(
+		buf.WriteString(
 			`l := walk.NewVBoxLayout()
-			if err := l.SetMargins(walk.Margins{0, 0, 0, 0}); err != nil {
+			if err := l.SetMargins(walk.Margins{HNear: 0, VNear: 0, HFar: 0, VFar: 0}); err != nil {
 				return err
 			}
 			if err := w.SetLayout(l); err != nil {
 				return err
 			}
-			`))
+			`)
 	}
 
 	if err := writeProperties(buf, ui.Widget.Property, "w", &ui.Widget); err != nil {
@@ -1090,7 +1089,7 @@ func generateLogicCode(buf *bytes.Buffer, ui *UI) error {
 		embeddedType = "Composite"
 
 	default:
-		return errors.New(fmt.Sprintf("Top level '%s' currently not supported.", ui.Widget.Class))
+		return fmt.Errorf("Top level '%s' currently not supported.", ui.Widget.Class)
 	}
 
 	buf.WriteString("type ")
@@ -1098,7 +1097,8 @@ func generateLogicCode(buf *bytes.Buffer, ui *UI) error {
 	buf.WriteString(" struct {\n*walk.")
 	buf.WriteString(embeddedType)
 	buf.WriteString("\nui ")
-	buf.WriteString(strings.ToLower(ui.Class[:1]) + ui.Class[1:])
+	buf.WriteString(strings.ToLower(ui.Class[:1]))
+	buf.WriteString(ui.Class[1:])
 	buf.WriteString(`UI
 	}
 	
