@@ -101,6 +101,9 @@ func (b *Builder) Parent() walk.Container {
 }
 
 func (b *Builder) Defer(f func() error) {
+	if b.deferredFuncs == nil {
+		b.deferredFuncs = make([]func() error, 0, 8)
+	}
 	b.deferredFuncs = append(b.deferredFuncs, f)
 }
 
