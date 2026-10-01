@@ -8,6 +8,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
+var GlobalSink *uint16
+
 func genMockButtons(count int, noteType string) []TaskDialogCustomButton {
 	var btns []TaskDialogCustomButton
 	for i := 0; i < count; i++ {
@@ -22,20 +24,47 @@ func genMockButtons(count int, noteType string) []TaskDialogCustomButton {
 	return btns
 }
 
-func BenchmarkTaskDialogCustomButtons(b *testing.B) {
+func BenchmarkTaskDialogCustomButtonsBaseline(b *testing.B) {
+	CommandLinkMode := TaskDialogCommandLinks
 	for _, count := range []int{1, 2, 5, 10} {
 		for _, typ := range []string{"short_ascii", "long_ascii", "unicode"} {
 			btns := genMockButtons(count, typ)
 			b.Run("Count="+strconv.Itoa(count)+"_Type="+typ, func(b *testing.B) {
+				b.ReportAllocs()
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					for _, btn := range btns {
+						text := btn.MainText
+						if CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
+							text += "\n" + btn.Note
+						}
+						text16, _ := windows.UTF16PtrFromString(text)
+						GlobalSink = text16
+					}
+				}
+			})
+		}
+	}
+}
+
+func BenchmarkTaskDialogCustomButtonsOptimized(b *testing.B) {
+	CommandLinkMode := TaskDialogCommandLinks
+	for _, count := range []int{1, 2, 5, 10} {
+		for _, typ := range []string{"short_ascii", "long_ascii", "unicode"} {
+			btns := genMockButtons(count, typ)
+			b.Run("Count="+strconv.Itoa(count)+"_Type="+typ, func(b *testing.B) {
+				b.ReportAllocs()
+				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					for _, btn := range btns {
 						var text string
-						if btn.Note != "" {
+						if CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
 							text = btn.MainText + "\n" + btn.Note
 						} else {
 							text = btn.MainText
 						}
-						_, _ = windows.UTF16PtrFromString(text)
+						text16, _ := windows.UTF16PtrFromString(text)
+						GlobalSink = text16
 					}
 				}
 			})
