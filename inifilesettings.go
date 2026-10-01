@@ -126,7 +126,7 @@ func (ifs *IniFileSettings) fileExists() (bool, error) {
 		if os.IsNotExist(err) {
 			return false, nil
 		}
-		return false, err
+		return false, wrapError(err)
 	}
 
 	return true, nil
