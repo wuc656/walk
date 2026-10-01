@@ -49,7 +49,7 @@ func (l *GridLayout) sufficientStretchFactors(stretchFactors []int, required int
 	oldLen := len(stretchFactors)
 	if oldLen < required {
 		if cap(stretchFactors) < required {
-			temp := make([]int, required, maxi(required, len(stretchFactors)*2))
+			temp := make([]int, required, max(required, len(stretchFactors)*2))
 			copy(temp, stretchFactors)
 			stretchFactors = temp
 		} else {
@@ -403,7 +403,7 @@ func (li *gridLayoutItem) MinSizeForSize(size Size) Size {
 			info := li.item2Info[item]
 
 			if info.spanHorz == 1 {
-				ws[col] = maxi(ws[col], min.Width)
+				ws[col] = max(ws[col], min.Width)
 			}
 		}
 	}
@@ -434,7 +434,7 @@ func (li *gridLayoutItem) MinSizeForSize(size Size) Size {
 						height := hfw.HeightForWidth(li.spannedWidth(info, widths))
 
 						mutex.Lock()
-						maxHeight = maxi(maxHeight, height)
+						maxHeight = max(maxHeight, height)
 						mutex.Unlock()
 
 					})
@@ -442,7 +442,7 @@ func (li *gridLayoutItem) MinSizeForSize(size Size) Size {
 					height := li.MinSizeEffectiveForChild(item).Height
 
 					mutex.Lock()
-					maxHeight = maxi(maxHeight, height)
+					maxHeight = max(maxHeight, height)
 					mutex.Unlock()
 				}
 			}
@@ -605,7 +605,7 @@ func (li *gridLayoutItem) PerformLayout() []LayoutResultItem {
 			if lf&GrowableHorz == 0 {
 				w = s.Width
 			}
-			w = mini(w, width)
+			w = min(w, width)
 
 			if hfw, ok := item.(HeightForWidther); ok && hfw.HasHeightForWidth() {
 				h = hfw.HeightForWidth(w)
@@ -617,7 +617,7 @@ func (li *gridLayoutItem) PerformLayout() []LayoutResultItem {
 					h = s.Height
 				}
 			}
-			h = mini(h, height)
+			h = min(h, height)
 		}
 
 		alignment := item.Geometry().Alignment
@@ -696,7 +696,7 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 			info := li.item2Info[item]
 			flags := item.LayoutFlags()
 
-			max := item.Geometry().MaxSize
+			maxSz := item.Geometry().MaxSize
 
 			var pref Size
 			if hfw, ok := item.(HeightForWidther); !ok || !hfw.HasHeightForWidth() {
@@ -707,13 +707,13 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 
 			if orientation == Horizontal {
 				if info.spanHorz == 1 {
-					minSizes[i] = maxi(minSizes[i], li.MinSizeEffectiveForChild(item).Width)
+					minSizes[i] = max(minSizes[i], li.MinSizeEffectiveForChild(item).Width)
 				}
 
-				if max.Width > 0 {
-					maxSizes[i] = maxi(maxSizes[i], max.Width)
+				if maxSz.Width > 0 {
+					maxSizes[i] = max(maxSizes[i], maxSz.Width)
 				} else if pref.Width > 0 && flags&GrowableHorz == 0 {
-					maxSizes[i] = maxi(maxSizes[i], pref.Width)
+					maxSizes[i] = max(maxSizes[i], pref.Width)
 				} else {
 					maxSizes[i] = 32768
 				}
@@ -728,18 +728,18 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 			} else {
 				if info.spanVert == 1 {
 					if hfw, ok := item.(HeightForWidther); ok && hfw.HasHeightForWidth() {
-						minSizes[i] = maxi(minSizes[i], hfw.HeightForWidth(li.spannedWidth(info, widths)))
+						minSizes[i] = max(minSizes[i], hfw.HeightForWidth(li.spannedWidth(info, widths)))
 					} else {
-						minSizes[i] = maxi(minSizes[i], li.MinSizeEffectiveForChild(item).Height)
+						minSizes[i] = max(minSizes[i], li.MinSizeEffectiveForChild(item).Height)
 					}
 				}
 
-				if max.Height > 0 {
-					maxSizes[i] = maxi(maxSizes[i], max.Height)
+				if maxSz.Height > 0 {
+					maxSizes[i] = max(maxSizes[i], maxSz.Height)
 				} else if hfw, ok := item.(HeightForWidther); ok && flags&GrowableVert == 0 && hfw.HasHeightForWidth() {
 					maxSizes[i] = minSizes[i]
 				} else if pref.Height > 0 && flags&GrowableVert == 0 {
-					maxSizes[i] = maxi(maxSizes[i], pref.Height)
+					maxSizes[i] = max(maxSizes[i], pref.Height)
 				} else {
 					maxSizes[i] = 32768
 				}
@@ -757,7 +757,7 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 		sortedSections[i].index = i
 		sortedSections[i].minSize = minSizes[i]
 		sortedSections[i].maxSize = maxSizes[i]
-		sortedSections[i].stretch = maxi(1, stretchFactors[i])
+		sortedSections[i].stretch = max(1, stretchFactors[i])
 
 		minSizesRemaining += minSizes[i]
 

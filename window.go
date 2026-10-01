@@ -1738,7 +1738,7 @@ func calculateTextSize(text string, font *Font, dpi int, width int, hwnd win.HWN
 				return Size{}
 			}
 
-			size.Width = maxi(size.Width, int(s.CX))
+			size.Width = max(size.Width, int(s.CX))
 			size.Height += int(s.CY)
 		}
 	}

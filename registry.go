@@ -46,9 +46,11 @@ func RegistryKeyString(rootKey *RegistryKey, subKeyPath, valueName string) (valu
 	var data []uint16
 	var bufSize uint32
 
+	valueNamePtr := syscall.StringToUTF16Ptr(valueName)
+
 	if win.ERROR_SUCCESS != win.RegQueryValueEx(
 		hKey,
-		syscall.StringToUTF16Ptr(valueName),
+		valueNamePtr,
 		nil,
 		&typ,
 		nil,
@@ -61,7 +63,7 @@ func RegistryKeyString(rootKey *RegistryKey, subKeyPath, valueName string) (valu
 
 	if win.ERROR_SUCCESS != win.RegQueryValueEx(
 		hKey,
-		syscall.StringToUTF16Ptr(valueName),
+		valueNamePtr,
 		nil,
 		&typ,
 		(*byte)(unsafe.Pointer(&data[0])),

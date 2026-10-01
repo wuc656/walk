@@ -8,7 +8,6 @@ package walk
 
 import (
 	"image"
-	"image/color"
 	"math"
 	"syscall"
 	"unsafe"
@@ -284,15 +283,20 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 	height := int(bi.BmiHeader.BiHeight)
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 
+	bytesPerPixel := int(bi.BmiHeader.BiBitCount) / 8
+	stride := img.Stride
+	pix := img.Pix
 	n := 0
 	for y := range height {
+		destY := height - y - 1
+		destBase := destY * stride
 		for x := range width {
-			a := buf[n+3]
-			r := buf[n+2]
-			g := buf[n+1]
-			b := buf[n+0]
-			n += int(bi.BmiHeader.BiBitCount) / 8
-			img.Set(x, height-y-1, color.RGBA{r, g, b, a})
+			off := destBase + x*4
+			pix[off+0] = buf[n+2] // R
+			pix[off+1] = buf[n+1] // G
+			pix[off+2] = buf[n+0] // B
+			pix[off+3] = buf[n+3] // A
+			n += bytesPerPixel
 		}
 	}
 
@@ -637,6 +641,7 @@ func hBitmapFromIcon(icon *Icon, size Size, dpi int) (win.HBITMAP, error) {
 
 	err := icon.drawStretched(hdcMem, Rectangle{Width: size.Width, Height: size.Height})
 	if err != nil {
+		win.DeleteObject(win.HGDIOBJ(hBmp))
 		return 0, err
 	}
 

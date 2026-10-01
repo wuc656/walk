@@ -245,10 +245,10 @@ func (li *splitterContainerLayoutItem) MinSizeForSize(size Size) Size {
 
 		if li.orientation == Horizontal {
 			s.Width += cur.Width
-			s.Height = maxi(s.Height, margins.Height+cur.Height)
+			s.Height = max(s.Height, margins.Height+cur.Height)
 		} else {
 			s.Height += cur.Height
-			s.Width = maxi(s.Width, margins.Width+cur.Width)
+			s.Width = max(s.Width, margins.Width+cur.Width)
 		}
 	}
 
@@ -336,34 +336,34 @@ func (li *splitterContainerLayoutItem) PerformLayout() []LayoutResultItem {
 
 			if flags := item.LayoutFlags(); li.orientation == Horizontal {
 				if flags&ShrinkableHorz == 0 {
-					size = maxi(size, idealSize.Width)
+					size = max(size, idealSize.Width)
 					if wi != nil {
-						wi.min = maxi(wi.min, size)
+						wi.min = max(wi.min, size)
 					}
 				} else if wi != nil {
 					wi.shrinkable = true
 				}
 				if flags&GrowableHorz == 0 {
-					size = mini(size, idealSize.Width)
+					size = min(size, idealSize.Width)
 					if wi != nil {
-						wi.max = mini(wi.max, size)
+						wi.max = min(wi.max, size)
 					}
 				} else if wi != nil {
 					wi.growable = true
 				}
 			} else {
 				if flags&ShrinkableVert == 0 {
-					size = maxi(size, idealSize.Height)
+					size = max(size, idealSize.Height)
 					if wi != nil {
-						wi.min = maxi(wi.min, size)
+						wi.min = max(wi.min, size)
 					}
 				} else if wi != nil {
 					wi.shrinkable = true
 				}
 				if flags&GrowableVert == 0 {
-					size = mini(size, idealSize.Height)
+					size = min(size, idealSize.Height)
 					if wi != nil {
-						wi.max = mini(wi.max, size)
+						wi.max = min(wi.max, size)
 					}
 				} else if wi != nil {
 					wi.growable = true

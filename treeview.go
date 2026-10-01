@@ -584,7 +584,7 @@ func (tv *TreeView) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 				text := item.Text()
 				utf16 := syscall.StringToUTF16(text)
 				buf := (*[264]uint16)(unsafe.Pointer(nmtvdi.Item.PszText))
-				max := mini(len(utf16), int(nmtvdi.Item.CchTextMax))
+				max := min(len(utf16), int(nmtvdi.Item.CchTextMax))
 				copy((*buf)[:], utf16[:max])
 				(*buf)[max-1] = 0
 			}

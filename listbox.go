@@ -8,6 +8,7 @@ package walk
 
 import (
 	"fmt"
+	"slices"
 	"math/big"
 	"reflect"
 	"syscall"
@@ -271,7 +272,7 @@ func (lb *ListBox) ensureVisibleItemsHeightUpToDate() error {
 	}
 
 	topIndex := int(lb.SendMessage(win.LB_GETTOPINDEX, 0, 0))
-	offset := maxi(0, topIndex-10)
+	offset := max(0, topIndex-10)
 	count := lb.model.ItemCount()
 	var rc win.RECT
 	lb.SendMessage(win.LB_GETITEMRECT, uintptr(offset), uintptr(unsafe.Pointer(&rc)))
@@ -343,7 +344,7 @@ func (lb *ListBox) attachModel() {
 			lb.insertItemAt(i)
 		}
 
-		lb.lastWidthsMeasuredFor = append(lb.lastWidthsMeasuredFor[:from], append(make([]int, to-from+1), lb.lastWidthsMeasuredFor[from:]...)...)
+		lb.lastWidthsMeasuredFor = slices.Insert(lb.lastWidthsMeasuredFor, from, make([]int, to-from+1)...)
 
 		lb.ensureVisibleItemsHeightUpToDate()
 	})
@@ -358,7 +359,7 @@ func (lb *ListBox) attachModel() {
 			lb.removeItem(i)
 		}
 
-		lb.lastWidthsMeasuredFor = append(lb.lastWidthsMeasuredFor[:from], lb.lastWidthsMeasuredFor[to:]...)
+		lb.lastWidthsMeasuredFor = slices.Delete(lb.lastWidthsMeasuredFor, from, to+1)
 
 		lb.ensureVisibleItemsHeightUpToDate()
 	})
@@ -541,7 +542,7 @@ func (lb *ListBox) calculateMaxItemTextWidth() int {
 			return -1
 		}
 
-		maxWidth = maxi(maxWidth, int(s.CX))
+		maxWidth = max(maxWidth, int(s.CX))
 	}
 
 	return maxWidth
@@ -556,7 +557,7 @@ func (lb *ListBox) idealSize() Size {
 	}
 
 	// FIXME: Use GetThemePartSize instead of guessing
-	w := maxi(defaultSize.Width, lb.maxItemTextWidth+IntFrom96DPI(24, lb.DPI()))
+	w := max(defaultSize.Width, lb.maxItemTextWidth+IntFrom96DPI(24, lb.DPI()))
 	h := defaultSize.Height + 1
 
 	return Size{w, h}

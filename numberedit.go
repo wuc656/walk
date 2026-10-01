@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -598,7 +599,7 @@ func (nle *numberLineEdit) processChar(text []uint16, start, end int, key Key, c
 		}
 
 		if nle.decimals > 0 {
-			text = uint16RemoveUint16(text, groupSepUint16)
+			text = slices.DeleteFunc(text, func(u uint16) bool { return u == groupSepUint16 })
 			start -= groupSepsBeforeStart
 		}
 
@@ -729,7 +730,7 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 		switch char {
 		case uint16('0'), uint16('1'), uint16('2'), uint16('3'), uint16('4'), uint16('5'), uint16('6'), uint16('7'), uint16('8'), uint16('9'):
 			if start == end && nle.decimals > 0 {
-				if i := uint16IndexUint16(text, decimalSepUint16); i > -1 && i < len(text)-nle.decimals && start > i {
+				if i := slices.Index(text, decimalSepUint16); i > -1 && i < len(text)-nle.decimals && start > i {
 					return 0
 				}
 			}
@@ -742,7 +743,7 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 				return 0
 			}
 
-			if start > 0 || uint16ContainsUint16(text, uint16('-')) && end == 0 {
+			if start > 0 || slices.Contains(text, uint16('-')) && end == 0 {
 				return 0
 			}
 
@@ -762,7 +763,7 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 				return 0
 			}
 
-			if i := uint16IndexUint16(text, decimalSepUint16); i > -1 && i <= start || i > end {
+			if i := slices.Index(text, decimalSepUint16); i > -1 && i <= start || i > end {
 				return 0
 			}
 

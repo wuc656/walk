@@ -32,14 +32,15 @@ func NewIconCache() *IconCache {
 }
 
 func (ic *IconCache) Clear() {
-	for key, bmp := range ic.imageAndDPI2Bitmap {
+	for _, bmp := range ic.imageAndDPI2Bitmap {
 		bmp.Dispose()
-		delete(ic.imageAndDPI2Bitmap, key)
 	}
-	for key, ico := range ic.imageAndDPI2Icon {
+	clear(ic.imageAndDPI2Bitmap)
+
+	for _, ico := range ic.imageAndDPI2Icon {
 		ico.Dispose()
-		delete(ic.imageAndDPI2Icon, key)
 	}
+	clear(ic.imageAndDPI2Icon)
 }
 
 func (ic *IconCache) Dispose() {

@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"slices"
 	"syscall"
 	"unsafe"
 
@@ -344,6 +345,7 @@ func (l *StatusBarItemList) At(index int) *StatusBarItem {
 }
 
 func (l *StatusBarItemList) Clear() error {
+	clear(l.items)
 	old := l.items
 	l.items = l.items[:0]
 
@@ -426,7 +428,7 @@ func (l *StatusBarItemList) RemoveAt(index int) error {
 	item := l.items[index]
 	item.sb = nil
 
-	l.items = append(l.items[:index], l.items[index+1:]...)
+	l.items = slices.Delete(l.items, index, index+1)
 
 	succeeded := false
 	defer func() {

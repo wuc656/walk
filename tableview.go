@@ -886,7 +886,7 @@ func (tv *TableView) SetModel(mdl any) error {
 
 		if sorter, ok := tv.model.(Sorter); ok {
 			if tv.sortedColumnIndex >= tv.visibleColumnCount() {
-				tv.sortedColumnIndex = maxi(-1, mini(0, tv.visibleColumnCount()-1))
+				tv.sortedColumnIndex = max(-1, min(0, tv.visibleColumnCount()-1))
 				tv.sortOrder = SortAscending
 			}
 
@@ -1049,7 +1049,7 @@ func (tv *TableView) visibleColumnCount() int {
 }
 
 func (tv *TableView) visibleColumns() []*TableViewColumn {
-	var cols []*TableViewColumn
+	cols := make([]*TableViewColumn, 0, len(tv.columns.items))
 
 	for _, tvc := range tv.columns.items {
 		if tvc.visible {
@@ -1329,11 +1329,7 @@ func (tv *TableView) SetMultiSelection(multiSel bool) error {
 
 // SelectedIndexes returns the indexes of the currently selected items.
 func (tv *TableView) SelectedIndexes() []int {
-	indexes := make([]int, len(tv.selectedIndexes))
-
-	copy(indexes, tv.selectedIndexes)
-
-	return indexes
+	return slices.Clone(tv.selectedIndexes)
 }
 
 // SetSelectedIndexes sets the indexes of the currently selected items.
@@ -1554,7 +1550,7 @@ func (tv *TableView) StretchLastColumn() error {
 			width -= int(win.GetSystemMetricsForDpi(win.SM_CXVSCROLL, uint32(tv.DPI())))
 		}
 
-		lp = uintptr(maxi(0, width))
+		lp = uintptr(max(0, width))
 	}
 
 	if lp > 0 {
@@ -2115,7 +2111,7 @@ func (tv *TableView) lvWndProc(origWndProcPtr uintptr, hwnd win.HWND, msg uint32
 
 				utf16 := syscall.StringToUTF16(text)
 				buf := (*[264]uint16)(unsafe.Pointer(di.Item.PszText))
-				max := mini(len(utf16), int(di.Item.CchTextMax))
+				max := min(len(utf16), int(di.Item.CchTextMax))
 				copy((*buf)[:], utf16[:max])
 				(*buf)[max-1] = 0
 			}
