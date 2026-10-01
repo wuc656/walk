@@ -290,14 +290,36 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 	for y := range height {
 		destY := height - y - 1
 		destBase := destY * stride
-		for x := range width {
-			off := destBase + x*4
-			pix[off+0] = buf[n+2] // R
-			pix[off+1] = buf[n+1] // G
-			pix[off+2] = buf[n+0] // B
-			pix[off+3] = buf[n+3] // A
-			n += bytesPerPixel
+
+		if bytesPerPixel == 4 && width > 0 {
+			dstRow := pix[destBase : destBase+width*4]
+			srcRow := buf[n : n+width*4]
+
+			for x := range width {
+				dOff := x * 4
+				sOff := x * 4
+
+				_ = srcRow[sOff+3]
+				_ = dstRow[dOff+3]
+
+				dstRow[dOff+0] = srcRow[sOff+2] // R
+				dstRow[dOff+1] = srcRow[sOff+1] // G
+				dstRow[dOff+2] = srcRow[sOff+0] // B
+				dstRow[dOff+3] = srcRow[sOff+3] // A
+			}
+		} else {
+			for x := range width {
+				off := destBase + x*4
+				pix[off+0] = buf[n+2] // R
+				pix[off+1] = buf[n+1] // G
+				pix[off+2] = buf[n+0] // B
+				pix[off+3] = buf[n+3] // A
+				n += bytesPerPixel
+			}
+			// Skip the outer n += logic as it was handled inside
+			continue
 		}
+		n += width * bytesPerPixel
 	}
 
 	return img, nil
