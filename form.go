@@ -807,8 +807,8 @@ func (fb *FormBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 		minSize := SizeFrom96DPI(fb.minSize96dpi, fb.DPI())
 
 		mmi.PtMinTrackSize = Point{
-			maxi(min.Width, minSize.Width),
-			maxi(min.Height, minSize.Height),
+			max(min.Width, minSize.Width),
+			max(min.Height, minSize.Height),
 		}.toPOINT()
 		return 0
 

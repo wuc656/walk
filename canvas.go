@@ -108,7 +108,12 @@ func newCanvasFromWindow(window Window) (*Canvas, error) {
 		return nil, newError("GetDC failed")
 	}
 
-	return (&Canvas{hdc: hdc, window: window}).init()
+	c, err := (&Canvas{hdc: hdc, window: window}).init()
+	if err != nil {
+		win.ReleaseDC(window.Handle(), hdc)
+		return nil, err
+	}
+	return c, nil
 }
 
 func newCanvasFromHDC(hdc win.HDC) (*Canvas, error) {

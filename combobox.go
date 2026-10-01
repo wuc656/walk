@@ -547,7 +547,7 @@ func (cb *ComboBox) calculateMaxItemTextWidth() int {
 			return -1
 		}
 
-		maxWidth = maxi(maxWidth, int(s.CX))
+		maxWidth = max(maxWidth, int(s.CX))
 	}
 
 	return maxWidth
@@ -743,7 +743,7 @@ func (cb *ComboBox) CreateLayoutItem(ctx *LayoutContext) LayoutItem {
 	}
 
 	// FIXME: Use GetThemePartSize instead of guessing
-	w := maxi(defaultSize.Width, cb.maxItemTextWidth+int(win.GetSystemMetricsForDpi(win.SM_CXVSCROLL, uint32(ctx.dpi)))+8)
+	w := max(defaultSize.Width, cb.maxItemTextWidth+int(win.GetSystemMetricsForDpi(win.SM_CXVSCROLL, uint32(ctx.dpi)))+8)
 	h := defaultSize.Height + 1
 
 	return &comboBoxLayoutItem{

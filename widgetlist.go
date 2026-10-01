@@ -7,6 +7,8 @@
 package walk
 
 import (
+	"slices"
+
 	"github.com/wuc656/win"
 )
 
@@ -97,9 +99,7 @@ func (l *WidgetList) containsHandle(handle win.HWND) bool {
 }
 
 func (l *WidgetList) insertIntoSlice(index int, item Widget) {
-	l.items = append(l.items, nil)
-	copy(l.items[index+1:], l.items[index:])
-	l.items[index] = item.AsWidgetBase()
+	l.items = slices.Insert(l.items, index, item.AsWidgetBase())
 }
 
 func (l *WidgetList) Insert(index int, item Widget) error {
@@ -118,7 +118,7 @@ func (l *WidgetList) Insert(index int, item Widget) error {
 
 	if observer != nil {
 		if err := observer.onInsertedWidget(index, item); err != nil {
-			l.items = append(l.items[:index], l.items[index+1:]...)
+			l.items = slices.Delete(l.items, index, index+1)
 			return err
 		}
 	}
@@ -160,9 +160,7 @@ func (l *WidgetList) RemoveAt(index int) error {
 		}
 	}
 
-	copy(l.items[index:], l.items[index+1:])
-	l.items[len(l.items)-1] = nil
-	l.items = l.items[:len(l.items)-1]
+	l.items = slices.Delete(l.items, index, index+1)
 
 	if observer != nil {
 		if err := observer.onRemovedWidget(index, widget); err != nil {

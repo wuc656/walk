@@ -208,11 +208,11 @@ func (li *boxLayoutItem) MinSizeForSize(size Size) Size {
 		item.Bounds.Width = min.Width
 
 		if li.orientation == Horizontal {
-			maxSecondary = maxi(maxSecondary, item.Bounds.Height)
+			maxSecondary = max(maxSecondary, item.Bounds.Height)
 
 			s.Width += item.Bounds.Width
 		} else {
-			maxSecondary = maxi(maxSecondary, item.Bounds.Width)
+			maxSecondary = max(maxSecondary, item.Bounds.Width)
 
 			s.Height += item.Bounds.Height
 		}
@@ -413,27 +413,27 @@ func boxLayoutItems(container ContainerLayoutItem, items []LayoutItem, orientati
 			k := info.index
 
 			stretch := stretchFactors[k]
-			min := info.minSize
-			max := info.maxSize
+			minSz := info.minSize
+			maxSz := info.maxSize
 			var size int
 			var corrected bool
 			if shrinkableAmount1[k] > 0 {
 				size = info.prefSize
 				if excess < 0.0 {
-					size -= mini(shrinkableAmount1[k], int(math.Round(-excess/float64(shrinkableAmount1Total)*float64(shrinkableAmount1[k]))))
+					size -= min(shrinkableAmount1[k], int(math.Round(-excess/float64(shrinkableAmount1Total)*float64(shrinkableAmount1[k]))))
 					corrected = true
 				}
 			} else {
-				size = min
+				size = minSz
 			}
 
-			if !corrected && min < max {
+			if !corrected && minSz < maxSz {
 				excessSpace := float64(space1 - minSizesRemaining - spacingRemaining)
 				size += int(math.Round(excessSpace * float64(stretch) / float64(stretchFactorsRemaining)))
-				if size < min {
-					size = min
-				} else if size > max {
-					size = max
+				if size < minSz {
+					size = minSz
+				} else if size > maxSz {
+					size = maxSz
 				}
 			}
 
@@ -442,7 +442,7 @@ func boxLayoutItems(container ContainerLayoutItem, items []LayoutItem, orientati
 			if shrinkableAmount1[k] > 0 {
 				minSizesRemaining -= info.prefSize
 			} else {
-				minSizesRemaining -= min
+				minSizesRemaining -= minSz
 			}
 			stretchFactorsRemaining -= stretch
 			space1 -= (size + spacing)

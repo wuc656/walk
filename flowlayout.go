@@ -125,7 +125,7 @@ func (li *flowLayoutItem) MinSizeForSize(size Size) Size {
 			sectionMinWidth += sectionItem.minSize.Width
 		}
 		sectionMinWidth += (len(section.items) - 1) * spacing
-		maxPrimary = maxi(maxPrimary, sectionMinWidth)
+		maxPrimary = max(maxPrimary, sectionMinWidth)
 
 		bounds.Height = section.secondaryMinSize
 
@@ -149,7 +149,7 @@ func (li *flowLayoutItem) MinSizeForSize(size Size) Size {
 				item.Bounds.Height = min.Height
 			}
 
-			maxSecondary = maxi(maxSecondary, item.Bounds.Height)
+			maxSecondary = max(maxSecondary, item.Bounds.Height)
 		}
 
 		s.Height += maxSecondary
@@ -206,7 +206,7 @@ func (li *flowLayoutItem) PerformLayout() []LayoutResultItem {
 				item.Bounds.Height = li.MinSizeEffectiveForChild(item.Item).Height
 			}
 
-			maxSecondary = maxi(maxSecondary, item.Bounds.Height)
+			maxSecondary = max(maxSecondary, item.Bounds.Height)
 		}
 
 		bounds.Height = maxSecondary + margins.VNear + margins.VFar
@@ -255,7 +255,7 @@ func (li *flowLayoutItem) sectionsForPrimarySize(primarySize int) []flowLayoutSe
 			}
 			section.primarySpaceLeft -= sectionItem.minSize.Width
 
-			section.secondaryMinSize = maxi(section.secondaryMinSize, sectionItem.minSize.Height)
+			section.secondaryMinSize = max(section.secondaryMinSize, sectionItem.minSize.Height)
 		}
 
 		if section.primarySpaceLeft < sectionItem.minSize.Width && len(section.items) == 0 {
