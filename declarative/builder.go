@@ -536,7 +536,6 @@ func (b *Builder) eventHandler(fieldName string) walk.EventHandler {
 	return nil
 }
 
-
 func (b *Builder) int(fieldName string) int {
 	fieldValue := b.widgetValue.FieldByName(fieldName)
 

@@ -13,6 +13,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"golang.org/x/sys/windows"
 )
 
 const iniFileTimeStampFormat = "2006-01-02"
@@ -130,6 +132,28 @@ func (ifs *IniFileSettings) fileExists() (bool, error) {
 	return true, nil
 }
 
+func restrictAccessWindows(path string) error {
+	// D:P         - DACL is Protected (do not inherit from parent)
+	// (A;OICI;FA;;;OW) - Allow (A) ObjectInherit/ContainerInherit (OICI) FullAccess (FA) to Owner (OW)
+	sd, err := windows.SecurityDescriptorFromString("D:P(A;OICI;FA;;;OW)")
+	if err != nil {
+		return err
+	}
+	dacl, _, err := sd.DACL()
+	if err != nil {
+		return err
+	}
+	return windows.SetNamedSecurityInfo(
+		path,
+		windows.SE_FILE_OBJECT,
+		windows.DACL_SECURITY_INFORMATION|windows.PROTECTED_DACL_SECURITY_INFORMATION,
+		nil,
+		nil,
+		dacl,
+		nil,
+	)
+}
+
 func (ifs *IniFileSettings) withFile(flags int, f func(file *os.File) error) error {
 	filePath := ifs.FilePath()
 
@@ -138,11 +162,21 @@ func (ifs *IniFileSettings) withFile(flags int, f func(file *os.File) error) err
 		return wrapError(err)
 	}
 
+	// Apply owner-only access to directory, including existing ones
+	if err := restrictAccessWindows(dirPath); err != nil {
+		return wrapError(err)
+	}
+
 	file, err := os.OpenFile(filePath, flags, 0600)
 	if err != nil {
 		return wrapError(err)
 	}
 	defer file.Close()
+
+	// Apply owner-only access to the file, including existing ones
+	if err := restrictAccessWindows(filePath); err != nil {
+		return wrapError(err)
+	}
 
 	return f(file)
 }
