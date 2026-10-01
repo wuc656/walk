@@ -45,24 +45,6 @@ func init() {
 	})
 }
 
-func maxi(a, b int) int {
-	if a > b {
-		return a
-	}
-
-	return b
-}
-
-func mini(a, b int) int {
-	if a < b {
-		return a
-	}
-
-	return b
-}
-
-
-
 
 func uint16CountUint16(s []uint16, v uint16) int {
 	var count int
@@ -75,8 +57,6 @@ func uint16CountUint16(s []uint16, v uint16) int {
 
 	return count
 }
-
-
 
 func assertFloat64Or(value any, defaultValue float64) float64 {
 	if f, ok := value.(float64); ok {
