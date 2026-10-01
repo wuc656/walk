@@ -5,10 +5,11 @@ package walk
 import (
 	"strconv"
 	"testing"
+
 	"golang.org/x/sys/windows"
 )
 
-var GlobalSink *uint16
+var sink *uint16
 
 func genMockButtons(count int, noteType string) []TaskDialogCustomButton {
 	var btns []TaskDialogCustomButton
@@ -25,7 +26,7 @@ func genMockButtons(count int, noteType string) []TaskDialogCustomButton {
 }
 
 func BenchmarkTaskDialogCustomButtonsBaseline(b *testing.B) {
-	CommandLinkMode := TaskDialogCommandLinks
+	commandLinkMode := TaskDialogCommandLinks
 	for _, count := range []int{1, 2, 5, 10} {
 		for _, typ := range []string{"short_ascii", "long_ascii", "unicode"} {
 			btns := genMockButtons(count, typ)
@@ -35,11 +36,11 @@ func BenchmarkTaskDialogCustomButtonsBaseline(b *testing.B) {
 				for i := 0; i < b.N; i++ {
 					for _, btn := range btns {
 						text := btn.MainText
-						if CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
+						if commandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
 							text += "\n" + btn.Note
 						}
 						text16, _ := windows.UTF16PtrFromString(text)
-						GlobalSink = text16
+						sink = text16
 					}
 				}
 			})
@@ -48,7 +49,7 @@ func BenchmarkTaskDialogCustomButtonsBaseline(b *testing.B) {
 }
 
 func BenchmarkTaskDialogCustomButtonsOptimized(b *testing.B) {
-	CommandLinkMode := TaskDialogCommandLinks
+	commandLinkMode := TaskDialogCommandLinks
 	for _, count := range []int{1, 2, 5, 10} {
 		for _, typ := range []string{"short_ascii", "long_ascii", "unicode"} {
 			btns := genMockButtons(count, typ)
@@ -57,14 +58,12 @@ func BenchmarkTaskDialogCustomButtonsOptimized(b *testing.B) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					for _, btn := range btns {
-						var text string
-						if CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
+						text := btn.MainText
+						if commandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
 							text = btn.MainText + "\n" + btn.Note
-						} else {
-							text = btn.MainText
 						}
 						text16, _ := windows.UTF16PtrFromString(text)
-						GlobalSink = text16
+						sink = text16
 					}
 				}
 			})

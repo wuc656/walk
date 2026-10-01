@@ -456,12 +456,10 @@ func (td *taskDialog) Show(opts TaskDialogOpts) (result TaskDialogResult, err er
 
 	customButtons := make([]win.TASKDIALOG_BUTTON_UNPACKED, 0, len(opts.CustomButtons))
 	for i, btn := range opts.CustomButtons {
-		var text string
+		text := btn.MainText
 		// Notes are only usable when command links are enabled.
 		if opts.CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
 			text = btn.MainText + "\n" + btn.Note
-		} else {
-			text = btn.MainText
 		}
 
 		text16, err := windows.UTF16PtrFromString(text)
