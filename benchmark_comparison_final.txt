@@ -1,0 +1,14 @@
+goos: windows
+goarch: amd64
+cpu: Intel(R) Xeon(R) Processor @ 2.30GHz
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     139	   7954259 ns/op	 8298561 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     170	   7665055 ns/op	 8298561 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     157	   7436845 ns/op	 8298560 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     159	   7503942 ns/op	 8298561 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     156	   7527079 ns/op	 8298560 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     158	   7582579 ns/op	 8298560 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     156	   7553441 ns/op	 8298563 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     160	   7397385 ns/op	 8298563 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     162	   7535145 ns/op	 8298564 B/op	       2 allocs/op
+BenchmarkToImageLogic_Optimized_SubSlices_Fast-4   	     163	   7501756 ns/op	 8298564 B/op	       2 allocs/op
+PASS

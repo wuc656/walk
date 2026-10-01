@@ -290,23 +290,27 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 	for y := range height {
 		destY := height - y - 1
 		destBase := destY * stride
-
-		if bytesPerPixel == 4 && width > 0 {
-			dstRow := pix[destBase : destBase+width*4]
-			srcRow := buf[n : n+width*4]
-
-			for x := range width {
-				dOff := x * 4
-				sOff := x * 4
-
-				_ = srcRow[sOff+3]
-				_ = dstRow[dOff+3]
-
-				dstRow[dOff+0] = srcRow[sOff+2] // R
-				dstRow[dOff+1] = srcRow[sOff+1] // G
-				dstRow[dOff+2] = srcRow[sOff+0] // B
-				dstRow[dOff+3] = srcRow[sOff+3] // A
+		if bytesPerPixel == 4 {
+			w4 := width * 4
+			dstRowEnd := destBase + w4
+			srcRowEnd := n + w4
+			if destBase >= 0 && n >= 0 && dstRowEnd <= len(pix) && srcRowEnd <= len(buf) {
+				dstRow := pix[destBase:dstRowEnd]
+				srcRow := buf[n:srcRowEnd]
+				if len(dstRow) >= w4 && len(srcRow) >= w4 {
+					for x := 0; x < width; x++ {
+						dOff := x * 4
+						sOff := x * 4
+						_ = dstRow[dOff+3]
+						_ = srcRow[sOff+3]
+						dstRow[dOff+0] = srcRow[sOff+2] // R
+						dstRow[dOff+1] = srcRow[sOff+1] // G
+						dstRow[dOff+2] = srcRow[sOff+0] // B
+						dstRow[dOff+3] = srcRow[sOff+3] // A
+					}
+				}
 			}
+			n += w4
 		} else {
 			for x := range width {
 				off := destBase + x*4
@@ -316,10 +320,7 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 				pix[off+3] = buf[n+3] // A
 				n += bytesPerPixel
 			}
-			// Skip the outer n += logic as it was handled inside
-			continue
 		}
-		n += width * bytesPerPixel
 	}
 
 	return img, nil
