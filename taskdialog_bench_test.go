@@ -4,6 +4,7 @@ package walk
 
 import (
 	"strconv"
+	"strings"
 	"testing"
 	"golang.org/x/sys/windows"
 )
@@ -55,11 +56,17 @@ func BenchmarkTaskDialogCustomButtonsOptimized(b *testing.B) {
 			b.Run("Count="+strconv.Itoa(count)+"_Type="+typ, func(b *testing.B) {
 				b.ReportAllocs()
 				b.ResetTimer()
+				var sb strings.Builder
 				for i := 0; i < b.N; i++ {
 					for _, btn := range btns {
 						var text string
 						if CommandLinkMode > TaskDialogCommandLinksDisabled && btn.Note != "" {
-							text = btn.MainText + "\n" + btn.Note
+							sb.Reset()
+							sb.Grow(len(btn.MainText) + 1 + len(btn.Note))
+							sb.WriteString(btn.MainText)
+							sb.WriteByte('\n')
+							sb.WriteString(btn.Note)
+							text = sb.String()
 						} else {
 							text = btn.MainText
 						}
