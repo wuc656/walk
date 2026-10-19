@@ -14,7 +14,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 type Directory struct {
@@ -236,17 +236,17 @@ func main() {
 	}
 	tableModel := NewFileInfoModel()
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mainWindow,
 		Title:    "Walk File Browser Example",
-		MinSize:  Size{600, 400},
-		Size:     Size{1024, 640},
-		Layout:   HBox{MarginsZero: true},
-		Children: []Widget{
-			HSplitter{
+		MinSize:  declarative.Size{Width: 600, Height: 400},
+		Size:     declarative.Size{Width: 1024, Height: 640},
+		Layout:   declarative.HBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.HSplitter{
 				AssignTo: &splitter,
-				Children: []Widget{
-					TreeView{
+				Children: []declarative.Widget{
+					declarative.TreeView{
 						AssignTo: &treeView,
 						Model:    treeModel,
 						OnCurrentItemChanged: func() {
@@ -260,21 +260,21 @@ func main() {
 							}
 						},
 					},
-					TableView{
+					declarative.TableView{
 						AssignTo:      &tableView,
 						StretchFactor: 2,
-						Columns: []TableViewColumn{
-							TableViewColumn{
+						Columns: []declarative.TableViewColumn{
+							declarative.TableViewColumn{
 								DataMember: "Name",
 								Width:      192,
 							},
-							TableViewColumn{
+							declarative.TableViewColumn{
 								DataMember: "Size",
 								Format:     "%d",
-								Alignment:  AlignFar,
+								Alignment:  declarative.AlignFar,
 								Width:      64,
 							},
-							TableViewColumn{
+							declarative.TableViewColumn{
 								DataMember: "Modified",
 								Format:     "2006-01-02 15:04:05",
 								Width:      120,
@@ -292,7 +292,7 @@ func main() {
 							webView.SetURL(url)
 						},
 					},
-					WebView{
+					declarative.WebView{
 						AssignTo:      &webView,
 						StretchFactor: 2,
 					},

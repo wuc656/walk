@@ -10,7 +10,7 @@ import (
 	"log"
 
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -19,10 +19,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	MainWindow{
+	declarative.MainWindow{
 		Title:   "Walk GradientComposite Example",
-		MinSize: Size{400, 0},
-		Background: GradientBrush{
+		MinSize: declarative.Size{Width: 400, Height: 0},
+		Background: declarative.GradientBrush{
 			Vertexes: []walk.GradientVertex{
 				{X: 0, Y: 0, Color: walk.RGB(255, 255, 127)},
 				{X: 1, Y: 0, Color: walk.RGB(127, 191, 255)},
@@ -31,48 +31,48 @@ func main() {
 				{X: 0, Y: 1, Color: walk.RGB(255, 127, 127)},
 			},
 			Triangles: []walk.GradientTriangle{
-				{0, 1, 2},
-				{1, 3, 2},
-				{3, 4, 2},
-				{4, 0, 2},
+				{Vertex1: 0, Vertex2: 1, Vertex3: 2},
+				{Vertex1: 1, Vertex2: 3, Vertex3: 2},
+				{Vertex1: 3, Vertex2: 4, Vertex3: 2},
+				{Vertex1: 4, Vertex2: 0, Vertex3: 2},
 			},
 		},
-		Layout: HBox{Margins: Margins{100, 100, 100, 100}},
-		Children: []Widget{
-			GradientComposite{
+		Layout: declarative.HBox{Margins: declarative.Margins{Left: 100, Top: 100, Right: 100, Bottom: 100}},
+		Children: []declarative.Widget{
+			declarative.GradientComposite{
 				Border:   true,
-				Vertical: Bind("verticalCB.Checked"),
-				Color1:   Bind("rgb(c1RedSld.Value, c1GreenSld.Value, c1BlueSld.Value)"),
-				Color2:   Bind("rgb(c2RedSld.Value, c2GreenSld.Value, c2BlueSld.Value)"),
-				Layout:   HBox{},
-				Children: []Widget{
-					GroupBox{
+				Vertical: declarative.Bind("verticalCB.Checked"),
+				Color1:   declarative.Bind("rgb(c1RedSld.Value, c1GreenSld.Value, c1BlueSld.Value)"),
+				Color2:   declarative.Bind("rgb(c2RedSld.Value, c2GreenSld.Value, c2BlueSld.Value)"),
+				Layout:   declarative.HBox{},
+				Children: []declarative.Widget{
+					declarative.GroupBox{
 						Title:  "Gradient Parameters",
-						Layout: VBox{},
-						Children: []Widget{
-							CheckBox{Name: "verticalCB", Text: "Vertical", Checked: true},
-							GroupBox{
+						Layout: declarative.VBox{},
+						Children: []declarative.Widget{
+							declarative.CheckBox{Name: "verticalCB", Text: "Vertical", Checked: true},
+							declarative.GroupBox{
 								Title:  "Color1",
-								Layout: Grid{Columns: 2},
-								Children: []Widget{
-									Label{Text: "Red:"},
-									Slider{Name: "c1RedSld", Tracking: true, MaxValue: 255, Value: 95},
-									Label{Text: "Green:"},
-									Slider{Name: "c1GreenSld", Tracking: true, MaxValue: 255, Value: 191},
-									Label{Text: "Blue:"},
-									Slider{Name: "c1BlueSld", Tracking: true, MaxValue: 255, Value: 255},
+								Layout: declarative.Grid{Columns: 2},
+								Children: []declarative.Widget{
+									declarative.Label{Text: "Red:"},
+									declarative.Slider{Name: "c1RedSld", Tracking: true, MaxValue: 255, Value: 95},
+									declarative.Label{Text: "Green:"},
+									declarative.Slider{Name: "c1GreenSld", Tracking: true, MaxValue: 255, Value: 191},
+									declarative.Label{Text: "Blue:"},
+									declarative.Slider{Name: "c1BlueSld", Tracking: true, MaxValue: 255, Value: 255},
 								},
 							},
-							GroupBox{
+							declarative.GroupBox{
 								Title:  "Color2",
-								Layout: Grid{Columns: 2},
-								Children: []Widget{
-									Label{Text: "Red:"},
-									Slider{Name: "c2RedSld", Tracking: true, MaxValue: 255, Value: 239},
-									Label{Text: "Green:"},
-									Slider{Name: "c2GreenSld", Tracking: true, MaxValue: 255, Value: 63},
-									Label{Text: "Blue:"},
-									Slider{Name: "c2BlueSld", Tracking: true, MaxValue: 255, Value: 0},
+								Layout: declarative.Grid{Columns: 2},
+								Children: []declarative.Widget{
+									declarative.Label{Text: "Red:"},
+									declarative.Slider{Name: "c2RedSld", Tracking: true, MaxValue: 255, Value: 239},
+									declarative.Label{Text: "Green:"},
+									declarative.Slider{Name: "c2GreenSld", Tracking: true, MaxValue: 255, Value: 63},
+									declarative.Label{Text: "Blue:"},
+									declarative.Slider{Name: "c2BlueSld", Tracking: true, MaxValue: 255, Value: 0},
 								},
 							},
 						},

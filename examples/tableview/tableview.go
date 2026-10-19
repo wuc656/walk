@@ -16,7 +16,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 type Foo struct {
@@ -148,7 +148,7 @@ func main() {
 	goodIcon, _ := walk.Resources.Icon("../img/check.ico")
 	badIcon, _ := walk.Resources.Icon("../img/stop.ico")
 
-	barBitmap, err := walk.NewBitmap(walk.Size{100, 1})
+	barBitmap, err := walk.NewBitmap(walk.Size{Width: 100, Height: 1})
 	if err != nil {
 		panic(err)
 	}
@@ -160,7 +160,7 @@ func main() {
 	}
 	defer barBitmap.Dispose()
 
-	canvas.GradientFillRectangle(walk.RGB(255, 0, 0), walk.RGB(0, 255, 0), walk.Horizontal, walk.Rectangle{0, 0, 100, 1})
+	canvas.GradientFillRectangle(walk.RGB(255, 0, 0), walk.RGB(0, 255, 0), walk.Horizontal, walk.Rectangle{X: 0, Y: 0, Width: 100, Height: 1})
 
 	canvas.Dispose()
 
@@ -168,31 +168,31 @@ func main() {
 
 	var tv *walk.TableView
 
-	MainWindow{
+	declarative.MainWindow{
 		Title:  "Walk TableView Example",
-		Size:   Size{800, 600},
-		Layout: VBox{MarginsZero: true},
-		Children: []Widget{
-			PushButton{
+		Size:   declarative.Size{Width: 800, Height: 600},
+		Layout: declarative.VBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.PushButton{
 				Text:      "Reset Rows",
 				OnClicked: model.ResetRows,
 			},
-			PushButton{
+			declarative.PushButton{
 				Text: "Select first 5 even Rows",
 				OnClicked: func() {
 					tv.SetSelectedIndexes([]int{0, 2, 4, 6, 8})
 				},
 			},
-			TableView{
+			declarative.TableView{
 				AssignTo:         &tv,
 				AlternatingRowBG: true,
 				CheckBoxes:       true,
 				ColumnsOrderable: true,
 				MultiSelection:   true,
-				Columns: []TableViewColumn{
+				Columns: []declarative.TableViewColumn{
 					{Title: "#"},
 					{Title: "Bar"},
-					{Title: "Baz", Alignment: AlignFar},
+					{Title: "Baz", Alignment: declarative.AlignFar},
 					{Title: "Quux", Format: "2006-01-02 15:04:05", Width: 150},
 				},
 				StyleCell: func(style *walk.CellStyle) {
@@ -214,7 +214,7 @@ func main() {
 							bounds.Y += 2
 							bounds.Width = int((float64(bounds.Width) - 4) / 5 * float64(len(item.Bar)))
 							bounds.Height -= 4
-							canvas.DrawBitmapPartWithOpacity(barBitmap, bounds, walk.Rectangle{0, 0, 100 / 5 * len(item.Bar), 1}, 127)
+							canvas.DrawBitmapPartWithOpacity(barBitmap, bounds, walk.Rectangle{X: 0, Y: 0, Width: 100 / 5 * len(item.Bar), Height: 1}, 127)
 
 							bounds.X += 4
 							bounds.Y += 2

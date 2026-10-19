@@ -11,7 +11,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -22,12 +22,12 @@ func main() {
 
 	var te *walk.TextEdit
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		Title:   "Walk Clipboard Example",
-		MinSize: Size{300, 200},
-		Layout:  VBox{},
-		Children: []Widget{
-			PushButton{
+		MinSize: declarative.Size{Width: 300, Height: 200},
+		Layout:  declarative.VBox{},
+		Children: []declarative.Widget{
+			declarative.PushButton{
 				Text: "Copy",
 				OnClicked: func() {
 					if err := walk.Clipboard().SetText(te.Text()); err != nil {
@@ -35,7 +35,7 @@ func main() {
 					}
 				},
 			},
-			PushButton{
+			declarative.PushButton{
 				Text: "Paste",
 				OnClicked: func() {
 					if text, err := walk.Clipboard().Text(); err != nil {
@@ -45,7 +45,7 @@ func main() {
 					}
 				},
 			},
-			TextEdit{
+			declarative.TextEdit{
 				AssignTo: &te,
 			},
 		},

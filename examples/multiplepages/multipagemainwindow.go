@@ -8,17 +8,17 @@ package main
 
 import (
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 type MultiPageMainWindowConfig struct {
 	Name                 string
-	Enabled              Property
-	Visible              Property
-	Font                 Font
-	MinSize              Size
-	MaxSize              Size
-	ContextMenuItems     []MenuItem
+	Enabled              declarative.Property
+	Visible              declarative.Property
+	Font                 declarative.Font
+	MinSize              declarative.Size
+	MaxSize              declarative.Size
+	ContextMenuItems     []declarative.MenuItem
 	OnKeyDown            walk.KeyEventHandler
 	OnKeyPress           walk.KeyEventHandler
 	OnKeyUp              walk.KeyEventHandler
@@ -28,9 +28,9 @@ type MultiPageMainWindowConfig struct {
 	OnSizeChanged        walk.EventHandler
 	OnCurrentPageChanged walk.EventHandler
 	Title                string
-	Size                 Size
-	MenuItems            []MenuItem
-	ToolBar              ToolBar
+	Size                 declarative.Size
+	MenuItems            []declarative.MenuItem
+	ToolBar              declarative.ToolBar
 	PageCfgs             []PageConfig
 }
 
@@ -65,7 +65,7 @@ func NewMultiPageMainWindow(cfg *MultiPageMainWindowConfig) (*MultiPageMainWindo
 		action2NewPage: make(map[*walk.Action]PageFactoryFunc),
 	}
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo:         &mpmw.MainWindow,
 		Name:             cfg.Name,
 		Title:            cfg.Title,
@@ -84,29 +84,29 @@ func NewMultiPageMainWindow(cfg *MultiPageMainWindowConfig) (*MultiPageMainWindo
 		OnMouseMove:      cfg.OnMouseMove,
 		OnMouseUp:        cfg.OnMouseUp,
 		OnSizeChanged:    cfg.OnSizeChanged,
-		Layout:           HBox{MarginsZero: true, SpacingZero: true},
-		Children: []Widget{
-			ScrollView{
+		Layout:           declarative.HBox{MarginsZero: true, SpacingZero: true},
+		Children: []declarative.Widget{
+			declarative.ScrollView{
 				HorizontalFixed: true,
-				Layout:          VBox{MarginsZero: true},
-				Children: []Widget{
-					Composite{
-						Layout: VBox{MarginsZero: true},
-						Children: []Widget{
-							ToolBar{
+				Layout:          declarative.VBox{MarginsZero: true},
+				Children: []declarative.Widget{
+					declarative.Composite{
+						Layout: declarative.VBox{MarginsZero: true},
+						Children: []declarative.Widget{
+							declarative.ToolBar{
 								AssignTo:    &mpmw.navTB,
-								Orientation: Vertical,
-								ButtonStyle: ToolBarButtonImageAboveText,
+								Orientation: declarative.Vertical,
+								ButtonStyle: declarative.ToolBarButtonImageAboveText,
 								MaxTextRows: 2,
 							},
 						},
 					},
 				},
 			},
-			Composite{
+			declarative.Composite{
 				AssignTo: &mpmw.pageCom,
 				Name:     "pageCom",
-				Layout:   HBox{MarginsZero: true, SpacingZero: true},
+				Layout:   declarative.HBox{MarginsZero: true, SpacingZero: true},
 			},
 		},
 	}).Create(); err != nil {

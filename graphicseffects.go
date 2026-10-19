@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build windows
+//go:build windows
 
 package walk
 
-import "math"
+import "slices"
 
 var (
 	borderGlowAlpha = []float64{0.2, 0.1, 0.075, 0.05, 0.075}
@@ -34,10 +34,10 @@ func (wgeb *widgetGraphicsEffectBase) Dispose() {
 		return
 	}
 
-	for dpi, bitmap := range wgeb.dpi2Bitmap {
+	for _, bitmap := range wgeb.dpi2Bitmap {
 		bitmap.Dispose()
-		delete(wgeb.dpi2Bitmap, dpi)
 	}
+	clear(wgeb.dpi2Bitmap)
 }
 
 func (wgeb *widgetGraphicsEffectBase) bitmapForDPI(dpi int) (*Bitmap, error) {
@@ -78,9 +78,9 @@ func (wgeb *widgetGraphicsEffectBase) bitmapForDPI(dpi int) (*Bitmap, error) {
 		defer bmpCanvas.Dispose()
 
 		color := RGB(
-			byte(math.Min(1.0, float64(wgeb.color.R())/255.0-0.1+0.1*float64(i))*255.0),
-			byte(math.Min(1.0, float64(wgeb.color.G())/255.0-0.1+0.1*float64(i))*255.0),
-			byte(math.Min(1.0, float64(wgeb.color.B())/255.0-0.1+0.1*float64(i))*255.0),
+			byte(min(1.0, float64(wgeb.color.R())/255.0-0.1+0.1*float64(i))*255.0),
+			byte(min(1.0, float64(wgeb.color.G())/255.0-0.1+0.1*float64(i))*255.0),
+			byte(min(1.0, float64(wgeb.color.B())/255.0-0.1+0.1*float64(i))*255.0),
 		)
 
 		brush, err := NewSolidColorBrush(color)
@@ -224,17 +224,13 @@ func (l *WidgetGraphicsEffectList) Clear() error {
 		}
 	}
 
+	clear(oldItems)
+
 	return nil
 }
 
 func (l *WidgetGraphicsEffectList) Index(effect WidgetGraphicsEffect) int {
-	for i, item := range l.items {
-		if item == effect {
-			return i
-		}
-	}
-
-	return -1
+	return slices.Index(l.items, effect)
 }
 
 func (l *WidgetGraphicsEffectList) Contains(effect WidgetGraphicsEffect) bool {
@@ -242,9 +238,7 @@ func (l *WidgetGraphicsEffectList) Contains(effect WidgetGraphicsEffect) bool {
 }
 
 func (l *WidgetGraphicsEffectList) insertIntoSlice(index int, effect WidgetGraphicsEffect) {
-	l.items = append(l.items, nil)
-	copy(l.items[index+1:], l.items[index:])
-	l.items[index] = effect
+	l.items = slices.Insert(l.items, index, effect)
 }
 
 func (l *WidgetGraphicsEffectList) Insert(index int, effect WidgetGraphicsEffect) error {
@@ -254,7 +248,7 @@ func (l *WidgetGraphicsEffectList) Insert(index int, effect WidgetGraphicsEffect
 
 	if observer != nil {
 		if err := observer.onInsertedGraphicsEffect(index, effect); err != nil {
-			l.items = append(l.items[:index], l.items[index+1:]...)
+			l.items = slices.Delete(l.items, index, index+1)
 			return err
 		}
 	}
@@ -279,7 +273,7 @@ func (l *WidgetGraphicsEffectList) RemoveAt(index int) error {
 	observer := l.observer
 	item := l.items[index]
 
-	l.items = append(l.items[:index], l.items[index+1:]...)
+	l.items = slices.Delete(l.items, index, index+1)
 
 	if observer != nil {
 		if err := observer.onRemovedGraphicsEffect(index, item); err != nil {

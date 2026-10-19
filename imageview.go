@@ -7,7 +7,6 @@
 package walk
 
 import (
-	"math"
 
 	"github.com/wuc656/win"
 )
@@ -196,7 +195,7 @@ func (iv *ImageView) drawImage(canvas *Canvas, _ Rectangle) error {
 				sx := float64(cb.Width) / float64(s.Width)
 				sy := float64(cb.Height) / float64(s.Height)
 
-				scale = math.Min(sx, sy)
+				scale = min(sx, sy)
 			} else {
 				scale = 1.0
 			}

@@ -6,7 +6,10 @@
 
 package walk
 
-import "errors"
+import (
+	"errors"
+	"slices"
+)
 
 type actionListObserver interface {
 	onInsertedAction(action *Action) error
@@ -62,6 +65,7 @@ func (l *ActionList) Clear() error {
 		a.release()
 	}
 
+	clear(l.actions)
 	l.actions = l.actions[:0]
 
 	return nil
@@ -72,13 +76,7 @@ func (l *ActionList) Contains(action *Action) bool {
 }
 
 func (l *ActionList) Index(action *Action) int {
-	for i, a := range l.actions {
-		if a == action {
-			return i
-		}
-	}
-
-	return -1
+	return slices.Index(l.actions, action)
 }
 
 func (l *ActionList) indexInObserver(action *Action) int {
@@ -184,12 +182,10 @@ func (l *ActionList) uncheckActionsForExclusiveCheck(first, last, checked int) e
 }
 
 func (l *ActionList) Insert(index int, action *Action) error {
-	l.actions = append(l.actions, nil)
-	copy(l.actions[index+1:], l.actions[index:])
-	l.actions[index] = action
+	l.actions = slices.Insert(l.actions, index, action)
 
 	if err := l.observer.onInsertedAction(action); err != nil {
-		l.actions = append(l.actions[:index], l.actions[index+1:]...)
+		l.actions = slices.Delete(l.actions, index, index+1)
 
 		return err
 	}
@@ -237,7 +233,7 @@ func (l *ActionList) RemoveAt(index int) error {
 
 	action.release()
 
-	l.actions = append(l.actions[:index], l.actions[index+1:]...)
+	l.actions = slices.Delete(l.actions, index, index+1)
 
 	if action.Visible() {
 		return l.updateSeparatorVisibility()

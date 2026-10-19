@@ -12,7 +12,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -23,12 +23,12 @@ func main() {
 
 	var mw *walk.MainWindow
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw,
 		Title:    "Walk LogView Example",
-		MinSize:  Size{320, 240},
-		Size:     Size{400, 600},
-		Layout:   VBox{MarginsZero: true},
+		MinSize:  declarative.Size{Width: 320, Height: 240},
+		Size:     declarative.Size{Width: 400, Height: 600},
+		Layout:   declarative.VBox{MarginsZero: true},
 	}.Create()); err != nil {
 		log.Fatal(err)
 	}

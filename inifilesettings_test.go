@@ -37,11 +37,9 @@ func TestIniFileSettings_fileExists(t *testing.T) {
 	}
 
 	// Case 3: Error other than IsNotExist
-	// On Windows, if a file has an invalid path character, os.Stat returns an error
-	// other than IsNotExist (e.g., ERROR_INVALID_NAME).
-	// We'll simulate this by using an invalid filename.
-	// We only check if an error is returned.
-	ifs.fileName = filepath.Join(tempDir, "invalid\x00file.ini")
+	// On Windows, if a file has an invalid path character (such as multiple colons),
+	// os.Stat returns an error other than IsNotExist (ERROR_INVALID_NAME).
+	ifs.fileName = filepath.Join(tempDir, "invalid:colon:file.ini")
 	exists, err = ifs.fileExists()
 	if exists != false || err == nil {
 		t.Errorf("Expected false, error, got %v, %v", exists, err)

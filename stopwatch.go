@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build windows
+//go:build windows
 
 package walk
 
 import (
 	"bytes"
 	"fmt"
-	"sort"
+	"cmp"
+	"slices"
 	"sync"
 	"text/tabwriter"
 	"time"
@@ -96,9 +97,7 @@ func (sw *stopwatch) Clear() {
 	sw.mutex.Lock()
 	defer sw.mutex.Unlock()
 
-	for key := range sw.subject2item {
-		delete(sw.subject2item, key)
-	}
+	clear(sw.subject2item)
 }
 
 func (sw *stopwatch) Print() {
@@ -111,8 +110,8 @@ func (sw *stopwatch) Print() {
 
 	sw.mutex.Unlock()
 
-	sort.Slice(items, func(i, j int) bool {
-		return items[i].total > items[j].total
+	slices.SortFunc(items, func(a, b *stopwatchItem) int {
+		return cmp.Compare(b.total, a.total)
 	})
 
 	var buf bytes.Buffer

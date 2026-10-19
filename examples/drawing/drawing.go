@@ -12,7 +12,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -23,14 +23,14 @@ func main() {
 
 	mw := new(MyMainWindow)
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw.MainWindow,
 		Title:    "Walk Drawing Example",
-		MinSize:  Size{320, 240},
-		Size:     Size{800, 600},
-		Layout:   VBox{MarginsZero: true},
-		Children: []Widget{
-			CustomWidget{
+		MinSize:  declarative.Size{Width: 320, Height: 240},
+		Size:     declarative.Size{Width: 800, Height: 600},
+		Layout:   declarative.VBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.CustomWidget{
 				AssignTo:            &mw.paintWidget,
 				ClearsBackground:    true,
 				InvalidatesOnResize: true,
@@ -90,10 +90,10 @@ func (mw *MyMainWindow) drawStuff(canvas *walk.Canvas, updateBounds walk.Rectang
 	}
 	defer linesPen.Dispose()
 
-	if err := canvas.DrawLine(linesPen, walk.Point{bounds.X, bounds.Y}, walk.Point{bounds.Width, bounds.Height}); err != nil {
+	if err := canvas.DrawLine(linesPen, walk.Point{X: bounds.X, Y: bounds.Y}, walk.Point{X: bounds.Width, Y: bounds.Height}); err != nil {
 		return err
 	}
-	if err := canvas.DrawLine(linesPen, walk.Point{bounds.X, bounds.Height}, walk.Point{bounds.Width, bounds.Y}); err != nil {
+	if err := canvas.DrawLine(linesPen, walk.Point{X: bounds.X, Y: bounds.Height}, walk.Point{X: bounds.Width, Y: bounds.Y}); err != nil {
 		return err
 	}
 
@@ -108,7 +108,7 @@ func (mw *MyMainWindow) drawStuff(canvas *walk.Canvas, updateBounds walk.Rectang
 	}
 
 	bmpSize := bmp.Size()
-	if err := canvas.DrawImage(bmp, walk.Point{(bounds.Width - bmpSize.Width) / 2, (bounds.Height - bmpSize.Height) / 2}); err != nil {
+	if err := canvas.DrawImage(bmp, walk.Point{X: (bounds.Width - bmpSize.Width) / 2, Y: (bounds.Height - bmpSize.Height) / 2}); err != nil {
 		return err
 	}
 

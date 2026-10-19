@@ -345,7 +345,6 @@ func (l *StatusBarItemList) At(index int) *StatusBarItem {
 }
 
 func (l *StatusBarItemList) Clear() error {
-	clear(l.items)
 	old := l.items
 	l.items = l.items[:0]
 
@@ -362,19 +361,14 @@ func (l *StatusBarItemList) Clear() error {
 		return err
 	}
 
+	clear(old)
 	succeeded = true
 
 	return nil
 }
 
 func (l *StatusBarItemList) Index(item *StatusBarItem) int {
-	for i, it := range l.items {
-		if it == item {
-			return i
-		}
-	}
-
-	return -1
+	return slices.Index(l.items, item)
 }
 
 func (l *StatusBarItemList) Contains(item *StatusBarItem) bool {
@@ -386,9 +380,7 @@ func (l *StatusBarItemList) Insert(index int, item *StatusBarItem) error {
 		return newError("item already contained in a StatusBar")
 	}
 
-	l.items = append(l.items, nil)
-	copy(l.items[index+1:], l.items[index:])
-	l.items[index] = item
+	l.items = slices.Insert(l.items, index, item)
 
 	item.sb = l.sb
 
@@ -396,7 +388,7 @@ func (l *StatusBarItemList) Insert(index int, item *StatusBarItem) error {
 	defer func() {
 		if !succeeded {
 			item.sb = nil
-			l.items = append(l.items[:index], l.items[index+1:]...)
+			l.items = slices.Delete(l.items, index, index+1)
 
 			l.sb.update()
 		}
@@ -433,9 +425,7 @@ func (l *StatusBarItemList) RemoveAt(index int) error {
 	succeeded := false
 	defer func() {
 		if !succeeded {
-			l.items = append(l.items, nil)
-			copy(l.items[index+1:], l.items[index:])
-			l.items[index] = item
+			l.items = slices.Insert(l.items, index, item)
 
 			item.sb = l.sb
 

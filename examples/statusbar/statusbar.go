@@ -13,7 +13,7 @@ import (
 	"log"
 
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -33,12 +33,12 @@ func main() {
 
 	var sbi *walk.StatusBarItem
 
-	MainWindow{
+	declarative.MainWindow{
 		Title:   "Walk Statusbar Example",
-		MinSize: Size{600, 200},
-		Layout:  VBox{MarginsZero: true},
-		StatusBarItems: []StatusBarItem{
-			StatusBarItem{
+		MinSize: declarative.Size{Width: 600, Height: 200},
+		Layout:  declarative.VBox{MarginsZero: true},
+		StatusBarItems: []declarative.StatusBarItem{
+			declarative.StatusBarItem{
 				AssignTo: &sbi,
 				Icon:     icon1,
 				Text:     "click",
@@ -53,17 +53,17 @@ func main() {
 					}
 				},
 			},
-			StatusBarItem{
+			declarative.StatusBarItem{
 				Text:        "left",
 				ToolTipText: "no tooltip for me",
 			},
-			StatusBarItem{
+			declarative.StatusBarItem{
 				Text: "\tcenter",
 			},
-			StatusBarItem{
+			declarative.StatusBarItem{
 				Text: "\t\tright",
 			},
-			StatusBarItem{
+			declarative.StatusBarItem{
 				Icon:        icon1,
 				ToolTipText: "An icon with a tooltip",
 			},

@@ -7,6 +7,8 @@
 package walk
 
 import (
+	"slices"
+
 	"github.com/wuc656/win"
 )
 
@@ -54,17 +56,13 @@ func (l *TabPageList) Clear() error {
 		}
 	}
 
+	clear(oldItems)
+
 	return nil
 }
 
 func (l *TabPageList) Index(item *TabPage) int {
-	for i, lvi := range l.items {
-		if lvi == item {
-			return i
-		}
-	}
-
-	return -1
+	return slices.Index(l.items, item)
 }
 
 func (l *TabPageList) Contains(item *TabPage) bool {
@@ -86,9 +84,7 @@ func (l *TabPageList) containsHandle(handle win.HWND) bool {
 }
 
 func (l *TabPageList) insertIntoSlice(index int, item *TabPage) {
-	l.items = append(l.items, nil)
-	copy(l.items[index+1:], l.items[index:])
-	l.items[index] = item
+	l.items = slices.Insert(l.items, index, item)
 }
 
 func (l *TabPageList) Insert(index int, item *TabPage) error {
@@ -103,7 +99,7 @@ func (l *TabPageList) Insert(index int, item *TabPage) error {
 
 	if observer != nil {
 		if err := observer.onInsertedPage(index, item); err != nil {
-			l.items = append(l.items[:index], l.items[index+1:]...)
+			l.items = slices.Delete(l.items, index, index+1)
 			return err
 		}
 	}
@@ -135,7 +131,7 @@ func (l *TabPageList) RemoveAt(index int) error {
 		}
 	}
 
-	l.items = append(l.items[:index], l.items[index+1:]...)
+	l.items = slices.Delete(l.items, index, index+1)
 
 	if observer != nil {
 		if err := observer.onRemovedPage(index, item); err != nil {

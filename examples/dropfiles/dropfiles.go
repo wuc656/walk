@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -21,15 +21,15 @@ func main() {
 	}
 
 	var textEdit *walk.TextEdit
-	MainWindow{
+	declarative.MainWindow{
 		Title:   "Walk DropFiles Example",
-		MinSize: Size{320, 240},
-		Layout:  VBox{},
+		MinSize: declarative.Size{Width: 320, Height: 240},
+		Layout:  declarative.VBox{},
 		OnDropFiles: func(files []string) {
 			textEdit.SetText(strings.Join(files, "\r\n"))
 		},
-		Children: []Widget{
-			TextEdit{
+		Children: []declarative.Widget{
+			declarative.TextEdit{
 				AssignTo: &textEdit,
 				ReadOnly: true,
 				Text:     "Drop files here, from windows explorer...",

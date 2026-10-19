@@ -14,7 +14,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -27,13 +27,13 @@ func main() {
 	var windowIcon *walk.Icon
 	counter := 0
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw,
 		Title:    "Walk Image Icon Example",
-		Layout:   HBox{},
-		Children: []Widget{
-			HSpacer{},
-			PushButton{
+		Layout:   declarative.HBox{},
+		Children: []declarative.Widget{
+			declarative.HSpacer{},
+			declarative.PushButton{
 				Text: "Push me",
 				OnClicked: func() {
 					ic, err := walk.NewIconFromImage(makeDigitImage(counter))
@@ -48,7 +48,7 @@ func main() {
 					windowIcon = ic
 				},
 			},
-			HSpacer{},
+			declarative.HSpacer{},
 		},
 	}.Create()); err != nil {
 		log.Fatal(err)

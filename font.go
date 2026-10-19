@@ -211,10 +211,10 @@ func (f *Font) Dispose() {
 		return
 	}
 
-	for dpi, hFont := range f.dpi2hFont {
+	for _, hFont := range f.dpi2hFont {
 		win.DeleteObject(win.HGDIOBJ(hFont))
-		delete(f.dpi2hFont, dpi)
 	}
+	clear(f.dpi2hFont)
 }
 
 // Family returns the family name of the Font.

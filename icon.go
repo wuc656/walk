@@ -341,10 +341,10 @@ func (i *Icon) Dispose() {
 		return
 	}
 
-	for dpi, hIcon := range i.dpi2hIcon {
+	for _, hIcon := range i.dpi2hIcon {
 		win.DestroyIcon(hIcon)
-		delete(i.dpi2hIcon, dpi)
 	}
+	clear(i.dpi2hIcon)
 }
 
 func (i *Icon) draw(hdc win.HDC, location Point) error {

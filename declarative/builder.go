@@ -155,8 +155,9 @@ func (b *Builder) InitWidget(d Widget, w walk.Window, customInit func() error) e
 	defer func() {
 		if !succeeded {
 			w.Dispose()
-			if len(b.declWidgets) > 0 && b.declWidgets[len(b.declWidgets)-1].w == w {
-				b.declWidgets = b.declWidgets[:len(b.declWidgets)-1]
+			if n := len(b.declWidgets); n > 0 && b.declWidgets[n-1].w == w {
+				b.declWidgets[n-1] = declWidget{}
+				b.declWidgets = b.declWidgets[:n-1]
 			}
 		}
 	}()

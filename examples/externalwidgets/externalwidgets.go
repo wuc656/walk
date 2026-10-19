@@ -11,7 +11,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 	"github.com/wuc656/win"
 )
 
@@ -31,11 +31,11 @@ func main() {
 
 	var mw *walk.MainWindow
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw,
 		Title:    "Walk External Widgets Example",
-		Size:     Size{400, 300},
-		Layout:   HBox{},
+		Size:     declarative.Size{Width: 400, Height: 300},
+		Layout:   declarative.HBox{},
 	}).Create(); err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +84,7 @@ func NewMyWidget(parent walk.Container) (*MyWidget, error) {
 }
 
 func (*MyWidget) CreateLayoutItem(ctx *walk.LayoutContext) walk.LayoutItem {
-	return &myWidgetLayoutItem{idealSize: walk.SizeFrom96DPI(walk.Size{50, 50}, ctx.DPI())}
+	return &myWidgetLayoutItem{idealSize: walk.SizeFrom96DPI(walk.Size{Width: 50, Height: 50}, ctx.DPI())}
 }
 
 type myWidgetLayoutItem struct {

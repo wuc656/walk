@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 type MainWin struct {
@@ -38,23 +38,23 @@ func main() {
 func NewMainWin() (*MainWin, error) {
 	mainWin := new(MainWin)
 
-	err := MainWindow{
+	err := declarative.MainWindow{
 		AssignTo: &mainWin.MainWindow,
-		Icon:     Bind("'../img/' + icon(mainWin.wv.URL) + '.ico'"),
+		Icon:     declarative.Bind("'../img/' + icon(mainWin.wv.URL) + '.ico'"),
 		Title:    "Walk WebView Example (With Events Printing)",
-		MinSize:  Size{800, 600},
-		Layout:   VBox{MarginsZero: true},
-		Children: []Widget{
-			LineEdit{
+		MinSize:  declarative.Size{Width: 800, Height: 600},
+		Layout:   declarative.VBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.LineEdit{
 				AssignTo: &mainWin.le,
-				Text:     Bind("wv.URL"),
+				Text:     declarative.Bind("wv.URL"),
 				OnKeyDown: func(key walk.Key) {
 					if key == walk.KeyReturn {
 						mainWin.wv.SetURL(mainWin.le.Text())
 					}
 				},
 			},
-			WebView{
+			declarative.WebView{
 				AssignTo:                  &mainWin.wv,
 				Name:                      "wv",
 				URL:                       "https://github.com/wuc656/walk",

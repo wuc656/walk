@@ -14,7 +14,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -50,21 +50,21 @@ func main() {
 }
 
 func RunMainWindow() error {
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		Name:    "mainWindow", // Name is needed for settings persistence
 		Title:   "Walk Settings Example",
-		MinSize: Size{800, 600},
-		Layout:  VBox{MarginsZero: true},
-		Children: []Widget{
-			TableView{
+		MinSize: declarative.Size{Width: 800, Height: 600},
+		Layout:  declarative.VBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.TableView{
 				Name:             "tableView", // Name is needed for settings persistence
 				AlternatingRowBG: true,
 				ColumnsOrderable: true,
-				Columns: []TableViewColumn{
+				Columns: []declarative.TableViewColumn{
 					// Name is needed for settings persistence
 					{Name: "#", DataMember: "Index"}, // Use DataMember, if names differ
 					{Name: "Bar"},
-					{Name: "Baz", Format: "%.2f", Alignment: AlignFar},
+					{Name: "Baz", Format: "%.2f", Alignment: declarative.AlignFar},
 					{Name: "Quux", Format: "2006-01-02 15:04:05", Width: 150},
 				},
 				Model: NewFooModel(),

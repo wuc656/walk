@@ -165,10 +165,10 @@ func (p *GeometricPen) Dispose() {
 		return
 	}
 
-	for dpi, hPen := range p.dpi2hPen {
+	for _, hPen := range p.dpi2hPen {
 		win.DeleteObject(win.HGDIOBJ(hPen))
-		delete(p.dpi2hPen, dpi)
 	}
+	clear(p.dpi2hPen)
 }
 
 func (p *GeometricPen) handleForDPI(dpi int) win.HPEN {

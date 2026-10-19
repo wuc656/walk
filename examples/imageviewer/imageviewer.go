@@ -13,7 +13,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -25,44 +25,44 @@ func main() {
 	mw := new(MyMainWindow)
 	var openAction *walk.Action
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw.MainWindow,
 		Title:    "Walk Image Viewer Example",
-		MenuItems: []MenuItem{
-			Menu{
+		MenuItems: []declarative.MenuItem{
+			declarative.Menu{
 				Text: "&File",
-				Items: []MenuItem{
-					Action{
+				Items: []declarative.MenuItem{
+					declarative.Action{
 						AssignTo:    &openAction,
 						Text:        "&Open",
 						Image:       "../img/open.png",
 						OnTriggered: mw.openAction_Triggered,
 					},
-					Separator{},
-					Action{
+					declarative.Separator{},
+					declarative.Action{
 						Text:        "Exit",
 						OnTriggered: func() { mw.Close() },
 					},
 				},
 			},
-			Menu{
+			declarative.Menu{
 				Text: "&Help",
-				Items: []MenuItem{
-					Action{
+				Items: []declarative.MenuItem{
+					declarative.Action{
 						Text:        "About",
 						OnTriggered: mw.aboutAction_Triggered,
 					},
 				},
 			},
 		},
-		ToolBarItems: []MenuItem{
-			ActionRef{&openAction},
+		ToolBarItems: []declarative.MenuItem{
+			declarative.ActionRef{Action: &openAction},
 		},
-		MinSize: Size{320, 240},
-		Size:    Size{800, 600},
-		Layout:  VBox{MarginsZero: true},
-		Children: []Widget{
-			TabWidget{
+		MinSize: declarative.Size{Width: 320, Height: 240},
+		Size:    declarative.Size{Width: 800, Height: 600},
+		Layout:  declarative.VBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.TabWidget{
 				AssignTo: &mw.tabWidget,
 			},
 		},
@@ -117,7 +117,7 @@ func (mw *MyMainWindow) openImage() error {
 		return err
 	}
 
-	if page.SetTitle(path.Base(strings.Replace(dlg.FilePath, "\\", "/", -1))); err != nil {
+	if page.SetTitle(path.Base(strings.ReplaceAll(dlg.FilePath, "\\", "/"))); err != nil {
 		return err
 	}
 	page.SetLayout(walk.NewHBoxLayout())

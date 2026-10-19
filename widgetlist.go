@@ -61,23 +61,13 @@ func (l *WidgetList) Clear() error {
 		item.form = nil
 	}
 
-	for i := range oldItems {
-		oldItems[i] = nil
-	}
+	clear(oldItems)
 
 	return nil
 }
 
 func (l *WidgetList) Index(item Widget) int {
-	wb := item.AsWidgetBase()
-
-	for i, widget := range l.items {
-		if widget == wb {
-			return i
-		}
-	}
-
-	return -1
+	return slices.Index(l.items, item.AsWidgetBase())
 }
 
 func (l *WidgetList) Contains(item Widget) bool {

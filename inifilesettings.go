@@ -8,9 +8,11 @@ package walk
 
 import (
 	"bufio"
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
-	"sort"
+	"slices"
 	"strings"
 	"time"
 )
@@ -123,7 +125,7 @@ func (ifs *IniFileSettings) fileExists() (bool, error) {
 	filePath := ifs.FilePath()
 
 	if _, err := os.Stat(filePath); err != nil {
-		if os.IsNotExist(err) {
+		if errors.Is(err, fs.ErrNotExist) {
 			return false, nil
 		}
 		return false, wrapError(err)
@@ -173,9 +175,9 @@ func (ifs *IniFileSettings) Load() error {
 			key := strings.TrimSpace(before)
 
 			var ts time.Time
-			if parts := strings.Split(key, "|"); len(parts) > 1 {
-				key = parts[0]
-				if ts, _ = time.Parse(iniFileTimeStampFormat, parts[1]); ts.IsZero() {
+			if k, tsStr, hasTS := strings.Cut(key, "|"); hasTS {
+				key = k
+				if ts, _ = time.Parse(iniFileTimeStampFormat, tsStr); ts.IsZero() {
 					ts = time.Now()
 				}
 			}
@@ -201,7 +203,7 @@ func (ifs *IniFileSettings) Save() error {
 			}
 		}
 
-		sort.Strings(keys)
+		slices.Sort(keys)
 
 		for _, key := range keys {
 			record := ifs.key2Record[key]

@@ -12,7 +12,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 type Foo struct {
@@ -28,82 +28,82 @@ func main() {
 
 	foo := &Foo{"b", 0}
 
-	MainWindow{
+	declarative.MainWindow{
 		Title:   "Walk RadioButton Example",
-		MinSize: Size{320, 240},
-		Layout:  VBox{},
-		DataBinder: DataBinder{
+		MinSize: declarative.Size{Width: 320, Height: 240},
+		Layout:  declarative.VBox{},
+		DataBinder: declarative.DataBinder{
 			DataSource: foo,
 			AutoSubmit: true,
 			OnSubmitted: func() {
 				fmt.Println(foo)
 			},
 		},
-		Children: []Widget{
+		Children: []declarative.Widget{
 			// RadioButtonGroup is needed for data binding only.
-			RadioButtonGroup{
+			declarative.RadioButtonGroup{
 				DataMember: "Bar",
-				Buttons: []RadioButton{
-					RadioButton{
+				Buttons: []declarative.RadioButton{
+					declarative.RadioButton{
 						Name:  "aRB",
 						Text:  "A",
 						Value: "a",
 					},
-					RadioButton{
+					declarative.RadioButton{
 						Name:  "bRB",
 						Text:  "B",
 						Value: "b",
 					},
-					RadioButton{
+					declarative.RadioButton{
 						Name:  "cRB",
 						Text:  "C",
 						Value: "c",
 					},
 				},
 			},
-			Label{
+			declarative.Label{
 				Text:    "A",
-				Enabled: Bind("aRB.Checked"),
+				Enabled: declarative.Bind("aRB.Checked"),
 			},
-			Label{
+			declarative.Label{
 				Text:    "B",
-				Enabled: Bind("bRB.Checked"),
+				Enabled: declarative.Bind("bRB.Checked"),
 			},
-			Label{
+			declarative.Label{
 				Text:    "C",
-				Enabled: Bind("cRB.Checked"),
+				Enabled: declarative.Bind("cRB.Checked"),
 			},
-			RadioButtonGroup{
+			declarative.RadioButtonGroup{
 				DataMember: "Baz",
-				Buttons: []RadioButton{
-					RadioButton{
+				Buttons: []declarative.RadioButton{
+					declarative.RadioButton{
 						Name:  "oneRB",
 						Text:  "1",
 						Value: 1,
 					},
-					RadioButton{
+					declarative.RadioButton{
 						Name:  "twoRB",
 						Text:  "2",
 						Value: 2,
 					},
-					RadioButton{
+					declarative.RadioButton{
 						Name:  "threeRB",
 						Text:  "3",
 						Value: 3,
 					},
 				},
 			},
-			Label{
+			declarative.Label{
 				Text:    "1",
-				Enabled: Bind("oneRB.Checked"),
+				Enabled: declarative.Bind("oneRB.Checked"),
 			},
-			Label{
+			declarative.Label{
 				Text:    "2",
-				Enabled: Bind("twoRB.Checked"),
+				Enabled: declarative.Bind("twoRB.Checked"),
 			},
-			Label{
+			declarative.Label{
 				Text:    "3",
-				Enabled: Bind("threeRB.Checked"),
+				Enabled: declarative.Bind("threeRB.Checked"),
 			},
 		},
 	}.Create()

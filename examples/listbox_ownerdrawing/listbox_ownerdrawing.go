@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 	"github.com/wuc656/win"
 )
 
@@ -38,19 +38,19 @@ func main() {
 		textWidthDPI2Height: make(map[textWidthDPI]int),
 	}
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw,
 		Title:    "Walk ListBox Owner Drawing Example",
-		MinSize:  Size{200, 200},
-		Size:     Size{800, 600},
-		Font:     Font{Family: "Segoe UI", PointSize: 9},
-		Layout:   VBox{},
-		Children: []Widget{
-			Composite{
+		MinSize:  declarative.Size{Width: 200, Height: 200},
+		Size:     declarative.Size{Width: 800, Height: 600},
+		Font:     declarative.Font{Family: "Segoe UI", PointSize: 9},
+		Layout:   declarative.VBox{},
+		Children: []declarative.Widget{
+			declarative.Composite{
 				DoubleBuffering: true,
-				Layout:          VBox{},
-				Children: []Widget{
-					ListBox{
+				Layout:          declarative.VBox{},
+				Children: []declarative.Widget{
+					declarative.ListBox{
 						AssignTo:       &lb,
 						MultiSelection: true,
 						Model:          model,
@@ -226,7 +226,7 @@ func (s *Styler) StyleItem(style *walk.ListItemStyle) {
 		stampSize := s.StampSize()
 
 		x := b.X + stampSize.Width + marginH + lineW
-		canvas.DrawLinePixels(pen, walk.Point{x, b.Y - marginV}, walk.Point{x, b.Y - marginV + b.Height})
+		canvas.DrawLinePixels(pen, walk.Point{X: x, Y: b.Y - marginV}, walk.Point{X: x, Y: b.Y - marginV + b.Height})
 
 		b.X += stampSize.Width + marginH*2 + lineW
 		b.Width -= stampSize.Width + marginH*4 + lineW

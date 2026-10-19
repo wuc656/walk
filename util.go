@@ -7,7 +7,6 @@
 package walk
 
 import (
-	"bytes"
 	"math"
 	"math/big"
 	"strconv"
@@ -138,7 +137,8 @@ func formatFloatString(s string, prec int, grouped bool) string {
 		return s
 	}
 
-	b := new(bytes.Buffer)
+	var b strings.Builder
+	b.Grow(len(s) + len(s)/3)
 
 	var firstDigit int
 	if len(s) > 0 && s[0] == '-' {

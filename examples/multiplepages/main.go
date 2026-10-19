@@ -12,7 +12,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -27,12 +27,12 @@ func main() {
 
 	cfg := &MultiPageMainWindowConfig{
 		Name:    "mainWindow",
-		MinSize: Size{600, 400},
-		MenuItems: []MenuItem{
-			Menu{
+		MinSize: declarative.Size{Width: 600, Height: 400},
+		MenuItems: []declarative.MenuItem{
+			declarative.Menu{
 				Text: "&Help",
-				Items: []MenuItem{
-					Action{
+				Items: []declarative.MenuItem{
+					declarative.Action{
 						Text:        "About",
 						OnTriggered: func() { mw.aboutAction_Triggered() },
 					},
@@ -92,16 +92,16 @@ type FooPage struct {
 func newFooPage(parent walk.Container) (Page, error) {
 	p := new(FooPage)
 
-	if err := (Composite{
+	if err := (declarative.Composite{
 		AssignTo: &p.Composite,
 		Name:     "fooPage",
-		Layout:   HBox{},
-		Children: []Widget{
-			HSpacer{},
-			Label{Text: "I'm the Foo page"},
-			HSpacer{},
+		Layout:   declarative.HBox{},
+		Children: []declarative.Widget{
+			declarative.HSpacer{},
+			declarative.Label{Text: "I'm the Foo page"},
+			declarative.HSpacer{},
 		},
-	}).Create(NewBuilder(parent)); err != nil {
+	}).Create(declarative.NewBuilder(parent)); err != nil {
 		return nil, err
 	}
 
@@ -119,16 +119,16 @@ type BarPage struct {
 func newBarPage(parent walk.Container) (Page, error) {
 	p := new(BarPage)
 
-	if err := (Composite{
+	if err := (declarative.Composite{
 		AssignTo: &p.Composite,
 		Name:     "barPage",
-		Layout:   HBox{},
-		Children: []Widget{
-			HSpacer{},
-			Label{Text: "I'm the Bar page"},
-			HSpacer{},
+		Layout:   declarative.HBox{},
+		Children: []declarative.Widget{
+			declarative.HSpacer{},
+			declarative.Label{Text: "I'm the Bar page"},
+			declarative.HSpacer{},
 		},
-	}).Create(NewBuilder(parent)); err != nil {
+	}).Create(declarative.NewBuilder(parent)); err != nil {
 		return nil, err
 	}
 
@@ -146,16 +146,16 @@ type BazPage struct {
 func newBazPage(parent walk.Container) (Page, error) {
 	p := new(BazPage)
 
-	if err := (Composite{
+	if err := (declarative.Composite{
 		AssignTo: &p.Composite,
 		Name:     "bazPage",
-		Layout:   HBox{},
-		Children: []Widget{
-			HSpacer{},
-			Label{Text: "I'm the Baz page"},
-			HSpacer{},
+		Layout:   declarative.HBox{},
+		Children: []declarative.Widget{
+			declarative.HSpacer{},
+			declarative.Label{Text: "I'm the Baz page"},
+			declarative.HSpacer{},
 		},
-	}).Create(NewBuilder(parent)); err != nil {
+	}).Create(declarative.NewBuilder(parent)); err != nil {
 		return nil, err
 	}
 

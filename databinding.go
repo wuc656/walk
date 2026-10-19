@@ -145,6 +145,8 @@ func (db *DataBinder) SetBoundWidgets(boundWidgets []Widget) {
 
 	db.boundWidgets = boundWidgets
 
+	clear(db.properties)
+	db.properties = db.properties[:0]
 	db.property2Widget = make(map[Property]Widget)
 	db.property2ChangedHandle = make(map[Property]int)
 
@@ -533,12 +535,8 @@ func reflectValueFromPath(root reflect.Value, path string) (parent, value reflec
 }
 
 func nextPathPart(p string) (next, remaining string) {
-	for i, r := range p {
-		if r == '.' {
-			return p[:i], p[i+1:]
-		}
-	}
-	return p, ""
+	next, remaining, _ = strings.Cut(p, ".")
+	return next, remaining
 }
 
 type nilField struct {

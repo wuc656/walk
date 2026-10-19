@@ -8,7 +8,7 @@ package walk
 
 import (
 	"maps"
-	"sort"
+	"slices"
 
 	"github.com/wuc656/win"
 )
@@ -383,17 +383,30 @@ func (li *splitterContainerLayoutItem) PerformLayout() []LayoutResultItem {
 
 	if diff != 0 && len(sizes) > 1 {
 		for diff != 0 {
-			sort.SliceStable(wis, func(i, j int) bool {
-				a := wis[i]
-				b := wis[j]
-
+			slices.SortStableFunc(wis, func(a, b WidgetItem) int {
 				x := float64(a.item.growth) / float64(a.item.stretchFactor)
 				y := float64(b.item.growth) / float64(b.item.stretchFactor)
 
 				if diff > 0 {
-					return x < y && (a.max == 0 || a.max > a.item.size)
+					aLess := x < y && (a.max == 0 || a.max > a.item.size)
+					bLess := y < x && (b.max == 0 || b.max > b.item.size)
+					if aLess {
+						return -1
+					}
+					if bLess {
+						return 1
+					}
+					return 0
 				} else {
-					return x > y && a.min < a.item.size
+					aLess := x > y && a.min < a.item.size
+					bLess := y > x && b.min < b.item.size
+					if aLess {
+						return -1
+					}
+					if bLess {
+						return 1
+					}
+					return 0
 				}
 			})
 

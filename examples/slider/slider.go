@@ -10,7 +10,7 @@ import (
 	"log"
 
 	"github.com/wuc656/walk"
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -24,31 +24,31 @@ func main() {
 
 	data := struct{ Min, Max, Value int }{0, 100, 30}
 
-	MainWindow{
+	declarative.MainWindow{
 		Title:   "Walk Slider Example",
-		MinSize: Size{320, 240},
-		Layout:  HBox{},
-		Children: []Widget{
-			Slider{
+		MinSize: declarative.Size{Width: 320, Height: 240},
+		Layout:  declarative.HBox{},
+		Children: []declarative.Widget{
+			declarative.Slider{
 				AssignTo:    &slv,
 				MinValue:    data.Min,
 				MaxValue:    data.Max,
 				Value:       data.Value,
-				Orientation: Vertical,
+				Orientation: declarative.Vertical,
 				OnValueChanged: func() {
 					data.Value = slv.Value()
 					valueEdit.SetValue(float64(data.Value))
 
 				},
 			},
-			Composite{
-				Layout:        Grid{Columns: 3},
+			declarative.Composite{
+				Layout:        declarative.Grid{Columns: 3},
 				StretchFactor: 4,
-				Children: []Widget{
-					Label{Text: "Min value"},
-					Label{Text: "Value"},
-					Label{Text: "Max value"},
-					NumberEdit{
+				Children: []declarative.Widget{
+					declarative.Label{Text: "Min value"},
+					declarative.Label{Text: "Value"},
+					declarative.Label{Text: "Max value"},
+					declarative.NumberEdit{
 						AssignTo: &minEdit,
 						Value:    float64(data.Min),
 						OnValueChanged: func() {
@@ -57,7 +57,7 @@ func main() {
 							slv.SetRange(data.Min, data.Max)
 						},
 					},
-					NumberEdit{
+					declarative.NumberEdit{
 						AssignTo: &valueEdit,
 						Value:    float64(data.Value),
 						OnValueChanged: func() {
@@ -66,7 +66,7 @@ func main() {
 							slv.SetValue(data.Value)
 						},
 					},
-					NumberEdit{
+					declarative.NumberEdit{
 						AssignTo: &maxEdit,
 						Value:    float64(data.Max),
 						OnValueChanged: func() {
@@ -75,7 +75,7 @@ func main() {
 							slv.SetRange(data.Min, data.Max)
 						},
 					},
-					Slider{
+					declarative.Slider{
 						ColumnSpan: 3,
 						AssignTo:   &slh,
 						MinValue:   data.Min,
@@ -86,8 +86,8 @@ func main() {
 							valueEdit.SetValue(float64(data.Value))
 						},
 					},
-					VSpacer{},
-					PushButton{
+					declarative.VSpacer{},
+					declarative.PushButton{
 						ColumnSpan: 3,
 						Text:       "Print state",
 						OnClicked: func() {

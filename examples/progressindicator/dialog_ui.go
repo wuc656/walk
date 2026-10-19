@@ -35,7 +35,7 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 	}
 
 	w.SetName("Dialog")
-	if err := w.SetClientSize(walk.Size{598, 300}); err != nil {
+	if err := w.SetClientSize(walk.Size{Width: 598, Height: 300}); err != nil {
 		return err
 	}
 	if err := w.SetTitle(`Dialog`); err != nil {
@@ -47,13 +47,13 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 		return err
 	}
 	w.ui.noProgressBtn.SetName("noProgressBtn")
-	if err := w.ui.noProgressBtn.SetBounds(walk.Rectangle{40, 60, 161, 23}); err != nil {
+	if err := w.ui.noProgressBtn.SetBounds(walk.Rectangle{X: 40, Y: 60, Width: 161, Height: 23}); err != nil {
 		return err
 	}
 	if err := w.ui.noProgressBtn.SetText(`NoProgress`); err != nil {
 		return err
 	}
-	if err := w.ui.noProgressBtn.SetMinMaxSize(walk.Size{0, 0}, walk.Size{161, 16777215}); err != nil {
+	if err := w.ui.noProgressBtn.SetMinMaxSize(walk.Size{Width: 0, Height: 0}, walk.Size{Width: 161, Height: 16777215}); err != nil {
 		return err
 	}
 
@@ -62,13 +62,13 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 		return err
 	}
 	w.ui.indeterminateBtn.SetName("indeterminateBtn")
-	if err := w.ui.indeterminateBtn.SetBounds(walk.Rectangle{40, 90, 161, 23}); err != nil {
+	if err := w.ui.indeterminateBtn.SetBounds(walk.Rectangle{X: 40, Y: 90, Width: 161, Height: 23}); err != nil {
 		return err
 	}
 	if err := w.ui.indeterminateBtn.SetText(`Indeterminate`); err != nil {
 		return err
 	}
-	if err := w.ui.indeterminateBtn.SetMinMaxSize(walk.Size{0, 0}, walk.Size{161, 16777215}); err != nil {
+	if err := w.ui.indeterminateBtn.SetMinMaxSize(walk.Size{Width: 0, Height: 0}, walk.Size{Width: 161, Height: 16777215}); err != nil {
 		return err
 	}
 
@@ -77,13 +77,13 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 		return err
 	}
 	w.ui.normalBtn.SetName("normalBtn")
-	if err := w.ui.normalBtn.SetBounds(walk.Rectangle{40, 120, 161, 23}); err != nil {
+	if err := w.ui.normalBtn.SetBounds(walk.Rectangle{X: 40, Y: 120, Width: 161, Height: 23}); err != nil {
 		return err
 	}
 	if err := w.ui.normalBtn.SetText(`Normal`); err != nil {
 		return err
 	}
-	if err := w.ui.normalBtn.SetMinMaxSize(walk.Size{0, 0}, walk.Size{161, 16777215}); err != nil {
+	if err := w.ui.normalBtn.SetMinMaxSize(walk.Size{Width: 0, Height: 0}, walk.Size{Width: 161, Height: 16777215}); err != nil {
 		return err
 	}
 
@@ -92,7 +92,7 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 		return err
 	}
 	w.ui.errBtn.SetName("errBtn")
-	if err := w.ui.errBtn.SetBounds(walk.Rectangle{40, 150, 161, 23}); err != nil {
+	if err := w.ui.errBtn.SetBounds(walk.Rectangle{X: 40, Y: 150, Width: 161, Height: 23}); err != nil {
 		return err
 	}
 	if err := w.ui.errBtn.SetText(`Error`); err != nil {
@@ -104,7 +104,7 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 		return err
 	}
 	w.ui.pausedBtn.SetName("pausedBtn")
-	if err := w.ui.pausedBtn.SetBounds(walk.Rectangle{40, 180, 161, 23}); err != nil {
+	if err := w.ui.pausedBtn.SetBounds(walk.Rectangle{X: 40, Y: 180, Width: 161, Height: 23}); err != nil {
 		return err
 	}
 	if err := w.ui.pausedBtn.SetText(`Paused`); err != nil {
@@ -116,7 +116,7 @@ func (w *MyDialog) init(owner walk.Form) (err error) {
 		return err
 	}
 	w.ui.startBtn.SetName("startBtn")
-	if err := w.ui.startBtn.SetBounds(walk.Rectangle{290, 180, 75, 23}); err != nil {
+	if err := w.ui.startBtn.SetBounds(walk.Rectangle{X: 290, Y: 180, Width: 75, Height: 23}); err != nil {
 		return err
 	}
 	if err := w.ui.startBtn.SetText(`START`); err != nil {

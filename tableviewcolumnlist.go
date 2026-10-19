@@ -6,6 +6,8 @@
 
 package walk
 
+import "slices"
+
 type TableViewColumnList struct {
 	tv    *TableView
 	items []*TableViewColumn
@@ -53,13 +55,7 @@ func (l *TableViewColumnList) Clear() error {
 // Index returns the index of the specified TableViewColumn or -1 if it is not
 // found.
 func (l *TableViewColumnList) Index(item *TableViewColumn) int {
-	for i, lvi := range l.items {
-		if lvi == item {
-			return i
-		}
-	}
-
-	return -1
+	return slices.Index(l.items, item)
 }
 
 // Contains returns whether the specified TableViewColumn is found in the list.
@@ -85,9 +81,7 @@ func (l *TableViewColumnList) Insert(index int, item *TableViewColumn) error {
 		}
 	}
 
-	l.items = append(l.items, nil)
-	copy(l.items[index+1:], l.items[index:])
-	l.items[index] = item
+	l.items = slices.Insert(l.items, index, item)
 
 	return nil
 }
@@ -117,7 +111,7 @@ func (l *TableViewColumnList) RemoveAt(index int) error {
 
 	tvc.tv = nil
 
-	l.items = append(l.items[:index], l.items[index+1:]...)
+	l.items = slices.Delete(l.items, index, index+1)
 
 	return nil
 }

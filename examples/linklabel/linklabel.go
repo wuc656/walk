@@ -11,7 +11,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -20,13 +20,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		Title:   "Walk LinkLabel Example",
-		MinSize: Size{300, 200},
-		Layout:  VBox{},
-		Children: []Widget{
-			LinkLabel{
-				MaxSize: Size{100, 0},
+		MinSize: declarative.Size{Width: 300, Height: 200},
+		Layout:  declarative.VBox{},
+		Children: []declarative.Widget{
+			declarative.LinkLabel{
+				MaxSize: declarative.Size{Width: 100, Height: 0},
 				Text:    `I can contain multiple links like <a id="this" href="https://golang.org">this</a> or <a id="that" href="https://github.com/wuc656/walk">that one</a>.`,
 				OnLinkActivated: func(link *walk.LinkLabelLink) {
 					log.Printf("id: '%s', url: '%s'\n", link.Id(), link.URL())

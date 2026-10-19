@@ -14,7 +14,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -25,22 +25,22 @@ func main() {
 
 	mw := &MyMainWindow{model: NewEnvModel()}
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw.MainWindow,
 		Title:    "Walk ListBox Example",
-		MinSize:  Size{240, 320},
-		Size:     Size{300, 400},
-		Layout:   VBox{MarginsZero: true},
-		Children: []Widget{
-			HSplitter{
-				Children: []Widget{
-					ListBox{
+		MinSize:  declarative.Size{Width: 240, Height: 320},
+		Size:     declarative.Size{Width: 300, Height: 400},
+		Layout:   declarative.VBox{MarginsZero: true},
+		Children: []declarative.Widget{
+			declarative.HSplitter{
+				Children: []declarative.Widget{
+					declarative.ListBox{
 						AssignTo:              &mw.lb,
 						Model:                 mw.model,
 						OnCurrentIndexChanged: mw.lb_CurrentIndexChanged,
 						OnItemActivated:       mw.lb_ItemActivated,
 					},
-					TextEdit{
+					declarative.TextEdit{
 						AssignTo: &mw.te,
 						ReadOnly: true,
 					},
@@ -99,7 +99,7 @@ func NewEnvModel() *EnvModel {
 		}
 
 		name := e[0:j]
-		value := strings.Replace(e[j+1:], ";", "\r\n", -1)
+		value := strings.ReplaceAll(e[j+1:], ";", "\r\n")
 
 		m.items[i] = EnvItem{name, value}
 	}

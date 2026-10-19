@@ -13,7 +13,7 @@ import (
 
 	"github.com/wuc656/walk"
 
-	. "github.com/wuc656/walk/declarative"
+	"github.com/wuc656/walk/declarative"
 )
 
 func main() {
@@ -33,13 +33,13 @@ func main() {
 
 	animal := new(Animal)
 
-	if err := (MainWindow{
+	if err := (declarative.MainWindow{
 		AssignTo: &mw,
 		Title:    "Walk Data Binding Example",
-		MinSize:  Size{300, 200},
-		Layout:   VBox{},
-		Children: []Widget{
-			PushButton{
+		MinSize:  declarative.Size{Width: 300, Height: 200},
+		Layout:   declarative.VBox{},
+		Children: []declarative.Widget{
+			declarative.PushButton{
 				Text: "Edit Animal",
 				OnClicked: func() {
 					if cmd, err := RunAnimalDialog(mw, animal); err != nil {
@@ -49,10 +49,10 @@ func main() {
 					}
 				},
 			},
-			Label{
+			declarative.Label{
 				Text: "animal:",
 			},
-			TextEdit{
+			declarative.TextEdit{
 				AssignTo: &outTE,
 				ReadOnly: true,
 				Text:     fmt.Sprintf("%+v", animal),
@@ -125,121 +125,121 @@ func RunAnimalDialog(owner walk.Form, animal *Animal) (int, error) {
 	var db *walk.DataBinder
 	var acceptPB, cancelPB *walk.PushButton
 
-	if err := (Dialog{
+	if err := (declarative.Dialog{
 		AssignTo:      &dlg,
-		Title:         Bind("'Animal Details' + (animal.Name == '' ? '' : ' - ' + animal.Name)"),
+		Title:         declarative.Bind("'Animal Details' + (animal.Name == '' ? '' : ' - ' + animal.Name)"),
 		DefaultButton: &acceptPB,
 		CancelButton:  &cancelPB,
-		DataBinder: DataBinder{
+		DataBinder: declarative.DataBinder{
 			AssignTo:       &db,
 			Name:           "animal",
 			DataSource:     animal,
-			ErrorPresenter: ToolTipErrorPresenter{},
+			ErrorPresenter: declarative.ToolTipErrorPresenter{},
 		},
-		MinSize: Size{300, 300},
-		Layout:  VBox{},
-		Children: []Widget{
-			Composite{
-				Layout: Grid{Columns: 2},
-				Children: []Widget{
-					Label{
+		MinSize: declarative.Size{Width: 300, Height: 300},
+		Layout:  declarative.VBox{},
+		Children: []declarative.Widget{
+			declarative.Composite{
+				Layout: declarative.Grid{Columns: 2},
+				Children: []declarative.Widget{
+					declarative.Label{
 						Text: "Name:",
 					},
-					LineEdit{
-						Text: Bind("Name"),
+					declarative.LineEdit{
+						Text: declarative.Bind("Name"),
 					},
 
-					Label{
+					declarative.Label{
 						Text: "Arrival Date:",
 					},
-					DateEdit{
-						Date: Bind("ArrivalDate"),
+					declarative.DateEdit{
+						Date: declarative.Bind("ArrivalDate"),
 					},
 
-					Label{
+					declarative.Label{
 						Text: "Species:",
 					},
-					ComboBox{
-						Value:         Bind("SpeciesId", SelRequired{}),
+					declarative.ComboBox{
+						Value:         declarative.Bind("SpeciesId", declarative.SelRequired{}),
 						BindingMember: "Id",
 						DisplayMember: "Name",
 						Model:         KnownSpecies(),
 					},
 
-					Label{
+					declarative.Label{
 						Text: "Speed:",
 					},
-					Slider{
-						Value: Bind("Speed"),
+					declarative.Slider{
+						Value: declarative.Bind("Speed"),
 					},
 
-					RadioButtonGroupBox{
+					declarative.RadioButtonGroupBox{
 						ColumnSpan: 2,
 						Title:      "Sex",
-						Layout:     HBox{},
+						Layout:     declarative.HBox{},
 						DataMember: "Sex",
-						Buttons: []RadioButton{
+						Buttons: []declarative.RadioButton{
 							{Text: "Male", Value: SexMale},
 							{Text: "Female", Value: SexFemale},
 							{Text: "Hermaphrodite", Value: SexHermaphrodite},
 						},
 					},
 
-					Label{
+					declarative.Label{
 						Text: "Weight:",
 					},
-					NumberEdit{
-						Value:    Bind("Weight", Range{0.01, 9999.99}),
+					declarative.NumberEdit{
+						Value:    declarative.Bind("Weight", declarative.Range{Min: 0.01, Max: 9999.99}),
 						Suffix:   " kg",
 						Decimals: 2,
 					},
 
-					Label{
+					declarative.Label{
 						Text: "Preferred Food:",
 					},
-					ComboBox{
+					declarative.ComboBox{
 						Editable: true,
-						Value:    Bind("PreferredFood"),
+						Value:    declarative.Bind("PreferredFood"),
 						Model:    []string{"Fruit", "Grass", "Fish", "Meat"},
 					},
 
-					Label{
+					declarative.Label{
 						Text: "Domesticated:",
 					},
-					CheckBox{
-						Checked: Bind("Domesticated"),
+					declarative.CheckBox{
+						Checked: declarative.Bind("Domesticated"),
 					},
 
-					VSpacer{
+					declarative.VSpacer{
 						ColumnSpan: 2,
 						Size:       8,
 					},
 
-					Label{
+					declarative.Label{
 						ColumnSpan: 2,
 						Text:       "Remarks:",
 					},
-					TextEdit{
+					declarative.TextEdit{
 						ColumnSpan: 2,
-						MinSize:    Size{100, 50},
-						Text:       Bind("Remarks"),
+						MinSize:    declarative.Size{Width: 100, Height: 50},
+						Text:       declarative.Bind("Remarks"),
 					},
 
-					Label{
+					declarative.Label{
 						ColumnSpan: 2,
 						Text:       "Patience:",
 					},
-					LineEdit{
+					declarative.LineEdit{
 						ColumnSpan: 2,
-						Text:       Bind("PatienceField"),
+						Text:       declarative.Bind("PatienceField"),
 					},
 				},
 			},
-			Composite{
-				Layout: HBox{},
-				Children: []Widget{
-					HSpacer{},
-					PushButton{
+			declarative.Composite{
+				Layout: declarative.HBox{},
+				Children: []declarative.Widget{
+					declarative.HSpacer{},
+					declarative.PushButton{
 						AssignTo: &acceptPB,
 						Text:     "OK",
 						OnClicked: func() {
@@ -251,7 +251,7 @@ func RunAnimalDialog(owner walk.Form, animal *Animal) (int, error) {
 							dlg.Accept()
 						},
 					},
-					PushButton{
+					declarative.PushButton{
 						AssignTo:  &cancelPB,
 						Text:      "Cancel",
 						OnClicked: func() { dlg.Cancel() },
