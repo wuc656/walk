@@ -181,6 +181,9 @@ func (dlg *FileDialog) ShowBrowseFolder(owner Form) (accepted bool, err error) {
 	}
 
 	win.SHParseDisplayName(&buf[0], 0, &bi.PidlRoot, 0, nil)
+	if bi.PidlRoot != 0 {
+		defer win.CoTaskMemFree(bi.PidlRoot)
+	}
 
 	pidl := win.SHBrowseForFolder(&bi)
 	if pidl == 0 {

@@ -9,7 +9,6 @@ package walk
 import (
 	"log"
 	"syscall"
-	"unicode/utf8"
 	"unsafe"
 
 	"github.com/wuc656/win"
@@ -671,13 +670,14 @@ func (c *Canvas) MeasureAndModifyTextPixels(text string, font *Font, bounds Rect
 		return
 	}
 
-	if runesFitted == utf8.RuneCountInString(text) {
+	runes := []rune(text)
+	if runesFitted >= len(runes) {
 		textDisplayed = text
 	} else {
 		if format&(TextEndEllipsis|TextPathEllipsis) != 0 {
 			textDisplayed = win.UTF16PtrToString(textPtr)
 		} else {
-			textDisplayed = string(([]rune)(text)[:runesFitted])
+			textDisplayed = string(runes[:max(0, min(len(runes), runesFitted))])
 		}
 	}
 

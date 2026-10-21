@@ -311,6 +311,7 @@ func NewDialogEx(parent Form, title string, size Size) (*DialogEx, error) {
 	// Minimal setup to make FormBase happy.
 	dlg.window = dlg
 	dlg.form = dlg
+	dlg.owner = parent
 	dlg.enabled = true
 	dlg.calcTextSizeInfo2TextSize = make(map[calcTextSizeInfo]Size)
 	dlg.name2Property = make(map[string]Property)
@@ -370,8 +371,8 @@ func (dlg *DialogEx) reCenter() {
 		if sizePx.Width > boundsPx.Width || sizePx.Height > boundsPx.Height {
 			workArea := parent.Monitor().WorkArea()
 			// clamp size to work area
-			size.Width = min(size.Width, workArea.Width)
-			size.Height = min(size.Height, workArea.Height)
+			sizePx.Width = min(sizePx.Width, workArea.Width)
+			sizePx.Height = min(sizePx.Height, workArea.Height)
 		}
 
 		boundsPx = Rectangle{
@@ -418,7 +419,7 @@ func (dlg *DialogEx) routeWM_COMMAND(wParam, lParam uintptr) (result bool) {
 	}
 	defer func() {
 		// Ensure we handle any predefined IDs before returning.
-		result = dlg.handlePredefinedID(uint16(wParam)) || result
+		result = (win.HIWORD(uint32(wParam)) == win.BN_CLICKED && dlg.handlePredefinedID(uint16(wParam))) || result
 	}()
 
 	// Redirect the WM_COMMAND to the Widget that is the source of the event.

@@ -269,6 +269,10 @@ func (bmp *Bitmap) ToImage() (*image.RGBA, error) {
 	var bi win.BITMAPINFO
 	bi.BmiHeader.BiSize = uint32(unsafe.Sizeof(bi.BmiHeader))
 	hdc := win.GetDC(0)
+	if hdc == 0 {
+		return nil, newError("GetDC failed")
+	}
+	defer win.ReleaseDC(0, hdc)
 	if ret := win.GetDIBits(hdc, bmp.hBmp, 0, 0, nil, &bi, win.DIB_RGB_COLORS); ret == 0 {
 		return nil, newError("GetDIBits get bitmapinfo failed")
 	}

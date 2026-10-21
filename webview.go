@@ -237,8 +237,11 @@ func (wv *WebView) URL() (url string, err error) {
 func (wv *WebView) SetURL(url string) error {
 	return wv.withWebBrowser2(func(webBrowser2 *win.IWebBrowser2) error {
 		urlBstr := win.StringToVariantBSTR(url)
+		defer win.SysFreeString((*win.VARIANT)(unsafe.Pointer(urlBstr)).MustBSTR())
+
 		flags := win.IntToVariantI4(0)
 		targetFrameName := win.StringToVariantBSTR("_self")
+		defer win.SysFreeString((*win.VARIANT)(unsafe.Pointer(targetFrameName)).MustBSTR())
 
 		if hr := webBrowser2.Navigate2(urlBstr, flags, targetFrameName, nil, nil); win.FAILED(hr) {
 			return errorFromHRESULT("IWebBrowser2.Navigate2", hr)

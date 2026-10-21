@@ -46,9 +46,15 @@ func (eventData *WebViewNavigatingEventData) PostData() string {
 			psa := pvar.MustPSafeArray()
 			if psa != nil && psa.CDims == 1 && psa.CbElements == 1 {
 				postDataSize := psa.Rgsabound[0].CElements * psa.CbElements
+				if postDataSize == 0 || psa.PvData == 0 {
+					return ""
+				}
 				byteAryPtr := (*[200000000]byte)(unsafe.Pointer(psa.PvData))
-				byteArySlice := (*byteAryPtr)[0 : postDataSize-1]
-				return string(byteArySlice)
+				data := (*byteAryPtr)[:postDataSize]
+				if len(data) > 0 && data[len(data)-1] == 0 {
+					data = data[:len(data)-1]
+				}
+				return string(data)
 			}
 		}
 	}

@@ -652,7 +652,7 @@ func (lb *ListBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) ui
 	case win.WM_DRAWITEM:
 		dis := (*win.DRAWITEMSTRUCT)(unsafe.Pointer(lParam))
 
-		if lb.styler == nil || dis.ItemID < 0 || dis.ItemAction != win.ODA_DRAWENTIRE {
+		if lb.styler == nil || int32(dis.ItemID) < 0 || (dis.ItemAction&(win.ODA_DRAWENTIRE|win.ODA_SELECT)) == 0 {
 			return win.TRUE
 		}
 
@@ -677,7 +677,7 @@ func (lb *ListBox) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) ui
 		}
 		lb.style.hTheme = hTheme
 
-		if dis.ItemState&win.ODS_CHECKED != 0 {
+		if dis.ItemState&win.ODS_SELECTED != 0 {
 			if lb.style.highContrastActive || lb.Focused() {
 				lb.style.BackgroundColor = lb.themeSelectedBGColor
 				lb.style.TextColor = lb.themeSelectedTextColor

@@ -42,6 +42,7 @@ func NewMetafileFromFile(filePath string) (*Metafile, error) {
 
 	err := mf.readSizeFromHeader()
 	if err != nil {
+		win.DeleteEnhMetaFile(hemf)
 		return nil, err
 	}
 

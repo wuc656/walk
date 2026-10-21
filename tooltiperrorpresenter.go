@@ -141,9 +141,7 @@ func (ttep *ToolTipErrorPresenter) track(widget Widget) {
 		}
 
 		if w, ok := wnd.(Widget); ok {
-			if parent := w.Parent(); parent != nil {
-				wnd = parent
-			}
+			wnd = w.Parent()
 		} else {
 			break
 		}

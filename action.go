@@ -111,6 +111,8 @@ func NewSeparatorAction() *Action {
 }
 
 func (a *Action) Dispose() {
+	a.SetCheckedCondition(nil)
+	a.SetDefaultCondition(nil)
 	a.SetEnabledCondition(nil)
 	a.SetVisibleCondition(nil)
 

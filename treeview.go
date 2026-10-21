@@ -181,14 +181,31 @@ func (tv *TreeView) SetModel(model TreeModel) error {
 			tv.SetSuspended(true)
 			defer tv.SetSuspended(false)
 
-			var hInsertAfter win.HTREEITEM
+			var hInsertAfter win.HTREEITEM = win.TVI_FIRST
 			parent := item.Parent()
-			for i := parent.ChildCount() - 1; i >= 0; i-- {
-				if parent.ChildAt(i) == item {
-					if i > 0 {
-						hInsertAfter = tv.item2Info[parent.ChildAt(i-1)].handle
-					} else {
-						hInsertAfter = win.TVI_FIRST
+			if parent == nil {
+				for i := model.RootCount() - 1; i >= 0; i-- {
+					if model.RootAt(i) == item {
+						if i > 0 {
+							if prev := tv.item2Info[model.RootAt(i-1)]; prev != nil {
+								hInsertAfter = prev.handle
+							}
+						}
+						break
+					}
+				}
+			} else {
+				if tv.item2Info[parent] == nil {
+					return
+				}
+				for i := parent.ChildCount() - 1; i >= 0; i-- {
+					if parent.ChildAt(i) == item {
+						if i > 0 {
+							if prev := tv.item2Info[parent.ChildAt(i-1)]; prev != nil {
+								hInsertAfter = prev.handle
+							}
+						}
+						break
 					}
 				}
 			}
@@ -404,6 +421,11 @@ func (tv *TreeView) insertItemAfter(item TreeItem, hInsertAfter win.HTREEITEM) (
 	}
 	tv.item2Info[item] = &treeViewItemInfo{hItem, make(map[TreeItem]win.HTREEITEM)}
 	tv.handle2Item[hItem] = item
+	if parent != nil {
+		if parentInfo := tv.item2Info[parent]; parentInfo != nil {
+			parentInfo.child2Handle[item] = hItem
+		}
+	}
 
 	if !tv.lazyPopulation {
 		if err := tv.insertChildren(item); err != nil {

@@ -133,6 +133,7 @@ func (c *ClipboardService) SetText(s string) error {
 
 		p := win.GlobalLock(hMem)
 		if p == nil {
+			win.GlobalFree(hMem)
 			return lastError("GlobalLock()")
 		}
 

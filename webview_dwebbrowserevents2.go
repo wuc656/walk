@@ -308,7 +308,10 @@ func webView_DWebBrowserEvents2_Invoke(
 			wv.documentTitle = ""
 		}
 		wv.documentTitleChangedPublisher.Publish()
+
+	default:
+		return win.DISP_E_MEMBERNOTFOUND
 	}
 
-	return win.DISP_E_MEMBERNOTFOUND
+	return win.S_OK
 }

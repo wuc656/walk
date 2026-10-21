@@ -552,7 +552,7 @@ func (tv *TableView) ContextMenuLocation() Point {
 	} else {
 		pt.X = rc.Left
 	}
-	pt.X = rc.Bottom
+	pt.Y = rc.Bottom
 	windowTrimToClientBounds(tv.hwndNormalLV, &pt)
 	win.ClientToScreen(tv.hwndNormalLV, &pt)
 	return pointPixelsFromPOINT(pt)
@@ -1622,7 +1622,11 @@ func (tv *TableView) SaveState() error {
 
 	tvs := tv.state
 
-	tvs.SortColumnName = tv.columns.items[tv.sortedColumnIndex].name
+	if tv.sortedColumnIndex >= 0 && tv.sortedColumnIndex < len(tv.columns.items) {
+		tvs.SortColumnName = tv.columns.items[tv.sortedColumnIndex].name
+	} else {
+		tvs.SortColumnName = ""
+	}
 	tvs.SortOrder = tv.sortOrder
 
 	// tvs.Columns = make([]tableViewColumnState, tv.columns.Len())
