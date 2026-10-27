@@ -12,7 +12,6 @@ import (
 	"unsafe"
 
 	"github.com/wuc656/win"
-	"golang.org/x/exp/constraints"
 	"golang.org/x/sys/windows"
 )
 
@@ -226,7 +225,7 @@ func (dlg *DialogEx) dlgProc(hdlg win.HWND, msg uint32, wParam, lParam uintptr) 
 }
 
 // alignment must be a power of 2
-func alignUp[V constraints.Integer](v V, alignment int) V {
+func alignUp[V integer](v V, alignment int) V {
 	return v + ((-v) & (V(alignment) - 1))
 }
 

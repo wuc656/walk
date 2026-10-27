@@ -66,6 +66,12 @@ func NewWebView(parent Container) (*WebView, error) {
 	if hr := win.OleInitialize(); hr != win.S_OK && hr != win.S_FALSE {
 		return nil, newError(fmt.Sprint("OleInitialize Error: ", hr))
 	}
+	oleInitialized := true
+	defer func() {
+		if oleInitialized {
+			win.OleUninitialize()
+		}
+	}()
 
 	wv := &WebView{
 		clientSite: webViewIOleClientSite{
@@ -201,6 +207,7 @@ func NewWebView(parent Container) (*WebView, error) {
 		wv.nativeContextMenuEnabledChangedPublisher.Event()))
 
 	succeeded = true
+	oleInitialized = false
 
 	return wv, nil
 }

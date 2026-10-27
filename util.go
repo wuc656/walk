@@ -16,7 +16,6 @@ import (
 	"unsafe"
 
 	"github.com/wuc656/win"
-	"golang.org/x/exp/constraints"
 )
 
 var (
@@ -461,17 +460,21 @@ func dpiForHDC(hdc win.HDC) int {
 	return int(win.GetDeviceCaps(hdc, win.LOGPIXELSX))
 }
 
+type integer interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+
 // IntFrom96DPI converts from 1/96" units to native pixels.
-func IntFrom96DPI[I constraints.Integer](value I, dpi int) I {
+func IntFrom96DPI[I integer](value I, dpi int) I {
 	return scaleInt(value, float64(dpi)/96.0)
 }
 
 // IntTo96DPI converts from native pixels to 1/96" units.
-func IntTo96DPI[I constraints.Integer](value I, dpi int) I {
+func IntTo96DPI[I integer](value I, dpi int) I {
 	return scaleInt(value, 96.0/float64(dpi))
 }
 
-func scaleInt[I constraints.Integer](value I, scale float64) I {
+func scaleInt[I integer](value I, scale float64) I {
 	return I(math.Round(float64(value) * scale))
 }
 

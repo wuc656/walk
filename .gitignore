@@ -1,0 +1,8 @@
+# Binaries and test artifacts
+*.exe
+*.test
+*.out
+
+# Tooling and indices
+.codegraph/
+.projectmem/

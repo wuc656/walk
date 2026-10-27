@@ -365,6 +365,11 @@ func (lb *ListBox) attachModel() {
 	})
 }
 
+func (lb *ListBox) Dispose() {
+	lb.detachModel()
+	lb.WidgetBase.Dispose()
+}
+
 func (lb *ListBox) detachModel() {
 	lb.model.ItemsReset().Detach(lb.itemsResetHandlerHandle)
 	lb.model.ItemChanged().Detach(lb.itemChangedHandlerHandle)

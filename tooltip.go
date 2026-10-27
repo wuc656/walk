@@ -90,8 +90,9 @@ func (tt *ToolTip) SetErrorTitle(title string) error {
 }
 
 func (tt *ToolTip) setTitle(title string, icon uintptr) error {
-	if len(title) > 99 {
-		title = title[:99]
+	runes := []rune(title)
+	if len(runes) > 99 {
+		title = string(runes[:99])
 	}
 
 	if win.FALSE == tt.SendMessage(win.TTM_SETTITLE, icon, uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(title)))) {

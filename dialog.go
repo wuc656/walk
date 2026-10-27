@@ -242,13 +242,15 @@ func (dlg *Dialog) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) ui
 		if win.HIWORD(uint32(wParam)) == 0 {
 			switch win.LOWORD(uint32(wParam)) {
 			case DlgCmdOK:
-				if dlg.defaultButton != nil {
+				if dlg.defaultButton != nil && dlg.defaultButton.Visible() && dlg.defaultButton.Enabled() {
 					dlg.defaultButton.raiseClicked()
+					return 0
 				}
 
 			case DlgCmdCancel:
-				if dlg.cancelButton != nil {
+				if dlg.cancelButton != nil && dlg.cancelButton.Visible() && dlg.cancelButton.Enabled() {
 					dlg.cancelButton.raiseClicked()
+					return 0
 				}
 			}
 		}

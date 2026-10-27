@@ -2272,10 +2272,11 @@ func (tv *TableView) lvWndProc(origWndProcPtr uintptr, hwnd win.HWND, msg uint32
 						}
 
 						if brush, _ := NewSolidColorBrush(color); brush != nil {
-							defer brush.Dispose()
-
-							canvas, _ := newCanvasFromHDC(nmlvcd.Nmcd.Hdc)
-							canvas.FillRectanglePixels(brush, rectangleFromRECT(nmlvcd.Nmcd.Rc))
+							if canvas, err := newCanvasFromHDC(nmlvcd.Nmcd.Hdc); err == nil {
+								canvas.FillRectanglePixels(brush, rectangleFromRECT(nmlvcd.Nmcd.Rc))
+								canvas.Dispose()
+							}
+							brush.Dispose()
 						}
 					}
 
@@ -2428,7 +2429,7 @@ func (tv *TableView) lvWndProc(origWndProcPtr uintptr, hwnd win.HWND, msg uint32
 			wp |= win.UISF_HIDEFOCUS << 16
 
 		case win.UIS_CLEAR, win.UIS_INITIALIZE:
-			wp &^= ^uintptr(win.UISF_HIDEFOCUS << 16)
+			wp &^= uintptr(win.UISF_HIDEFOCUS << 16)
 		}
 	}
 

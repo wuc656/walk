@@ -353,6 +353,17 @@ func (cb *ComboBox) attachModel() {
 	})
 }
 
+func (cb *ComboBox) Dispose() {
+	if cb.editOrigWndProcPtr != 0 {
+		if editHwnd := win.GetWindow(cb.hWnd, win.GW_CHILD); editHwnd != 0 {
+			win.SetWindowLongPtr(editHwnd, win.GWLP_WNDPROC, cb.editOrigWndProcPtr)
+		}
+		cb.editOrigWndProcPtr = 0
+	}
+	cb.detachModel()
+	cb.WidgetBase.Dispose()
+}
+
 func (cb *ComboBox) detachModel() {
 	cb.model.ItemsReset().Detach(cb.itemsResetHandlerHandle)
 	cb.model.ItemChanged().Detach(cb.itemChangedHandlerHandle)

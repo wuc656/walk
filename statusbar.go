@@ -83,18 +83,24 @@ func (sb *StatusBar) updateParts() error {
 		right += int32(IntFrom96DPI(item.width, dpi))
 		rightEdges[i] = right
 	}
-	var rep *int32
-	if len(rightEdges) > 0 {
-		rep = &rightEdges[0]
-	}
-
 	if len(rightEdges) == 1 {
 		rightEdges[0] = -1
 	}
 
+	var nParts uintptr
+	var rep *int32
+	if len(items) == 0 {
+		nParts = 1
+		defaultEdge := int32(-1)
+		rep = &defaultEdge
+	} else {
+		nParts = uintptr(len(items))
+		rep = &rightEdges[0]
+	}
+
 	if sb.SendMessage(
 		win.SB_SETPARTS,
-		uintptr(len(items)),
+		nParts,
 		uintptr(unsafe.Pointer(rep))) ==
 		0 {
 

@@ -1397,48 +1397,49 @@ func (wb *WindowBase) Form() Form {
 	return wb.form
 }
 
-func forEachDescendant(hwnd win.HWND, lParam uintptr) uintptr {
-	if window := windowFromHandle(hwnd); window == nil || forEachDescendantCallback(window.(Widget)) {
-		return 1
-	}
-
-	return 0
+type forEachDescendantContext struct {
+	fn func(widget Widget) bool
 }
 
-var (
-	forEachDescendantCallbackPtr uintptr
-	forEachDescendantCallback    func(widget Widget) bool
-)
+func forEachDescendant(hwnd win.HWND, lParam uintptr) uintptr {
+	ctx := (*forEachDescendantContext)(unsafe.Pointer(lParam))
+	if window := windowFromHandle(hwnd); window != nil {
+		if widget, ok := window.(Widget); ok {
+			if !ctx.fn(widget) {
+				return 0
+			}
+		}
+	}
+
+	return 1
+}
+
+var forEachDescendantCallbackPtr uintptr
 
 func (wb *WindowBase) ForEachDescendant(f func(widget Widget) bool) {
-	forEachDescendantCallback = f
-	defer func() {
-		forEachDescendantCallback = nil
-	}()
+	ctx := forEachDescendantContext{fn: f}
+	win.EnumChildWindows(wb.hWnd, forEachDescendantCallbackPtr, uintptr(unsafe.Pointer(&ctx)))
+}
 
-	win.EnumChildWindows(wb.hWnd, forEachDescendantCallbackPtr, 0)
+type forEachDescendantRawContext struct {
+	lParam uintptr
+	fn     func(hwnd win.HWND, lParam uintptr) bool
 }
 
 func forEachDescendantRaw(hwnd win.HWND, lParam uintptr) uintptr {
-	if forEachDescendantRawCallback(hwnd, lParam) {
-		return 1
+	ctx := (*forEachDescendantRawContext)(unsafe.Pointer(lParam))
+	if !ctx.fn(hwnd, ctx.lParam) {
+		return 0
 	}
 
-	return 0
+	return 1
 }
 
-var (
-	forEachDescendantRawCallbackPtr uintptr
-	forEachDescendantRawCallback    func(hwnd win.HWND, lParam uintptr) bool
-)
+var forEachDescendantRawCallbackPtr uintptr
 
 func (wb *WindowBase) forEachDescendantRaw(lParam uintptr, f func(hwnd win.HWND, lParam uintptr) bool) {
-	forEachDescendantRawCallback = f
-	defer func() {
-		forEachDescendantRawCallback = nil
-	}()
-
-	win.EnumChildWindows(wb.hWnd, forEachDescendantRawCallbackPtr, lParam)
+	ctx := forEachDescendantRawContext{lParam: lParam, fn: f}
+	win.EnumChildWindows(wb.hWnd, forEachDescendantRawCallbackPtr, uintptr(unsafe.Pointer(&ctx)))
 }
 
 // SetVisible sets if the *WindowBase is visible.

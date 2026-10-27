@@ -100,8 +100,15 @@ func (cb *ContainerBase) SetLayout(value Layout) error {
 
 		cb.layout = value
 
-		if value != nil && value.Container() != Container(cb) {
-			value.SetContainer(cb)
+		var container Container
+		if cb.window != nil {
+			container, _ = cb.window.(Container)
+		}
+		if container == nil {
+			container = cb
+		}
+		if value != nil && value.Container() != container {
+			value.SetContainer(container)
 		}
 	}
 
@@ -326,7 +333,7 @@ func (cb *ContainerBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintp
 						button.raiseClicked()
 					}
 
-					// break
+					return 0
 				}
 
 				// Menu

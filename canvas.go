@@ -713,7 +713,14 @@ func (c *Canvas) measureAndModifyTextPixels(text string, font *Font, bounds Rect
 	var params win.DRAWTEXTPARAMS
 	params.CbSize = uint32(unsafe.Sizeof(params))
 
-	strPtr := syscall.StringToUTF16Ptr(text)
+	utf16Src, err := syscall.UTF16FromString(text)
+	if err != nil {
+		return
+	}
+	// Reserve 4 extra WCHARs for DT_MODIFYSTRING ellipses
+	utf16Buf := make([]uint16, len(utf16Src)+4)
+	copy(utf16Buf, utf16Src)
+	strPtr := &utf16Buf[0]
 	dtfmt := uint32(format) | win.DT_EDITCONTROL | win.DT_WORDBREAK
 
 	height := win.DrawTextEx(

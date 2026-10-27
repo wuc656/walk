@@ -11,7 +11,6 @@ import (
 
 	"github.com/wuc656/win"
 	"github.com/wuc656/wingoes/com"
-	"golang.org/x/exp/constraints"
 	"golang.org/x/sys/windows"
 )
 
@@ -31,14 +30,14 @@ func (res Resource) Stream() (com.Stream, error) {
 // LoadResourceByID locates the resource identified by id and resType
 // from the current process's executable binary and returns its contents
 // as a Resource. resType must be one of the win.RT_* constants.
-func LoadResourceByID[ID constraints.Integer](id ID, resType win.ResourceType) (Resource, error) {
+func LoadResourceByID[ID integer](id ID, resType win.ResourceType) (Resource, error) {
 	return loadResource(win.MAKEINTRESOURCE(id), resType)
 }
 
 // LoadCustomResourceByID locates the custom resource identified by
 // id from the current process's executable binary and returns its contents
 // as a Resource.
-func LoadCustomResourceByID[ID constraints.Integer](id ID) (Resource, error) {
+func LoadCustomResourceByID[ID integer](id ID) (Resource, error) {
 	return LoadResourceByID(id, win.RT_RCDATA)
 }
 
