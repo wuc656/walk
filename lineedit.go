@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -110,7 +111,10 @@ func (le *LineEdit) CueBanner() string {
 }
 
 func (le *LineEdit) SetCueBanner(value string) error {
-	if win.FALSE == le.SendMessage(win.EM_SETCUEBANNER, win.FALSE, uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(value)))) {
+	p := syscall.StringToUTF16Ptr(value)
+	ret := le.SendMessage(win.EM_SETCUEBANNER, win.FALSE, uintptr(unsafe.Pointer(p)))
+	runtime.KeepAlive(p)
+	if win.FALSE == ret {
 		return newError("EM_SETCUEBANNER failed")
 	}
 

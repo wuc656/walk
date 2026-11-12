@@ -359,11 +359,13 @@ func (sv *ScrollView) CreateLayoutItem(ctx *LayoutContext) LayoutItem {
 	si.CbSize = uint32(unsafe.Sizeof(si))
 	si.FMask = win.SIF_POS | win.SIF_RANGE
 
-	win.GetScrollInfo(sv.hWnd, win.SB_HORZ, &si)
-	svli.scrollX = float64(si.NPos) / float64(si.NMax)
+	if win.GetScrollInfo(sv.hWnd, win.SB_HORZ, &si) && si.NMax > 0 {
+		svli.scrollX = float64(si.NPos) / float64(si.NMax)
+	}
 
-	win.GetScrollInfo(sv.hWnd, win.SB_VERT, &si)
-	svli.scrollY = float64(si.NPos) / float64(si.NMax)
+	if win.GetScrollInfo(sv.hWnd, win.SB_VERT, &si) && si.NMax > 0 {
+		svli.scrollY = float64(si.NPos) / float64(si.NMax)
+	}
 
 	return svli
 }

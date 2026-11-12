@@ -395,6 +395,7 @@ func (ml *menuItemLayout) layout(sm *menuSharedMetrics, rect *win.RECT) {
 type ownerDrawnMenuItemInfo struct {
 	win.MSAAMENUINFO // must embed MSAAMENUINFO for proper a11y support
 	text             string
+	textUTF16        []uint16
 	action           *Action
 	handler          ActionOwnerDrawHandler
 	sharedMetrics    *menuSharedMetrics
@@ -430,16 +431,16 @@ func (odi *ownerDrawnMenuItemInfo) updateText() {
 
 	odi.text = odi.action.text
 
-	textUTF16 := syscall.StringToUTF16(odi.action.text)
-	odi.updateMnemonic(textUTF16)
-	if len(textUTF16) == 0 {
+	odi.textUTF16 = syscall.StringToUTF16(odi.action.text)
+	odi.updateMnemonic(odi.textUTF16)
+	if len(odi.textUTF16) == 0 {
 		odi.MSAAMENUINFO.TextLenExclNul = 0
 		odi.MSAAMENUINFO.Text = nil
 		return
 	}
 
-	odi.MSAAMENUINFO.TextLenExclNul = uint32(len(textUTF16) - 1)
-	odi.MSAAMENUINFO.Text = &textUTF16[0]
+	odi.MSAAMENUINFO.TextLenExclNul = uint32(len(odi.textUTF16) - 1)
+	odi.MSAAMENUINFO.Text = &odi.textUTF16[0]
 }
 
 func (odi *ownerDrawnMenuItemInfo) updateMnemonic(textUTF16 []uint16) {

@@ -8,9 +8,10 @@ package walk
 
 import (
 	"fmt"
-	"slices"
 	"math/big"
 	"reflect"
+	"runtime"
+	"slices"
 	"syscall"
 	"time"
 	"unsafe"
@@ -204,8 +205,9 @@ func (lb *ListBox) itemString(index int) string {
 // insert one item from list model
 func (lb *ListBox) insertItemAt(index int) error {
 	str := lb.itemString(index)
-	lp := uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(str)))
-	ret := int(lb.SendMessage(win.LB_INSERTSTRING, uintptr(index), lp))
+	p := syscall.StringToUTF16Ptr(str)
+	ret := int(lb.SendMessage(win.LB_INSERTSTRING, uintptr(index), uintptr(unsafe.Pointer(p))))
+	runtime.KeepAlive(p)
 	if ret == win.LB_ERRSPACE || ret == win.LB_ERR {
 		return newError("SendMessage(LB_INSERTSTRING)")
 	}

@@ -9,6 +9,7 @@ package walk
 import (
 	"fmt"
 	"math"
+	"sync"
 	"unsafe"
 
 	"github.com/wuc656/walk/idalloc"
@@ -81,6 +82,7 @@ type FormBase struct {
 	inSizeLoop                  chan bool
 	updateStopwatch             chan *stopwatch
 	quitLayoutPerformer         chan struct{}
+	quitLayoutPerformerOnce     sync.Once
 	closingPublisher            CloseEventPublisher
 	activatingPublisher         EventPublisher
 	deactivatingPublisher       EventPublisher
@@ -233,10 +235,9 @@ func (fb *FormBase) start() {
 
 func (fb *FormBase) Dispose() {
 	if fb.hWnd != 0 && fb.quitLayoutPerformer != nil {
-		select {
-		case fb.quitLayoutPerformer <- struct{}{}:
-		default:
-		}
+		fb.quitLayoutPerformerOnce.Do(func() {
+			close(fb.quitLayoutPerformer)
+		})
 	}
 
 	fb.WindowBase.Dispose()
@@ -853,8 +854,14 @@ func (fb *FormBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 			if fb.inSizingLoop {
 				fb.startingLayoutViaSizingLoop = false
 
-				results := <-fb.layoutResults
-				applyLayoutResults(results.results, fb.stopwatch)
+				select {
+				case results, ok := <-fb.layoutResults:
+					if ok {
+						applyLayoutResults(results.results, fb.stopwatch)
+					}
+				case <-fb.quitLayoutPerformer:
+				case <-App().Context().Done():
+				}
 
 				if fb.stopwatch != nil {
 					fb.stopwatch.Stop(performingLayoutSubject)

@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -145,11 +146,13 @@ func (de *DateEdit) Format() string {
 }
 
 func (de *DateEdit) SetFormat(format string) error {
-	lp := uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(format)))
+	p := syscall.StringToUTF16Ptr(format)
 
-	if de.SendMessage(win.DTM_SETFORMAT, 0, lp) == 0 {
+	if de.SendMessage(win.DTM_SETFORMAT, 0, uintptr(unsafe.Pointer(p))) == 0 {
+		runtime.KeepAlive(p)
 		return newError("DTM_SETFORMAT failed")
 	}
+	runtime.KeepAlive(p)
 
 	de.format = format
 

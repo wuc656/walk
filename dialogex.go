@@ -21,6 +21,7 @@ var (
 	modUser32      = windows.NewLazySystemDLL("user32.dll")
 	defDlgProcCb   = modUser32.NewProc("DefDlgProcW")
 	dialogExProcCb uintptr
+	hwnd2DialogEx  = map[win.HWND]*DialogEx{}
 )
 
 func registerEmptyDialogClass() (className []uint16, err error) {
@@ -97,7 +98,7 @@ func createEmptyDialog(dlg *DialogEx, parent Form, title string, param uintptr) 
 	}
 
 	alignment := int(unsafe.Alignof(headerDLGTEMPLATEEX{}))
-	numBytes := alignUp(int(unsafe.Sizeof(headerDLGTEMPLATEEX{}))+len(className16)+len(title16), alignment)
+	numBytes := alignUp(int(unsafe.Sizeof(headerDLGTEMPLATEEX{}))+(len(className16)+len(title16))*2, alignment)
 	buf32 := make([]uint32, numBytes/alignment)
 	bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(unsafe.SliceData(buf32))), numBytes)[:0]
 
@@ -160,16 +161,14 @@ func dialogExProc(hdlg win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 	if msg == win.WM_INITDIALOG {
 		params := (*emptyDlgParam)(unsafe.Pointer(lParam))
 		dlgEx = params.dlg
-		if win.SetWindowLongPtr(hdlg, win.DLGWINDOWEXTRA, uintptr(unsafe.Pointer(dlgEx))) == 0 {
-			if e := win.GetLastError(); e != 0 {
-				params.err = windows.Errno(e)
-				win.DestroyWindow(hdlg)
-				return 0
-			}
-		}
+		hwnd2DialogEx[hdlg] = dlgEx
 		lParam = params.lParam
 	} else {
-		dlgEx = (*DialogEx)(unsafe.Pointer(win.GetWindowLongPtr(hdlg, win.DLGWINDOWEXTRA)))
+		dlgEx = hwnd2DialogEx[hdlg]
+	}
+
+	if msg == win.WM_NCDESTROY {
+		delete(hwnd2DialogEx, hdlg)
 	}
 
 	if dlgEx == nil || !dlgEx.dlgProc(hdlg, msg, wParam, lParam) {

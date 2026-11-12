@@ -19,6 +19,7 @@ const minWinClassName = "Walk MinWin"
 var (
 	minWinProcCb uintptr
 	minWins      = map[*MinWin]struct{}{} // Set of all MinWin instances that are currently associated with valid HWNDs.
+	hwnd2MinWin  = map[win.HWND]*MinWin{}
 )
 
 // MinWinType is an enumeration specifying the type of the MinWin window.
@@ -374,20 +375,12 @@ func (mw *MinWin) SetEnabled(enable bool) {
 }
 
 func (mw *MinWin) setUserData() error {
-	win.SetLastError(0)
-	prev := win.SetWindowLongPtr(mw.hWnd, win.GWLP_USERDATA, uintptr(unsafe.Pointer(mw)))
-	if prev != 0 {
-		return nil
-	}
-	if le := win.GetLastError(); le != 0 {
-		return windows.Errno(le)
-	}
+	hwnd2MinWin[mw.hWnd] = mw
 	return nil
 }
 
 func resolveMinWin(hwnd win.HWND) *MinWin {
-	val := win.GetWindowLongPtr(hwnd, win.GWLP_USERDATA)
-	return (*MinWin)(unsafe.Pointer(val))
+	return hwnd2MinWin[hwnd]
 }
 
 func minWinProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
@@ -496,6 +489,7 @@ func (mw *MinWin) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uin
 	case win.WM_NCDESTROY:
 		mw.hWnd = 0
 		delete(minWins, mw)
+		delete(hwnd2MinWin, hwnd)
 	case win.WM_WINDOWPOSCHANGED:
 		wp := (*win.WINDOWPOS)(unsafe.Pointer(lParam))
 		if (wp.Flags & win.SWP_SHOWWINDOW) != 0 {
@@ -505,7 +499,7 @@ func (mw *MinWin) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uin
 		}
 
 		if (wp.Flags & win.SWP_NOMOVE) == 0 {
-			mw.movePublisher.Publish(Point{X: int(wp.X), Y: int(wp.X)})
+			mw.movePublisher.Publish(Point{X: int(wp.X), Y: int(wp.Y)})
 		}
 
 		if (wp.Flags & win.SWP_NOSIZE) == 0 {

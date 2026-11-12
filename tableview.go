@@ -1890,7 +1890,11 @@ func (tv *TableView) maybePublishFocusChanged(msg uint32, wp uintptr) {
 }
 
 func tableViewFrozenLVWndProc(hwnd win.HWND, msg uint32, wp, lp uintptr) uintptr {
-	tv := (*TableView)(unsafe.Pointer(windowFromHandle(win.GetParent(hwnd)).AsWindowBase()))
+	wnd := windowFromHandle(win.GetParent(hwnd))
+	tv, ok := wnd.(*TableView)
+	if !ok || tv == nil {
+		return win.DefWindowProc(hwnd, msg, wp, lp)
+	}
 
 	switch msg {
 	case win.WM_NCCALCSIZE:
@@ -1911,7 +1915,11 @@ func tableViewFrozenLVWndProc(hwnd win.HWND, msg uint32, wp, lp uintptr) uintptr
 }
 
 func tableViewNormalLVWndProc(hwnd win.HWND, msg uint32, wp, lp uintptr) uintptr {
-	tv := (*TableView)(unsafe.Pointer(windowFromHandle(win.GetParent(hwnd)).AsWindowBase()))
+	wnd := windowFromHandle(win.GetParent(hwnd))
+	tv, ok := wnd.(*TableView)
+	if !ok || tv == nil {
+		return win.DefWindowProc(hwnd, msg, wp, lp)
+	}
 
 	switch msg {
 	case win.WM_LBUTTONDOWN, win.WM_RBUTTONDOWN:
@@ -2113,11 +2121,14 @@ func (tv *TableView) lvWndProc(origWndProcPtr uintptr, hwnd win.HWND, msg uint32
 					}
 				}
 
-				utf16 := syscall.StringToUTF16(text)
-				buf := (*[264]uint16)(unsafe.Pointer(di.Item.PszText))
-				max := min(len(utf16), int(di.Item.CchTextMax))
-				copy((*buf)[:], utf16[:max])
-				(*buf)[max-1] = 0
+				if di.Item.PszText != nil && di.Item.CchTextMax > 0 {
+					utf16 := syscall.StringToUTF16(text)
+					buf := unsafe.Slice(di.Item.PszText, int(di.Item.CchTextMax))
+					n := copy(buf, utf16)
+					if n == len(buf) {
+						buf[n-1] = 0
+					}
+				}
 			}
 
 			if (tv.imageProvider != nil || tv.styler != nil) && di.Item.Mask&win.LVIF_IMAGE > 0 {
@@ -2485,7 +2496,11 @@ func (tv *TableView) lvWndProc(origWndProcPtr uintptr, hwnd win.HWND, msg uint32
 }
 
 func tableViewHdrWndProc(hwnd win.HWND, msg uint32, wp, lp uintptr) uintptr {
-	tv := (*TableView)(unsafe.Pointer(windowFromHandle(win.GetParent(win.GetParent(hwnd))).AsWindowBase()))
+	wnd := windowFromHandle(win.GetParent(win.GetParent(hwnd)))
+	tv, ok := wnd.(*TableView)
+	if !ok || tv == nil {
+		return win.DefWindowProc(hwnd, msg, wp, lp)
+	}
 
 	var origWndProcPtr uintptr
 	if hwnd == tv.hwndFrozenHdr {

@@ -65,7 +65,7 @@ func NewTabWidget(parent Container) (*TabWidget, error) {
 		return nil, lastError("CreateWindowEx")
 	}
 
-	win.SetWindowLongPtr(tw.hWndTab, win.GWLP_USERDATA, uintptr(unsafe.Pointer(tw)))
+	hwnd2TabWidget[tw.hWndTab] = tw
 	tw.tabOrigWndProcPtr = win.SetWindowLongPtr(tw.hWndTab, win.GWLP_WNDPROC, tabWidgetTabWndProcPtr)
 
 	dpi := int(win.GetDpiForWindow(tw.hWndTab))
@@ -94,6 +94,7 @@ func NewTabWidget(parent Container) (*TabWidget, error) {
 }
 
 func (tw *TabWidget) Dispose() {
+	delete(hwnd2TabWidget, tw.hWndTab)
 	tw.WidgetBase.Dispose()
 
 	if tw.imageList != nil {
@@ -342,10 +343,25 @@ func (tw *TabWidget) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) 
 	return tw.WidgetBase.WndProc(hwnd, msg, wParam, lParam)
 }
 
-var tabWidgetTabWndProcPtr uintptr
+var (
+	tabWidgetTabWndProcPtr uintptr
+	hwnd2TabWidget         = map[win.HWND]*TabWidget{}
+)
 
 func tabWidgetTabWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
-	tw := (*TabWidget)(unsafe.Pointer(win.GetWindowLongPtr(hwnd, win.GWLP_USERDATA)))
+	tw := hwnd2TabWidget[hwnd]
+	if tw == nil {
+		if p, ok := windowFromHandle(win.GetParent(hwnd)).(*TabWidget); ok {
+			tw = p
+		}
+	}
+	if tw == nil {
+		return win.DefWindowProc(hwnd, msg, wParam, lParam)
+	}
+
+	if msg == win.WM_NCDESTROY {
+		delete(hwnd2TabWidget, hwnd)
+	}
 
 	switch msg {
 	case win.WM_MOUSEMOVE:

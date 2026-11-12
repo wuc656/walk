@@ -377,9 +377,13 @@ func (bmp *Bitmap) withPixels(f func(bi *win.BITMAPINFO, hdc win.HDC, pixels *[m
 	}
 
 	hPixels := win.GlobalAlloc(win.GMEM_FIXED, uintptr(bi.BmiHeader.BiSizeImage))
-	defer win.GlobalFree(hPixels)
+	ptr := win.GlobalLock(hPixels)
+	defer func() {
+		win.GlobalUnlock(hPixels)
+		win.GlobalFree(hPixels)
+	}()
 
-	pixels := (*[maxPixels]bgraPixel)(unsafe.Pointer(uintptr(hPixels)))
+	pixels := (*[maxPixels]bgraPixel)(ptr)
 
 	bi.BmiHeader.BiCompression = win.BI_RGB
 	if ret := win.GetDIBits(hdc, bmp.hBmp, 0, uint32(bi.BmiHeader.BiHeight), &pixels[0].B, &bi, win.DIB_RGB_COLORS); ret == 0 {
@@ -502,8 +506,49 @@ func newBitmapFromHBITMAP(hBmp win.HBITMAP, dpi int) (bmp *Bitmap, err error) {
 	}
 
 	bmih := &dib.DsBmih
-
 	bmihSize := uintptr(unsafe.Sizeof(*bmih))
+
+	if dib.DsBm.BmBits == nil {
+		hdc := win.GetDC(0)
+		if hdc == 0 {
+			return nil, newError("GetDC failed")
+		}
+		defer win.ReleaseDC(0, hdc)
+
+		var bi win.BITMAPINFO
+		bi.BmiHeader.BiSize = uint32(unsafe.Sizeof(bi.BmiHeader))
+		bi.BmiHeader.BiWidth = int32(dib.DsBm.BmWidth)
+		bi.BmiHeader.BiHeight = int32(dib.DsBm.BmHeight)
+		bi.BmiHeader.BiPlanes = 1
+		bi.BmiHeader.BiBitCount = 32
+		bi.BmiHeader.BiCompression = win.BI_RGB
+
+		pixelsSize := uintptr(int32(bi.BmiHeader.BiBitCount)*bi.BmiHeader.BiWidth*bi.BmiHeader.BiHeight) / 8
+		totalSize := bmihSize + pixelsSize
+
+		hPackedDIB := win.GlobalAlloc(win.GHND, totalSize)
+		dest := win.GlobalLock(hPackedDIB)
+		defer win.GlobalUnlock(hPackedDIB)
+
+		win.MoveMemory(dest, unsafe.Pointer(&bi.BmiHeader), bmihSize)
+		dest = unsafe.Add(dest, bmihSize)
+
+		if win.GetDIBits(hdc, hBmp, 0, uint32(bi.BmiHeader.BiHeight), (*byte)(dest), &bi, win.DIB_RGB_COLORS) == 0 {
+			win.GlobalFree(hPackedDIB)
+			return nil, newError("GetDIBits failed")
+		}
+
+		return &Bitmap{
+			hBmp:       hBmp,
+			hPackedDIB: hPackedDIB,
+			size: Size{
+				int(bi.BmiHeader.BiWidth),
+				int(bi.BmiHeader.BiHeight),
+			},
+			dpi: dpi,
+		}, nil
+	}
+
 	pixelsSize := uintptr(int32(bmih.BiBitCount)*bmih.BiWidth*bmih.BiHeight) / 8
 
 	totalSize := uintptr(bmihSize + pixelsSize)

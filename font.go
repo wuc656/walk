@@ -194,7 +194,7 @@ func (f *Font) Light() bool {
 
 // SemiBold returns if text drawn using the Font appears with semi-bold weight.
 func (f *Font) SemiBold() bool {
-	return f.style&FontBold > 0
+	return f.style&FontSemiBold > 0
 }
 
 // Bold returns if text drawn using the Font appears with bold weight.

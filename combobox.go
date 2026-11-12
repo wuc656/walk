@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math/big"
 	"reflect"
+	"runtime"
 	"strconv"
 	"syscall"
 	"time"
@@ -44,7 +45,10 @@ type ComboBox struct {
 	persistent                   bool
 }
 
-var comboBoxEditWndProcPtr uintptr
+var (
+	comboBoxEditWndProcPtr uintptr
+	hwnd2ComboBoxEdit      = map[win.HWND]*ComboBox{}
+)
 
 func init() {
 	AppendToWalkInit(func() {
@@ -53,7 +57,19 @@ func init() {
 }
 
 func comboBoxEditWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
-	cb := (*ComboBox)(unsafe.Pointer(win.GetWindowLongPtr(hwnd, win.GWLP_USERDATA)))
+	cb := hwnd2ComboBoxEdit[hwnd]
+	if cb == nil {
+		if p, ok := windowFromHandle(win.GetParent(hwnd)).(*ComboBox); ok {
+			cb = p
+		}
+	}
+	if cb == nil {
+		return win.DefWindowProc(hwnd, msg, wParam, lParam)
+	}
+
+	if msg == win.WM_NCDESTROY {
+		delete(hwnd2ComboBoxEdit, hwnd)
+	}
 
 	switch msg {
 	case win.WM_GETDLGCODE:
@@ -108,7 +124,7 @@ func NewComboBox(parent Container) (*ComboBox, error) {
 
 	editHwnd := win.GetWindow(cb.hWnd, win.GW_CHILD)
 
-	win.SetWindowLongPtr(editHwnd, win.GWLP_USERDATA, uintptr(unsafe.Pointer(cb)))
+	hwnd2ComboBoxEdit[editHwnd] = cb
 	cb.editOrigWndProcPtr = win.SetWindowLongPtr(editHwnd, win.GWLP_WNDPROC, comboBoxEditWndProcPtr)
 
 	return cb, nil
@@ -268,11 +284,13 @@ func (cb *ComboBox) itemString(index int) string {
 
 func (cb *ComboBox) insertItemAt(index int) error {
 	str := cb.itemString(index)
-	lp := uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(str)))
+	p := syscall.StringToUTF16Ptr(str)
 
-	if win.CB_ERR == cb.SendMessage(win.CB_INSERTSTRING, uintptr(index), lp) {
+	if win.CB_ERR == cb.SendMessage(win.CB_INSERTSTRING, uintptr(index), uintptr(unsafe.Pointer(p))) {
+		runtime.KeepAlive(p)
 		return newError("SendMessage(CB_INSERTSTRING)")
 	}
+	runtime.KeepAlive(p)
 
 	return nil
 }
@@ -357,6 +375,7 @@ func (cb *ComboBox) Dispose() {
 	if cb.editOrigWndProcPtr != 0 {
 		if editHwnd := win.GetWindow(cb.hWnd, win.GW_CHILD); editHwnd != 0 {
 			win.SetWindowLongPtr(editHwnd, win.GWLP_WNDPROC, cb.editOrigWndProcPtr)
+			delete(hwnd2ComboBoxEdit, editHwnd)
 		}
 		cb.editOrigWndProcPtr = 0
 	}

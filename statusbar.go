@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"slices"
 	"syscall"
 	"unsafe"
@@ -306,12 +307,13 @@ func (sbi *StatusBarItem) updateText(index int) error {
 	if err != nil {
 		return err
 	}
+	defer runtime.KeepAlive(utf16)
 
 	if sbi.sb.SendMessage(
-	win.SB_SETTEXT,
-	uintptr(win.MAKEWORD(byte(index), 0)),
-	uintptr(unsafe.Pointer(utf16))) ==
-	0 {
+		win.SB_SETTEXT,
+		uintptr(win.MAKEWORD(byte(index), 0)),
+		uintptr(unsafe.Pointer(utf16))) ==
+		0 {
 
 		return newError("SB_SETTEXT")
 	}
@@ -324,6 +326,7 @@ func (sbi *StatusBarItem) updateToolTipText(index int) error {
 	if err != nil {
 		return err
 	}
+	defer runtime.KeepAlive(utf16)
 
 	sbi.sb.SendMessage(
 		win.SB_SETTIPTEXT,

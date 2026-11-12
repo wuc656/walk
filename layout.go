@@ -122,12 +122,22 @@ func startLayoutPerformer(form Form) (performLayout chan layoutStartInfo, layout
 		done := make(chan layoutResultsWithCompletionFuncs)
 		ctxDone := ctx.Done()
 
+		cleanup := func() {
+			close(performLayout)
+			close(layoutResults)
+			close(inSizeLoop)
+			close(updateStopwatch)
+			if cancel != nil {
+				close(cancel)
+			}
+			close(done)
+		}
+
 		for {
 			select {
 			case <-ctxDone:
-				close(quit)
-				// Remove ctxDone from futher consideration.
-				ctxDone = nil
+				cleanup()
+				return
 
 			case startInfo := <-performLayout:
 				if busy {
@@ -164,14 +174,7 @@ func startLayoutPerformer(form Form) (performLayout chan layoutStartInfo, layout
 			case stopwatch = <-updateStopwatch:
 
 			case <-quit:
-				close(performLayout)
-				close(layoutResults)
-				close(inSizeLoop)
-				close(updateStopwatch)
-				if cancel != nil {
-					close(cancel)
-				}
-				close(done)
+				cleanup()
 				return
 			}
 		}

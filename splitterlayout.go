@@ -384,8 +384,8 @@ func (li *splitterContainerLayoutItem) PerformLayout() []LayoutResultItem {
 	if diff != 0 && len(sizes) > 1 {
 		for diff != 0 {
 			slices.SortStableFunc(wis, func(a, b WidgetItem) int {
-				x := float64(a.item.growth) / float64(a.item.stretchFactor)
-				y := float64(b.item.growth) / float64(b.item.stretchFactor)
+				x := float64(a.item.growth) / float64(max(1, a.item.stretchFactor))
+				y := float64(b.item.growth) / float64(max(1, b.item.stretchFactor))
 
 				if diff > 0 {
 					aLess := x < y && (a.max == 0 || a.max > a.item.size)
@@ -411,9 +411,10 @@ func (li *splitterContainerLayoutItem) PerformLayout() []LayoutResultItem {
 			})
 
 			var wi *WidgetItem
-			for _, wItem := range wis {
+			for i := range wis {
+				wItem := &wis[i]
 				if !wItem.item.keepSize && (diff < 0 && wItem.item.size > wItem.min || diff > 0 && (wItem.item.size < wItem.max || wItem.max == 0)) {
-					wi = &wItem
+					wi = wItem
 					break
 				}
 			}
