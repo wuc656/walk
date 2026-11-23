@@ -8,6 +8,7 @@ package walk
 
 import (
 	"fmt"
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -283,7 +284,7 @@ func (tb *ToolBar) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) ui
 		case win.TBN_DROPDOWN:
 			nmtb := (*win.NMTOOLBAR)(unsafe.Pointer(lParam))
 			actionId := uint16(nmtb.IItem)
-			if action := actionsById[actionId]; action != nil {
+			if action := actionsById[actionId]; action != nil && action.menu != nil {
 				var r win.RECT
 				if tb.SendMessage(win.TB_GETRECT, uintptr(actionId), uintptr(unsafe.Pointer(&r))) == 0 {
 					break
@@ -320,7 +321,7 @@ func (tb *ToolBar) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) ui
 	return tb.WidgetBase.WndProc(hwnd, msg, wParam, lParam)
 }
 
-func (tb *ToolBar) initButtonForAction(action *Action, state, style *byte, image *int32, text *uintptr) (err error) {
+func (tb *ToolBar) initButtonForAction(action *Action, state, style *byte, image *int32, text *uintptr) (textPtr *uint16, err error) {
 	if tb.hasStyleBits(win.CCS_VERT) {
 		*state |= win.TBSTATE_WRAP
 	} else if tb.defaultButtonWidth == 0 {
@@ -361,7 +362,7 @@ func (tb *ToolBar) initButtonForAction(action *Action, state, style *byte, image
 
 	if tb.buttonStyle != ToolBarButtonTextOnly {
 		if *image, err = tb.imageIndex(action.image); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
@@ -373,9 +374,11 @@ func (tb *ToolBar) initButtonForAction(action *Action, state, style *byte, image
 	}
 
 	if len(actionText) != 0 {
-		*text = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(actionText)))
+		textPtr = syscall.StringToUTF16Ptr(actionText)
+		*text = uintptr(unsafe.Pointer(textPtr))
 	} else if len(action.toolTip) != 0 {
-		*text = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(action.toolTip)))
+		textPtr = syscall.StringToUTF16Ptr(action.toolTip)
+		*text = uintptr(unsafe.Pointer(textPtr))
 	}
 
 	return
@@ -389,22 +392,23 @@ func (tb *ToolBar) onActionChanged(action *Action) error {
 
 	tbbi.CbSize = uint32(unsafe.Sizeof(tbbi))
 
-	if err := tb.initButtonForAction(
+	textPtr, err := tb.initButtonForAction(
 		action,
 		&tbbi.FsState,
 		&tbbi.FsStyle,
 		&tbbi.IImage,
-		&tbbi.PszText); err != nil {
-
+		&tbbi.PszText)
+	if err != nil {
 		return err
 	}
 
-	if tb.SendMessage(
-	win.TB_SETBUTTONINFO,
-	uintptr(action.id),
-	uintptr(unsafe.Pointer(&tbbi))) ==
-	0 {
-
+	ret := tb.SendMessage(
+		win.TB_SETBUTTONINFO,
+		uintptr(action.id),
+		uintptr(unsafe.Pointer(&tbbi)))
+	runtime.KeepAlive(textPtr)
+	runtime.KeepAlive(&tbbi)
+	if ret == 0 {
 		return newError("SendMessage(TB_SETBUTTONINFO) failed")
 	}
 
@@ -445,7 +449,8 @@ func (tb *ToolBar) insertAction(action *Action, visibleChanged bool) (err error)
 		IdCommand: int32(action.id),
 	}
 
-	if err = tb.initButtonForAction(
+	var textPtr *uint16
+	if textPtr, err = tb.initButtonForAction(
 		action,
 		&tbb.FsState,
 		&tbb.FsStyle,
@@ -459,7 +464,10 @@ func (tb *ToolBar) insertAction(action *Action, visibleChanged bool) (err error)
 
 	tb.SendMessage(win.TB_BUTTONSTRUCTSIZE, uintptr(unsafe.Sizeof(tbb)), 0)
 
-	if win.FALSE == tb.SendMessage(win.TB_INSERTBUTTON, uintptr(index), uintptr(unsafe.Pointer(&tbb))) {
+	ret := tb.SendMessage(win.TB_INSERTBUTTON, uintptr(index), uintptr(unsafe.Pointer(&tbb)))
+	runtime.KeepAlive(textPtr)
+	runtime.KeepAlive(&tbb)
+	if win.FALSE == ret {
 		return newError("SendMessage(TB_ADDBUTTONS)")
 	}
 

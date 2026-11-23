@@ -443,8 +443,10 @@ func dataFieldFromPath(root reflect.Value, path string) (DataField, error) {
 	}
 
 	// convert to DataField
-	if i, ok := value.Interface().(DataField); ok {
-		return i, nil
+	if value.IsValid() {
+		if i, ok := value.Interface().(DataField); ok {
+			return i, nil
+		}
 	}
 
 	return &reflectField{parent: parent, value: value, key: path[strings.LastIndexByte(path, '.')+1:]}, nil
@@ -460,6 +462,9 @@ func reflectValueFromPath(root reflect.Value, path string) (parent, value reflec
 
 		var p reflect.Value
 		for value.Kind() == reflect.Interface || value.Kind() == reflect.Pointer {
+			if value.IsNil() {
+				return parent, value, fmt.Errorf("nil value at '%s', path: '%s'", name, fullPath)
+			}
 			p = value
 			value = value.Elem()
 		}
@@ -502,7 +507,7 @@ func reflectValueFromPath(root reflect.Value, path string) (parent, value reflec
 					fun = value.MethodByName(name)
 				}
 				if !fun.IsValid() {
-					return parent, value, fmt.Errorf("bad member: '%s', path: '%s'", path, fullPath)
+					return parent, value, fmt.Errorf("bad member: '%s', path: '%s'", name, fullPath)
 				}
 			}
 
@@ -574,6 +579,9 @@ func (f *reflectField) CanSet() bool {
 }
 
 func (f *reflectField) Get() any {
+	if !f.value.IsValid() {
+		return nil
+	}
 	return f.value.Interface()
 }
 
@@ -607,5 +615,8 @@ func (f *reflectField) Set(value any) error {
 }
 
 func (f *reflectField) Zero() any {
+	if !f.value.IsValid() {
+		return nil
+	}
 	return reflect.Zero(f.value.Type()).Interface()
 }

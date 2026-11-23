@@ -484,7 +484,8 @@ func (lis *ListItemStyle) DrawText(text string, bounds Rectangle, format DrawTex
 		}
 		rc := bounds.toRECT()
 
-		if win.FAILED(win.DrawThemeTextEx(lis.hTheme, lis.hdc, win.LVP_LISTITEM, lis.stateID(), syscall.StringToUTF16Ptr(text), int32(len(([]rune)(text))), uint32(format), &rc, nil)) {
+		textUTF16 := syscall.StringToUTF16(text)
+		if win.FAILED(win.DrawThemeTextEx(lis.hTheme, lis.hdc, win.LVP_LISTITEM, lis.stateID(), &textUTF16[0], int32(len(textUTF16)-1), uint32(format), &rc, nil)) {
 			return newError("DrawThemeTextEx failed")
 		}
 	} else {

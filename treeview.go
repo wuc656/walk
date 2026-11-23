@@ -453,9 +453,14 @@ func (tv *TreeView) insertChildren(parent TreeItem) error {
 }
 
 func (tv *TreeView) updateItem(item TreeItem) error {
+	info := tv.item2Info[item]
+	if info == nil {
+		return newError("invalid item")
+	}
+
 	tvi := &win.TVITEM{
 		Mask:    win.TVIF_TEXT,
-		HItem:   tv.item2Info[item].handle,
+		HItem:   info.handle,
 		PszText: win.LPSTR_TEXTCALLBACK,
 	}
 
@@ -492,7 +497,12 @@ func (tv *TreeView) removeItem(item TreeItem) error {
 }
 
 func (tv *TreeView) removeDescendants(parent TreeItem) error {
-	for item := range tv.item2Info[parent].child2Handle {
+	info := tv.item2Info[parent]
+	if info == nil {
+		return nil
+	}
+
+	for item := range info.child2Handle {
 		if err := tv.removeItem(item); err != nil {
 			return err
 		}
@@ -601,14 +611,18 @@ func (tv *TreeView) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 		case win.TVN_GETDISPINFO:
 			nmtvdi := (*win.NMTVDISPINFO)(unsafe.Pointer(lParam))
 			item := tv.handle2Item[nmtvdi.Item.HItem]
+			if item == nil {
+				break
+			}
 
-			if nmtvdi.Item.Mask&win.TVIF_TEXT != 0 {
+			if nmtvdi.Item.Mask&win.TVIF_TEXT != 0 && nmtvdi.Item.PszText != 0 && nmtvdi.Item.CchTextMax > 0 {
 				text := item.Text()
 				utf16 := syscall.StringToUTF16(text)
-				buf := (*[264]uint16)(unsafe.Pointer(nmtvdi.Item.PszText))
-				max := min(len(utf16), int(nmtvdi.Item.CchTextMax))
-				copy((*buf)[:], utf16[:max])
-				(*buf)[max-1] = 0
+				buf := unsafe.Slice((*uint16)(unsafe.Pointer(nmtvdi.Item.PszText)), int(nmtvdi.Item.CchTextMax))
+				n := copy(buf, utf16)
+				if n == len(buf) {
+					buf[n-1] = 0
+				}
 			}
 			if nmtvdi.Item.Mask&win.TVIF_CHILDREN != 0 {
 				if hc, ok := item.(HasChilder); ok {
@@ -628,7 +642,7 @@ func (tv *TreeView) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 
 			if nmtv.Action == win.TVE_EXPAND && tv.lazyPopulation {
 				info := tv.item2Info[item]
-				if len(info.child2Handle) == 0 {
+				if info != nil && len(info.child2Handle) == 0 {
 					tv.insertChildren(item)
 				}
 			}

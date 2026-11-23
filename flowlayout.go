@@ -8,6 +8,7 @@ package walk
 
 import (
 	"maps"
+	"sync"
 
 	"github.com/wuc656/win"
 )
@@ -74,6 +75,7 @@ func (l *FlowLayout) CreateLayoutItem(ctx *LayoutContext) ContainerLayoutItem {
 
 type flowLayoutItem struct {
 	ContainerLayoutItemBase
+	mutex              sync.Mutex
 	size2MinSize       map[Size]Size // in native pixels
 	hwnd2StretchFactor map[win.HWND]int
 }
@@ -102,6 +104,9 @@ func (li *flowLayoutItem) HeightForWidth(width int) int {
 }
 
 func (li *flowLayoutItem) MinSizeForSize(size Size) Size {
+	li.mutex.Lock()
+	defer li.mutex.Unlock()
+
 	if min, ok := li.size2MinSize[size]; ok {
 		return min
 	}

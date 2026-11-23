@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"sync"
 	"syscall"
 	"unsafe"
@@ -223,8 +224,9 @@ func (te *TextEdit) ScrollToCaret() {
 }
 
 func (te *TextEdit) TextSelection() (start, end int) {
-	te.SendMessage(win.EM_GETSEL, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)))
-	return
+	var s, e uint32
+	te.SendMessage(win.EM_GETSEL, uintptr(unsafe.Pointer(&s)), uintptr(unsafe.Pointer(&e)))
+	return int(s), int(e)
 }
 
 func (te *TextEdit) SetTextSelection(start, end int) {
@@ -232,9 +234,11 @@ func (te *TextEdit) SetTextSelection(start, end int) {
 }
 
 func (te *TextEdit) ReplaceSelectedText(text string, canUndo bool) {
+	p := syscall.StringToUTF16Ptr(text)
 	te.SendMessage(win.EM_REPLACESEL,
 		uintptr(win.BoolToBOOL(canUndo)),
-		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(text))))
+		uintptr(unsafe.Pointer(p)))
+	runtime.KeepAlive(p)
 }
 
 func (te *TextEdit) AppendText(value string) {

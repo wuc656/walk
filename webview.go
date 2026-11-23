@@ -8,6 +8,7 @@ package walk
 
 import (
 	"fmt"
+	"syscall"
 	"unsafe"
 
 	"github.com/wuc656/win"
@@ -25,6 +26,7 @@ type WebView struct {
 	WidgetBase
 	clientSite                               webViewIOleClientSite // IMPORTANT: Must remain first member after WidgetBase
 	browserObject                            *win.IOleObject
+	eventsCookie                             uint32
 	urlChangedPublisher                      EventPublisher
 	shortcutsEnabled                         bool
 	shortcutsEnabledChangedPublisher         EventPublisher
@@ -173,6 +175,7 @@ func NewWebView(parent Container) (*WebView, error) {
 	if hr := cp.Advise(unsafe.Pointer(&wv.clientSite.webBrowserEvents2), &cookie); win.FAILED(hr) {
 		return nil, errorFromHRESULT("IConnectionPoint.Advise", hr)
 	}
+	wv.eventsCookie = cookie
 
 	wv.onResize()
 
@@ -214,6 +217,20 @@ func NewWebView(parent Container) (*WebView, error) {
 
 func (wv *WebView) Dispose() {
 	if wv.browserObject != nil {
+		if wv.eventsCookie != 0 {
+			var cpcPtr unsafe.Pointer
+			if hr := wv.browserObject.QueryInterface(&win.IID_IConnectionPointContainer, &cpcPtr); win.SUCCEEDED(hr) && cpcPtr != nil {
+				cpc := (*win.IConnectionPointContainer)(cpcPtr)
+				var cp *win.IConnectionPoint
+				if hr := cpc.FindConnectionPoint(&win.DIID_DWebBrowserEvents2, &cp); win.SUCCEEDED(hr) && cp != nil {
+					syscall.SyscallN(cp.LpVtbl.Unadvise, uintptr(unsafe.Pointer(cp)), uintptr(wv.eventsCookie))
+					cp.Release()
+				}
+				cpc.Release()
+			}
+			wv.eventsCookie = 0
+		}
+
 		wv.browserObject.Close(win.OLECLOSE_NOSAVE)
 		wv.browserObject.Release()
 
@@ -447,7 +464,7 @@ func (wv *WebView) withInPlaceActiveObject(f func(activeObject *win.IOleInPlaceA
 	if wv.browserObject == nil {
 		return nil
 	}
-	wv.withWebBrowser2(func(webBrowser2 *win.IWebBrowser2) error {
+	return wv.withWebBrowser2(func(webBrowser2 *win.IWebBrowser2) error {
 		var activeObjectPtr unsafe.Pointer
 		if hr := webBrowser2.QueryInterface(&win.IID_IOleInPlaceActiveObject, &activeObjectPtr); win.FAILED(hr) {
 			return errorFromHRESULT("WebBowser2.QueryInterface", hr)
@@ -456,7 +473,6 @@ func (wv *WebView) withInPlaceActiveObject(f func(activeObject *win.IOleInPlaceA
 		defer activeObject.Release()
 		return f(activeObject)
 	})
-	return nil
 }
 
 func (wv *WebView) translateAccelerator(msg *win.MSG) bool {

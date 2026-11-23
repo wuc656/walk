@@ -209,8 +209,16 @@ func (m *reflectTableModel) Value(row, col int) any {
 	return valueFromSlice(m.dataSource, m.value, m.dataMembers[col], row)
 }
 
+func isNilReflectValue(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Pointer, reflect.Interface:
+		return v.IsNil()
+	}
+	return false
+}
+
 func (m *reflectTableModel) Checked(row int) bool {
-	if m.value.Index(row).IsNil() {
+	if isNilReflectValue(m.value.Index(row)) {
 		return false
 	}
 
@@ -222,7 +230,7 @@ func (m *reflectTableModel) Checked(row int) bool {
 }
 
 func (m *reflectTableModel) SetChecked(row int, checked bool) error {
-	if m.value.Index(row).IsNil() {
+	if isNilReflectValue(m.value.Index(row)) {
 		return nil
 	}
 
@@ -301,14 +309,19 @@ func (m *reflectTableModel) Len() int {
 
 func (m *reflectTableModel) Less(i, j int) bool {
 	col := m.SortedColumn()
+	if col < 0 || col >= len(m.dataMembers) {
+		return false
+	}
 
-	if lt := m.lessFuncs[col]; lt != nil {
-		ls := lt(i, j)
+	if col < len(m.lessFuncs) {
+		if lt := m.lessFuncs[col]; lt != nil {
+			ls := lt(i, j)
 
-		if m.SortOrder() == SortAscending {
-			return ls
-		} else {
-			return !ls
+			if m.SortOrder() == SortAscending {
+				return ls
+			} else {
+				return !ls
+			}
 		}
 	}
 
@@ -331,7 +344,7 @@ type imageReflectTableModel struct {
 }
 
 func (m *imageReflectTableModel) Image(index int) any {
-	if m.value.Index(index).IsNil() {
+	if isNilReflectValue(m.value.Index(index)) {
 		return nil
 	}
 
@@ -355,7 +368,7 @@ func (m *sortedImageReflectTableModel) Sort(col int, order SortOrder) error {
 }
 
 func (m *sortedImageReflectTableModel) Image(index int) any {
-	if m.value.Index(index).IsNil() {
+	if isNilReflectValue(m.value.Index(index)) {
 		return nil
 	}
 

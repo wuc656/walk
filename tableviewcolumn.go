@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -400,7 +401,9 @@ func (tvc *TableViewColumn) create() error {
 		lvc.Fmt = 1
 	}
 
-	if int(tvc.sendMessage(win.LVM_INSERTCOLUMN, uintptr(index), uintptr(unsafe.Pointer(&lvc)))) == -1 {
+	ret := int(tvc.sendMessage(win.LVM_INSERTCOLUMN, uintptr(index), uintptr(unsafe.Pointer(&lvc))))
+	runtime.KeepAlive(&lvc)
+	if ret == -1 {
 		return newError("LVM_INSERTCOLUMN")
 	}
 
@@ -430,7 +433,9 @@ func (tvc *TableViewColumn) update() error {
 
 	lvc := tvc.getLVCOLUMN()
 
-	if win.FALSE == tvc.sendMessage(win.LVM_SETCOLUMN, uintptr(tvc.indexInListView()), uintptr(unsafe.Pointer(lvc))) {
+	ret := tvc.sendMessage(win.LVM_SETCOLUMN, uintptr(tvc.indexInListView()), uintptr(unsafe.Pointer(lvc)))
+	runtime.KeepAlive(lvc)
+	if win.FALSE == ret {
 		return newError("LVM_SETCOLUMN")
 	}
 

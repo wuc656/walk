@@ -754,21 +754,22 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 			}
 		}
 
+		sf := max(1, stretchFactors[i])
 		sortedSections[i].index = i
 		sortedSections[i].minSize = minSizes[i]
 		sortedSections[i].maxSize = maxSizes[i]
-		sortedSections[i].stretch = max(1, stretchFactors[i])
+		sortedSections[i].stretch = sf
 
 		minSizesRemaining += minSizes[i]
 
 		if sortedSections[i].hasGreedyNonSpacer {
 			sectionCountWithGreedyNonSpacer++
-			stretchFactorsTotal[0] += stretchFactors[i]
+			stretchFactorsTotal[0] += sf
 		} else if sortedSections[i].hasGreedySpacer {
 			sectionCountWithGreedySpacer++
-			stretchFactorsTotal[1] += stretchFactors[i]
+			stretchFactorsTotal[1] += sf
 		} else {
-			stretchFactorsTotal[2] += stretchFactors[i]
+			stretchFactorsTotal[2] += sf
 		}
 	}
 
@@ -803,12 +804,12 @@ func (li *gridLayoutItem) sectionSizesForSpace(orientation Orientation, space in
 			info := sortedSections[offsets[i]+j]
 			k := info.index
 
-			stretch := stretchFactors[k]
+			stretch := info.stretch
 			min := info.minSize
 			max := info.maxSize
 			size := min
 
-			if min < max {
+			if min < max && stretchFactorsRemaining > 0 {
 				excessSpace := float64(space - minSizesRemaining - spacingRemaining)
 
 				size += int(excessSpace * float64(stretch) / float64(stretchFactorsRemaining))

@@ -81,7 +81,7 @@ func NewNumberEdit(parent Container) (*NumberEdit, error) {
 		func(v any) error {
 			return ne.SetRange(ne.MinValue(), assertFloat64Or(v, 0.0))
 		},
-		ne.minValueChangedPublisher.Event()))
+		ne.maxValueChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("MinValue", NewProperty(
 		func() any {
@@ -90,7 +90,7 @@ func NewNumberEdit(parent Container) (*NumberEdit, error) {
 		func(v any) error {
 			return ne.SetRange(assertFloat64Or(v, 0.0), ne.MaxValue())
 		},
-		ne.maxValueChangedPublisher.Event()))
+		ne.minValueChangedPublisher.Event()))
 
 	ne.MustRegisterProperty("Prefix", NewProperty(
 		func() any {
@@ -649,8 +649,7 @@ func (nle *numberLineEdit) processChar(text []uint16, start, end int, key Key, c
 }
 
 func (nle *numberLineEdit) tryUpdateValue(setText bool) bool {
-	t := nle.textUTF16()
-	t = t[len(nle.prefix) : len(t)-len(nle.suffix)]
+	t := nle.numberTextUTF16()
 
 	text := strings.Replace(syscall.UTF16ToString(t), decimalSepS, ".", 1)
 
@@ -669,7 +668,15 @@ func (nle *numberLineEdit) tryUpdateValue(setText bool) bool {
 }
 
 func (nle *numberLineEdit) selectNumber() {
-	nle.SetTextSelection(len(nle.prefix), len(nle.textUTF16())-len(nle.suffix))
+	nle.SetTextSelection(len(nle.prefix), len(nle.prefix)+len(nle.numberTextUTF16()))
+}
+
+func (nle *numberLineEdit) numberTextUTF16() []uint16 {
+	t := nle.textUTF16()
+	if len(t) < len(nle.prefix)+len(nle.suffix) {
+		return nil
+	}
+	return t[len(nle.prefix) : len(t)-len(nle.suffix)]
 }
 
 func (nle *numberLineEdit) textUTF16() []uint16 {
@@ -716,11 +723,12 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 
 		char := uint16(wParam)
 
-		text := nle.textUTF16()
-		text = text[len(nle.prefix) : len(text)-len(nle.suffix)]
+		text := nle.numberTextUTF16()
 		start, end := nle.TextSelection()
 		start -= len(nle.prefix)
 		end -= len(nle.prefix)
+		start = min(max(start, 0), len(text))
+		end = min(max(end, start), len(text))
 
 		if Key(wParam) == KeyBack {
 			nle.processChar(text, start, end, KeyBack, 0)
@@ -787,11 +795,12 @@ func (nle *numberLineEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uin
 				break
 			}
 
-			text := nle.textUTF16()
-			text = text[len(nle.prefix) : len(text)-len(nle.suffix)]
+			text := nle.numberTextUTF16()
 			start, end := nle.TextSelection()
 			start -= len(nle.prefix)
 			end -= len(nle.prefix)
+			start = min(max(start, 0), len(text))
+			end = min(max(end, start), len(text))
 
 			nle.processChar(text, start, end, KeyDelete, 0)
 			return 0

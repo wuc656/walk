@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"errors"
 	"image"
+	"runtime"
 	"strings"
 	"syscall"
 	"unsafe"
@@ -663,9 +664,10 @@ func initWindowWithCfg(cfg *windowCfg) error {
 		createCtx = &createContext{cfg: cfg}
 	}
 
+	classNamePtr := syscall.StringToUTF16Ptr(cfg.ClassName)
 	hwnd := win.CreateWindowEx(
 		cfg.ExStyle,
-		syscall.StringToUTF16Ptr(cfg.ClassName),
+		classNamePtr,
 		windowName,
 		cfg.Style|win.WS_CLIPSIBLINGS,
 		x,
@@ -677,6 +679,9 @@ func initWindowWithCfg(cfg *windowCfg) error {
 		0,
 		unsafe.Pointer(createCtx),
 	)
+	runtime.KeepAlive(classNamePtr)
+	runtime.KeepAlive(windowName)
+	runtime.KeepAlive(createCtx)
 	if hwnd == 0 {
 		if createCtx == nil || createCtx.err == nil {
 			return lastError("CreateWindowEx")
@@ -1341,7 +1346,10 @@ func windowText(hwnd win.HWND) string {
 }
 
 func setWindowText(hwnd win.HWND, text string) error {
-	if win.TRUE != win.SendMessage(hwnd, win.WM_SETTEXT, 0, uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(text)))) {
+	p := syscall.StringToUTF16Ptr(text)
+	ret := win.SendMessage(hwnd, win.WM_SETTEXT, 0, uintptr(unsafe.Pointer(p)))
+	runtime.KeepAlive(p)
+	if win.TRUE != ret {
 		return newError("WM_SETTEXT failed")
 	}
 
@@ -1390,7 +1398,7 @@ func (wb *WindowBase) Form() Form {
 		if form, ok := wb.window.(Form); ok {
 			wb.form = form
 		} else {
-			wb.form = ancestor(wb.window.(Widget))
+			wb.form = ancestor(wb.window)
 		}
 	}
 
@@ -1419,6 +1427,7 @@ var forEachDescendantCallbackPtr uintptr
 func (wb *WindowBase) ForEachDescendant(f func(widget Widget) bool) {
 	ctx := forEachDescendantContext{fn: f}
 	win.EnumChildWindows(wb.hWnd, forEachDescendantCallbackPtr, uintptr(unsafe.Pointer(&ctx)))
+	runtime.KeepAlive(&ctx)
 }
 
 type forEachDescendantRawContext struct {
@@ -1440,6 +1449,7 @@ var forEachDescendantRawCallbackPtr uintptr
 func (wb *WindowBase) forEachDescendantRaw(lParam uintptr, f func(hwnd win.HWND, lParam uintptr) bool) {
 	ctx := forEachDescendantRawContext{lParam: lParam, fn: f}
 	win.EnumChildWindows(wb.hWnd, forEachDescendantRawCallbackPtr, uintptr(unsafe.Pointer(&ctx)))
+	runtime.KeepAlive(&ctx)
 }
 
 // SetVisible sets if the *WindowBase is visible.
@@ -2099,7 +2109,10 @@ func (wb *WindowBase) CreateCanvas() (*Canvas, error) {
 }
 
 func (wb *WindowBase) setTheme(appName string) error {
-	if hr := win.SetWindowTheme(wb.hWnd, syscall.StringToUTF16Ptr(appName), nil); win.FAILED(hr) {
+	p := syscall.StringToUTF16Ptr(appName)
+	hr := win.SetWindowTheme(wb.hWnd, p, nil)
+	runtime.KeepAlive(p)
+	if win.FAILED(hr) {
 		return errorFromHRESULT("SetWindowTheme", hr)
 	}
 

@@ -138,8 +138,9 @@ func (le *LineEdit) SetText(value string) error {
 }
 
 func (le *LineEdit) TextSelection() (start, end int) {
-	le.SendMessage(win.EM_GETSEL, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)))
-	return
+	var s, e uint32
+	le.SendMessage(win.EM_GETSEL, uintptr(unsafe.Pointer(&s)), uintptr(unsafe.Pointer(&e)))
+	return int(s), int(e)
 }
 
 func (le *LineEdit) SetTextSelection(start, end int) {

@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
 
@@ -95,7 +96,10 @@ func (tt *ToolTip) setTitle(title string, icon uintptr) error {
 		title = string(runes[:99])
 	}
 
-	if win.FALSE == tt.SendMessage(win.TTM_SETTITLE, icon, uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(title)))) {
+	p := syscall.StringToUTF16Ptr(title)
+	ret := tt.SendMessage(win.TTM_SETTITLE, icon, uintptr(unsafe.Pointer(p)))
+	runtime.KeepAlive(p)
+	if win.FALSE == ret {
 		return newError("TTM_SETTITLE failed")
 	}
 
@@ -131,7 +135,9 @@ func (tt *ToolTip) track(tool Widget) error {
 		p.X = int32(b.X + b.Width/2)
 	}
 
-	win.ClientToScreen(tool.Parent().Handle(), &p)
+	if parent := tool.Parent(); parent != nil {
+		win.ClientToScreen(parent.Handle(), &p)
+	}
 
 	tt.SendMessage(win.TTM_TRACKPOSITION, 0, uintptr(win.MAKELONG(uint16(p.X), uint16(p.Y))))
 
@@ -242,6 +248,7 @@ func (tt *ToolTip) setText(hwnd win.HWND, text string) error {
 	ti.LpszText = syscall.StringToUTF16Ptr(text)
 
 	tt.SendMessage(win.TTM_SETTOOLINFO, 0, uintptr(unsafe.Pointer(ti)))
+	runtime.KeepAlive(ti)
 
 	return nil
 }

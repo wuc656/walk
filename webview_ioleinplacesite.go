@@ -117,6 +117,9 @@ func webView_IOleInPlaceSite_DeactivateAndUndo(inPlaceSite *webViewIOleInPlaceSi
 
 func webView_IOleInPlaceSite_OnPosRectChange(inPlaceSite *webViewIOleInPlaceSite, lprcPosRect *win.RECT) uintptr {
 	browserObject := inPlaceSite.inPlaceFrame.webView.browserObject
+	if browserObject == nil {
+		return win.E_UNEXPECTED
+	}
 	var inPlaceObjectPtr unsafe.Pointer
 	if hr := browserObject.QueryInterface(&win.IID_IOleInPlaceObject, &inPlaceObjectPtr); win.FAILED(hr) {
 		return uintptr(hr)

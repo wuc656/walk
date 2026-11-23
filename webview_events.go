@@ -49,8 +49,7 @@ func (eventData *WebViewNavigatingEventData) PostData() string {
 				if postDataSize == 0 || psa.PvData == 0 {
 					return ""
 				}
-				byteAryPtr := (*[200000000]byte)(unsafe.Pointer(psa.PvData))
-				data := (*byteAryPtr)[:postDataSize]
+				data := unsafe.Slice((*byte)(unsafe.Pointer(psa.PvData)), int(postDataSize))
 				if len(data) > 0 && data[len(data)-1] == 0 {
 					data = data[:len(data)-1]
 				}

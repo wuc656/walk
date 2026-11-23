@@ -181,6 +181,9 @@ func webView_DWebBrowserEvents2_Invoke(
 		// FIXME: Horrible hack to avoid glitch where the document is not displayed.
 		time.AfterFunc(time.Millisecond*100, func() {
 			wv.Synchronize(func() {
+				if wv.IsDisposed() {
+					return
+				}
 				b := wv.BoundsPixels()
 				b.Width++
 				wv.SetBoundsPixels(b)

@@ -77,9 +77,12 @@ func (ttep *ToolTipErrorPresenter) PresentError(err error, widget Widget) {
 	}
 
 	var found bool
-	if widget != nil {
+	if widget != nil && widget.Form() != nil && widget.Form().AsFormBase().clientComposite != nil {
 		walkDescendants(widget.Form().AsFormBase().clientComposite, func(w Window) bool {
-			wt := w.(Widget)
+			wt, ok := w.(Widget)
+			if !ok {
+				return true
+			}
 
 			if !found {
 				if e, ok := ttep.widget2error[wt]; ok {
@@ -131,13 +134,14 @@ func (ttep *ToolTipErrorPresenter) track(widget Widget) {
 		ttep.trackedBoundsChangedHandles[wnd] = handle
 
 		if ttep.form == nil {
-			ttep.form = widget.Form()
-			ttep.formActivatingHandle = ttep.form.AsFormBase().activatingPublisher.event.Attach(func() {
-				ttep.toolTip.track(widget)
-			})
-			ttep.formDeactivatingHandle = ttep.form.AsFormBase().deactivatingPublisher.event.Attach(func() {
-				ttep.toolTip.track(widget)
-			})
+			if ttep.form = widget.Form(); ttep.form != nil {
+				ttep.formActivatingHandle = ttep.form.AsFormBase().activatingPublisher.event.Attach(func() {
+					ttep.toolTip.track(widget)
+				})
+				ttep.formDeactivatingHandle = ttep.form.AsFormBase().deactivatingPublisher.event.Attach(func() {
+					ttep.toolTip.track(widget)
+				})
+			}
 		}
 
 		if w, ok := wnd.(Widget); ok {

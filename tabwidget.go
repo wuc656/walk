@@ -7,6 +7,7 @@
 package walk
 
 import (
+	"runtime"
 	"strconv"
 	"syscall"
 	"unsafe"
@@ -94,6 +95,10 @@ func NewTabWidget(parent Container) (*TabWidget, error) {
 }
 
 func (tw *TabWidget) Dispose() {
+	if tw.hWndTab != 0 && tw.tabOrigWndProcPtr != 0 {
+		win.SetWindowLongPtr(tw.hWndTab, win.GWLP_WNDPROC, tw.tabOrigWndProcPtr)
+		tw.tabOrigWndProcPtr = 0
+	}
 	delete(hwnd2TabWidget, tw.hWndTab)
 	tw.WidgetBase.Dispose()
 
@@ -501,11 +506,11 @@ func tabWidgetTabWndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uint
 
 					options := win.DTTOPTS{DwFlags: win.DTT_GLOWSIZE, IGlowSize: int32(IntFrom96DPI(3, dpi))}
 					options.DwSize = uint32(unsafe.Sizeof(options))
-					if hr := win.DrawThemeTextEx(hTheme, canvas.hdc, 0, win.TIS_SELECTED, &title[0], int32(len(title)), 0, &rc, &options); !win.SUCCEEDED(hr) {
+					if hr := win.DrawThemeTextEx(hTheme, canvas.hdc, 0, win.TIS_SELECTED, &title[0], int32(len(title)-1), 0, &rc, &options); !win.SUCCEEDED(hr) {
 						break
 					}
 				} else {
-					if win.DrawTextEx(canvas.hdc, &title[0], int32(len(title)), &rc, 0, nil) == 0 {
+					if win.DrawTextEx(canvas.hdc, &title[0], int32(len(title)-1), &rc, 0, nil) == 0 {
 						break
 					}
 				}
@@ -526,7 +531,9 @@ func (tw *TabWidget) onPageChanged(page *TabPage) (err error) {
 	index := tw.pages.Index(page)
 	item := tw.tcitemFromPage(page)
 
-	if win.SendMessage(tw.hWndTab, win.TCM_SETITEM, uintptr(index), uintptr(unsafe.Pointer(item))) == 0 {
+	ret := win.SendMessage(tw.hWndTab, win.TCM_SETITEM, uintptr(index), uintptr(unsafe.Pointer(item)))
+	runtime.KeepAlive(item)
+	if ret == 0 {
 		return newError("SendMessage(TCM_SETITEM) failed")
 	}
 
@@ -542,7 +549,9 @@ func (tw *TabWidget) onInsertingPage(index int, page *TabPage) (err error) {
 func (tw *TabWidget) onInsertedPage(index int, page *TabPage) (err error) {
 	item := tw.tcitemFromPage(page)
 
-	if idx := int(win.SendMessage(tw.hWndTab, win.TCM_INSERTITEM, uintptr(index), uintptr(unsafe.Pointer(item)))); idx == -1 {
+	idx := int(win.SendMessage(tw.hWndTab, win.TCM_INSERTITEM, uintptr(index), uintptr(unsafe.Pointer(item))))
+	runtime.KeepAlive(item)
+	if idx == -1 {
 		return newError("SendMessage(TCM_INSERTITEM) failed")
 	}
 
@@ -806,7 +815,7 @@ func (li *tabWidgetLayoutItem) IdealSize() Size {
 }
 
 func (li *tabWidgetLayoutItem) PerformLayout() []LayoutResultItem {
-	if li.currentIndex > -1 {
+	if li.currentIndex > -1 && li.currentIndex < len(li.children) {
 		page := li.children[li.currentIndex]
 
 		adjustment := IntFrom96DPI(1, li.ctx.dpi)

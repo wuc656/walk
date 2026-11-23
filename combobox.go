@@ -638,8 +638,9 @@ func (cb *ComboBox) SetText(value string) error {
 }
 
 func (cb *ComboBox) TextSelection() (start, end int) {
-	cb.SendMessage(win.CB_GETEDITSEL, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)))
-	return
+	var s, e uint32
+	cb.SendMessage(win.CB_GETEDITSEL, uintptr(unsafe.Pointer(&s)), uintptr(unsafe.Pointer(&e)))
+	return int(s), int(e)
 }
 
 func (cb *ComboBox) SetTextSelection(start, end int) {

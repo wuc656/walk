@@ -599,6 +599,7 @@ func (td *taskDialog) setText(text string, elem win.TASKDIALOG_ELEMENTS) {
 	}
 
 	win.SendMessage(td.hwnd, win.TDM_SET_ELEMENT_TEXT, uintptr(elem), uintptr(unsafe.Pointer(text16)))
+	runtime.KeepAlive(text16)
 }
 
 func (td *taskDialog) SetInstruction(text string) {
@@ -773,7 +774,11 @@ func (td *taskDialog) handleButtonClicked(id int32) bool {
 			return false
 		}
 	} else {
-		pub = td.opts.CustomButtons[td.customIDToIndex(id)].clicked
+		idx := td.customIDToIndex(id)
+		if idx < 0 || idx >= len(td.opts.CustomButtons) {
+			return false
+		}
+		pub = td.opts.CustomButtons[idx].clicked
 		if pub == nil {
 			// By default, clicking a custom button will terminate the dialog, but
 			// clicking a command link will not.
@@ -785,7 +790,11 @@ func (td *taskDialog) handleButtonClicked(id int32) bool {
 }
 
 func (td *taskDialog) handleRadioButtonClicked(id int32) {
-	if pub := td.opts.RadioButtons[td.radioIDToIndex(id)].clicked; pub != nil {
+	idx := td.radioIDToIndex(id)
+	if idx < 0 || idx >= len(td.opts.RadioButtons) {
+		return
+	}
+	if pub := td.opts.RadioButtons[idx].clicked; pub != nil {
 		pub.Publish()
 	}
 }
